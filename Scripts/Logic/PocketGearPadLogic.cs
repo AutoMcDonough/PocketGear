@@ -27,7 +27,6 @@ namespace AutoMcD.PocketGear.Logic {
         public override void Init(MyObjectBuilder_EntityBase objectBuilder) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Init)) : null) {
                 Log = Mod.Static.Log.ForScope<PocketGearPadLogic>();
-                Log.Debug(Entity.GetType().ToString());
                 _pocketGearPad = Entity as IMyLandingGear;
 
                 NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
