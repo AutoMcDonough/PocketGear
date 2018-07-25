@@ -207,7 +207,7 @@
       <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
     </Definition>
 
-    <!--<Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Pad</SubtypeId>
@@ -291,7 +291,7 @@
       <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
-    </Definition>-->
+    </Definition>
 
     <!-- Large size -->
 
@@ -500,7 +500,7 @@
       <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
     </Definition>
 
-    <!--<Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_L_Pad</SubtypeId>
@@ -587,7 +587,7 @@
       <DestroySound>PoofExplosionCat3</DestroySound>
     </Definition>
 
-    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+    <!--<Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Magnet</SubtypeId>
