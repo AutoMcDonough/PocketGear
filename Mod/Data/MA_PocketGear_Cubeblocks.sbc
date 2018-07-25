@@ -237,6 +237,7 @@
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Pad</BlockPairName>
+      <GuiVisible>false</GuiVisible>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
@@ -280,6 +281,7 @@
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Pad</BlockPairName>
+      <GuiVisible>false</GuiVisible>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
@@ -531,6 +533,7 @@
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
+      <GuiVisible>false</GuiVisible>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
@@ -574,6 +577,7 @@
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
+      <GuiVisible>false</GuiVisible>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
