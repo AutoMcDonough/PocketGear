@@ -96,9 +96,7 @@
   <ItemGroup>
     <Compile Include="Logic\PocketGearBaseLogic.cs" />
     <Compile Include="Mod.cs" />
-    <Compile Include="MotorStator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RotorLGMod.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\TieredUpgrades\Utils\Localization\Localization.csproj">
