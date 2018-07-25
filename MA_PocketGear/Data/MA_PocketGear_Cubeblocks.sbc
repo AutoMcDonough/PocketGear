@@ -146,7 +146,7 @@
       <Size x="5" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_Rotor.mwm</Model>
-      <UseModelIntersection>false</UseModelIntersection>
+      <UseModelIntersection>true</UseModelIntersection>
 	  <GuiVisible>false</GuiVisible>
       <Components>    
         <Component Subtype="Construction" Count="20" />
@@ -184,7 +184,7 @@
       <Size x="5" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_Rotor_sm.mwm</Model>
-      <UseModelIntersection>false</UseModelIntersection>
+      <UseModelIntersection>true</UseModelIntersection>
 	  <GuiVisible>false</GuiVisible>
       <Components>    
         <Component Subtype="Construction" Count="2" />
@@ -212,7 +212,7 @@
 	
 	
 	
-	<!--
+	
 
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
@@ -302,7 +302,7 @@
     </Definition>
 	
 	
-	-->
+	
 	
 <!-- Large size -->
 
@@ -454,7 +454,7 @@
       <Size x="9" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_L_Rotor.mwm</Model>
-      <UseModelIntersection>false</UseModelIntersection>
+      <UseModelIntersection>true</UseModelIntersection>
 	  <GuiVisible>false</GuiVisible>
       <Components>    
         <Component Subtype="Construction" Count="40" />
@@ -492,7 +492,7 @@
       <Size x="9" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_L_Rotor_sm.mwm</Model>
-      <UseModelIntersection>false</UseModelIntersection>
+      <UseModelIntersection>true</UseModelIntersection>
 	  <GuiVisible>false</GuiVisible>
       <Components>    
         <Component Subtype="Construction" Count="8" />
@@ -522,7 +522,7 @@
 	
 	
 
- <!--   <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_L_Pad</SubtypeId>
@@ -611,7 +611,7 @@
     </Definition>	
 
 
--->
+
 
 
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
