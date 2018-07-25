@@ -101,15 +101,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TieredUpgrades\Utils\Localization\Localization.csproj">
+    <ProjectReference Include="..\Utils\Localization\Localization.csproj">
       <Project>{afc6b29d-80d1-48ab-9b45-7230216c285f}</Project>
       <Name>Localization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TieredUpgrades\Utils\Logging\Logging.csproj">
+    <ProjectReference Include="..\Utils\Logging\Logging.csproj">
       <Project>{d8581c43-f65d-49eb-bfe3-75f185371512}</Project>
       <Name>Logging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TieredUpgrades\Utils\Profiler\Profiler.csproj">
+    <ProjectReference Include="..\Utils\Profiler\Profiler.csproj">
       <Project>{30c726df-f15b-4df0-b579-dfc84c74d6e2}</Project>
       <Name>Profiler</Name>
     </ProjectReference>
