@@ -1,6 +1,7 @@
 <?xml version="1.0"  encoding="utf-8"?>
 <Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <CategoryClasses>
+
     <Category xsi:type="MyObjectBuilder_GuiBlockCategoryDefinition">
       <Id>
         <TypeId>GuiBlockCategoryDefinition</TypeId>
@@ -9,12 +10,24 @@
       <DisplayName>MA</DisplayName>
       <Name>AutoMcD_Astronautical</Name>
       <ItemIds>
-        <string>UpgradeModule/MA_Navball</string>
-		<string>UpgradeModule/MA_Navball_small</string>
-		<string>CameraBlock/MA_Navball_Cam</string>
-		<string>CameraBlock/MA_Navball_Cam_small</string>
-        
+        <string>MotorAdvancedStator/MA_PocketGear_Base</string>
+        <string>MotorAdvancedRotor/MA_PocketGear_Rotor</string>
+
+        <string>MotorAdvancedStator/MA_PocketGear_Base_sm</string>
+        <string>MotorAdvancedRotor/MA_PocketGear_Rotor_sm</string>
+
+
+        <string>MotorAdvancedStator/MA_PocketGear_L_Base</string>
+        <string>MotorAdvancedRotor/MA_PocketGear_L_Rotor</string>
+
+        <string>MotorAdvancedStator/MA_PocketGear_L_Base_sm</string>
+        <string>MotorAdvancedRotor/MA_PocketGear_L_Rotor_sm</string>
+
+        <string>LandingGear/MA_PocketGear_Magnet</string>
+        <string>LandingGear/MA_PocketGear_Magnet_sm</string>
+
       </ItemIds>
     </Category>
+
   </CategoryClasses>
 </Definitions>

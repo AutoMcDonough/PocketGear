@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <CubeBlocks>
-	
+  <CubeBlocks>
+
     <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
       <Id>
         <TypeId>MotorAdvancedStator</TypeId>
@@ -14,7 +14,7 @@
       <Size x="1" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_Base.mwm</Model>
-	  <BuildProgressModels>
+      <BuildProgressModels>
         <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_Base_Constr1.mwm" />
         <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_Base_Constr2.mwm" />
       </BuildProgressModels>
@@ -24,21 +24,21 @@
         <Component Subtype="LargeTube" Count="4" />
         <Component Subtype="Motor" Count="4" />
         <Component Subtype="Computer" Count="2" />
-		<Component Subtype="SteelPlate" Count="100" />
+        <Component Subtype="SteelPlate" Count="100" />
         <Component Subtype="MetalGrid" Count="15" />
       </Components>
       <CriticalComponent Subtype="Computer" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-		<MountPoint Side="Left" StartX="0.50" StartY="0.00" EndX="1.00" EndY="1.00" />
-		<MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-		<MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-		<MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Left" StartX="0.50" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+      </MountPoints>
       <BlockPairName>MA_PocketGear_Base</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>20</BuildTimeSeconds>
       <PrimarySound>BlockRotor</PrimarySound>
@@ -46,9 +46,9 @@
       <RequiredPowerInput>0.002</RequiredPowerInput>
       <MaxForceMagnitude>5E+09</MaxForceMagnitude>
       <PropulsionForce>5E+09</PropulsionForce>
-	  
+
       <RotorPart>MA_PocketGear_Rotor</RotorPart>
-	  
+
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
       <RotorDisplacementMinSmall>-0.11</RotorDisplacementMinSmall>
@@ -61,12 +61,12 @@
       <SafetyDetachMax>10</SafetyDetachMax>
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
       <DestroySound>WepSmallWarheadExpl</DestroySound>
-	  <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-	  <DangerousTorqueThreshold>5E+09</DangerousTorqueThreshold>
-	  <PCU>100</PCU>
+      <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
+      <DangerousTorqueThreshold>5E+09</DangerousTorqueThreshold>
+      <PCU>100</PCU>
     </Definition>
 
-		    <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
+    <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
       <Id>
         <TypeId>MotorAdvancedStator</TypeId>
         <SubtypeId>MA_PocketGear_Base_sm</SubtypeId>
@@ -78,32 +78,32 @@
       <Size x="1" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_Base_sm.mwm</Model>
-  	  <BuildProgressModels>
+      <BuildProgressModels>
         <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_Base_sm_Constr1.mwm" />
         <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_Base_sm_Constr2.mwm" />
       </BuildProgressModels>
-	  <UseModelIntersection>false</UseModelIntersection>
+      <UseModelIntersection>false</UseModelIntersection>
       <Components>
         <Component Subtype="SteelPlate" Count="2" />
         <Component Subtype="Construction" Count="10" />
         <Component Subtype="SmallTube" Count="4" />
         <Component Subtype="Motor" Count="1" />
         <Component Subtype="Computer" Count="1" />
-		<Component Subtype="SteelPlate" Count="2" />
+        <Component Subtype="SteelPlate" Count="2" />
         <Component Subtype="MetalGrid" Count="1" />
       </Components>
       <CriticalComponent Subtype="Computer" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-		<MountPoint Side="Left" StartX="0.50" StartY="0.00" EndX="1.00" EndY="1.00" />
-		<MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-		<MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-		<MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Left" StartX="0.50" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+      </MountPoints>
       <BlockPairName>MA_PocketGear_Base</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>20</BuildTimeSeconds>
       <PrimarySound>BlockRotor</PrimarySound>
@@ -111,9 +111,9 @@
       <RequiredPowerInput>0.002</RequiredPowerInput>
       <MaxForceMagnitude>1E+09</MaxForceMagnitude>
       <PropulsionForce>1E+09</PropulsionForce>
-	  
+
       <RotorPart>MA_PocketGear_Rotor_sm</RotorPart>
-	  
+
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
       <RotorDisplacementMinSmall>-0.05</RotorDisplacementMinSmall>
@@ -126,14 +126,12 @@
       <SafetyDetachMax>5</SafetyDetachMax>
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
       <DestroySound>WepSmallWarheadExpl</DestroySound>
-	  <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-	  <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
-	  <PCU>100</PCU>
+      <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
+      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
+      <PCU>100</PCU>
     </Definition>
 
-
-	
-	<Definition>
+    <Definition>
       <Id>
         <TypeId>MotorAdvancedRotor</TypeId>
         <SubtypeId>MA_PocketGear_Rotor</SubtypeId>
@@ -146,32 +144,32 @@
       <Size x="5" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_Rotor.mwm</Model>
-      <UseModelIntersection>true</UseModelIntersection>
-	  <GuiVisible>false</GuiVisible>
-      <Components>    
+      <UseModelIntersection>false</UseModelIntersection>
+      <GuiVisible>false</GuiVisible>
+      <Components>
         <Component Subtype="Construction" Count="20" />
         <Component Subtype="LargeTube" Count="24" />
-		<Component Subtype="Construction" Count="30" />
+        <Component Subtype="Construction" Count="30" />
         <Component Subtype="SmallTube" Count="40" />
         <Component Subtype="Motor" Count="10" />
-		<Component Subtype="SteelPlate" Count="50" />
-		<Component Subtype="MetalGrid" Count="50" />
+        <Component Subtype="SteelPlate" Count="50" />
+        <Component Subtype="MetalGrid" Count="50" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Front" StartX="4.17" StartY="0.29" EndX="4.83" EndY="0.71" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Front" StartX="4.17" StartY="0.29" EndX="4.83" EndY="0.71" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Rotor_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Rotor_Constr1.mwm" />
       </BuildProgressModels>
       <MirroringY>Z</MirroringY>
       <MirroringZ>Y</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>5</BuildTimeSeconds>
-	  <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
+      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
     </Definition>
 
-	<Definition>
+    <Definition>
       <Id>
         <TypeId>MotorAdvancedRotor</TypeId>
         <SubtypeId>MA_PocketGear_Rotor_sm</SubtypeId>
@@ -184,37 +182,32 @@
       <Size x="5" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_Rotor_sm.mwm</Model>
-      <UseModelIntersection>true</UseModelIntersection>
-	  <GuiVisible>false</GuiVisible>
-      <Components>    
+      <UseModelIntersection>false</UseModelIntersection>
+      <GuiVisible>false</GuiVisible>
+      <Components>
         <Component Subtype="Construction" Count="2" />
         <Component Subtype="LargeTube" Count="5" />
-		<Component Subtype="Construction" Count="6" />
+        <Component Subtype="Construction" Count="6" />
         <Component Subtype="SmallTube" Count="7" />
         <Component Subtype="Motor" Count="4" />
-		<Component Subtype="SteelPlate" Count="10" />
-		<Component Subtype="MetalGrid" Count="10" />
+        <Component Subtype="SteelPlate" Count="10" />
+        <Component Subtype="MetalGrid" Count="10" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Front" StartX="4.25" StartY="0.34" EndX="4.75" EndY="0.66" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Front" StartX="4.25" StartY="0.34" EndX="4.75" EndY="0.66" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Rotor_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Rotor_sm_Constr1.mwm" />
       </BuildProgressModels>
       <MirroringY>Z</MirroringY>
       <MirroringZ>Y</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>5</BuildTimeSeconds>
-	  <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
-    </Definition>	
-	
-	
-	
-	
-	
+      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
+    </Definition>
 
-    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+    <!--<Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Pad</SubtypeId>
@@ -230,23 +223,23 @@
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
-         <Component Subtype="Construction" Count="10" />
+        <Component Subtype="Construction" Count="10" />
         <Component Subtype="LargeTube" Count="4" />
         <Component Subtype="Motor" Count="6" />
-		      <Component Subtype="SteelPlate" Count="50" />
-      <Component Subtype="MetalGrid" Count="20" />
+        <Component Subtype="SteelPlate" Count="50" />
+        <Component Subtype="MetalGrid" Count="20" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Pad</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>40</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
@@ -256,7 +249,6 @@
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
     </Definition>
-
 
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
@@ -277,20 +269,20 @@
 
         <Component Subtype="Construction" Count="5" />
         <Component Subtype="Motor" Count="1" />
-		        <Component Subtype="SteelPlate" Count="1" />
+        <Component Subtype="SteelPlate" Count="1" />
         <Component Subtype="MetalGrid" Count="4" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Pad</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>40</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
@@ -299,16 +291,9 @@
       <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
-    </Definition>
-	
-	
-	
-	
-<!-- Large size -->
+    </Definition>-->
 
-
-
-
+    <!-- Large size -->
 
     <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
       <Id>
@@ -322,7 +307,7 @@
       <Size x="2" y="2" z="2" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_L_Base.mwm</Model>
-	  <BuildProgressModels>
+      <BuildProgressModels>
         <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_L_Base_Constr1.mwm" />
         <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_L_Base_Constr2.mwm" />
       </BuildProgressModels>
@@ -332,21 +317,21 @@
         <Component Subtype="LargeTube" Count="16" />
         <Component Subtype="Motor" Count="16" />
         <Component Subtype="Computer" Count="2" />
-		        <Component Subtype="SteelPlate" Count="400" />
+        <Component Subtype="SteelPlate" Count="400" />
         <Component Subtype="MetalGrid" Count="60" />
       </Components>
       <CriticalComponent Subtype="Computer" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-		<MountPoint Side="Left" StartX="1.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-		<MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-		<MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-		<MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Left" StartX="1.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+      </MountPoints>
       <BlockPairName>MA_PocketGear_L_Base</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>20</BuildTimeSeconds>
       <PrimarySound>BlockRotor</PrimarySound>
@@ -354,9 +339,9 @@
       <RequiredPowerInput>0.002</RequiredPowerInput>
       <MaxForceMagnitude>1E+10</MaxForceMagnitude>
       <PropulsionForce>1E+10</PropulsionForce>
-	  
+
       <RotorPart>MA_PocketGear_L_Rotor</RotorPart>
-	  
+
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
       <RotorDisplacementMinSmall>-0.11</RotorDisplacementMinSmall>
@@ -369,12 +354,12 @@
       <SafetyDetachMax>20</SafetyDetachMax>
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
       <DestroySound>WepSmallWarheadExpl</DestroySound>
-	  <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-	  <DangerousTorqueThreshold>1E+10</DangerousTorqueThreshold>
-	  <PCU>100</PCU>
+      <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
+      <DangerousTorqueThreshold>1E+10</DangerousTorqueThreshold>
+      <PCU>100</PCU>
     </Definition>
 
-		    <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
+    <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
       <Id>
         <TypeId>MotorAdvancedStator</TypeId>
         <SubtypeId>MA_PocketGear_L_Base_sm</SubtypeId>
@@ -386,32 +371,32 @@
       <Size x="2" y="2" z="2" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_L_Base_sm.mwm</Model>
-  	  <BuildProgressModels>
+      <BuildProgressModels>
         <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_L_Base_sm_Constr1.mwm" />
         <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_L_Base_sm_Constr2.mwm" />
       </BuildProgressModels>
-	  <UseModelIntersection>false</UseModelIntersection>
+      <UseModelIntersection>false</UseModelIntersection>
       <Components>
         <Component Subtype="SteelPlate" Count="8" />
         <Component Subtype="Construction" Count="40" />
         <Component Subtype="SmallTube" Count="16" />
         <Component Subtype="Motor" Count="4" />
         <Component Subtype="Computer" Count="2" />
-		<Component Subtype="SteelPlate" Count="8" />
+        <Component Subtype="SteelPlate" Count="8" />
         <Component Subtype="MetalGrid" Count="6" />
       </Components>
       <CriticalComponent Subtype="Computer" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-		<MountPoint Side="Left" StartX="1.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-		<MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-		<MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-		<MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Left" StartX="1.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+      </MountPoints>
       <BlockPairName>MA_PocketGear_L_Base</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>20</BuildTimeSeconds>
       <PrimarySound>BlockRotor</PrimarySound>
@@ -419,9 +404,9 @@
       <RequiredPowerInput>0.002</RequiredPowerInput>
       <MaxForceMagnitude>1E+09</MaxForceMagnitude>
       <PropulsionForce>1E+09</PropulsionForce>
-	  
+
       <RotorPart>MA_PocketGear_L_Rotor_sm</RotorPart>
-	  
+
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
       <RotorDisplacementMinSmall>-0.05</RotorDisplacementMinSmall>
@@ -434,14 +419,12 @@
       <SafetyDetachMax>5</SafetyDetachMax>
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
       <DestroySound>WepSmallWarheadExpl</DestroySound>
-	  <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-	  <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
-	  <PCU>100</PCU>
+      <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
+      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
+      <PCU>100</PCU>
     </Definition>
 
-
-	
-	<Definition>
+    <Definition>
       <Id>
         <TypeId>MotorAdvancedRotor</TypeId>
         <SubtypeId>MA_PocketGear_L_Rotor</SubtypeId>
@@ -454,32 +437,32 @@
       <Size x="9" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_L_Rotor.mwm</Model>
-      <UseModelIntersection>true</UseModelIntersection>
-	  <GuiVisible>false</GuiVisible>
-      <Components>    
+      <UseModelIntersection>false</UseModelIntersection>
+      <GuiVisible>false</GuiVisible>
+      <Components>
         <Component Subtype="Construction" Count="40" />
         <Component Subtype="LargeTube" Count="100" />
-		<Component Subtype="Construction" Count="120" />
+        <Component Subtype="Construction" Count="120" />
         <Component Subtype="SmallTube" Count="120" />
         <Component Subtype="Motor" Count="24" />
-		<Component Subtype="SteelPlate" Count="100" />
-		<Component Subtype="MetalGrid" Count="150" />
+        <Component Subtype="SteelPlate" Count="100" />
+        <Component Subtype="MetalGrid" Count="150" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Front" StartX="8.35" StartY="0.09" EndX="9.65" EndY="0.91" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Front" StartX="8.35" StartY="0.09" EndX="9.65" EndY="0.91" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_Constr1.mwm" />
       </BuildProgressModels>
       <MirroringY>Z</MirroringY>
       <MirroringZ>Y</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>5</BuildTimeSeconds>
-	  <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
+      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
     </Definition>
 
-	<Definition>
+    <Definition>
       <Id>
         <TypeId>MotorAdvancedRotor</TypeId>
         <SubtypeId>MA_PocketGear_L_Rotor_sm</SubtypeId>
@@ -492,37 +475,32 @@
       <Size x="9" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_L_Rotor_sm.mwm</Model>
-      <UseModelIntersection>true</UseModelIntersection>
-	  <GuiVisible>false</GuiVisible>
-      <Components>    
+      <UseModelIntersection>false</UseModelIntersection>
+      <GuiVisible>false</GuiVisible>
+      <Components>
         <Component Subtype="Construction" Count="8" />
         <Component Subtype="LargeTube" Count="20" />
-		<Component Subtype="Construction" Count="24" />
+        <Component Subtype="Construction" Count="24" />
         <Component Subtype="SmallTube" Count="28" />
         <Component Subtype="Motor" Count="10" />
-		<Component Subtype="SteelPlate" Count="15" />
-		<Component Subtype="MetalGrid" Count="20" />
+        <Component Subtype="SteelPlate" Count="15" />
+        <Component Subtype="MetalGrid" Count="20" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Front" StartX="8.35" StartY="0.09" EndX="9.65" EndY="0.91" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Front" StartX="8.35" StartY="0.09" EndX="9.65" EndY="0.91" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_sm_Constr1.mwm" />
       </BuildProgressModels>
       <MirroringY>Z</MirroringY>
       <MirroringZ>Y</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>5</BuildTimeSeconds>
-	  <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
-    </Definition>	
-	
-	
-	
-	
-	
+      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
+    </Definition>
 
-    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+    <!--<Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_L_Pad</SubtypeId>
@@ -538,24 +516,24 @@
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
- 
+
         <Component Subtype="Construction" Count="20" />
         <Component Subtype="LargeTube" Count="8" />
         <Component Subtype="Motor" Count="12" />
-		<Component Subtype="SteelPlate" Count="100" />
-      <Component Subtype="MetalGrid" Count="40" />
+        <Component Subtype="SteelPlate" Count="100" />
+        <Component Subtype="MetalGrid" Count="40" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>40</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
@@ -565,7 +543,6 @@
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
     </Definition>
-
 
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
@@ -584,22 +561,22 @@
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
         <Component Subtype="Construction" Count="10" />
-    
+
         <Component Subtype="Motor" Count="2" />
-		        <Component Subtype="SteelPlate" Count="2" />
+        <Component Subtype="SteelPlate" Count="2" />
         <Component Subtype="MetalGrid" Count="8" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>40</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
@@ -608,11 +585,7 @@
       <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
-    </Definition>	
-
-
-
-
+    </Definition>
 
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
@@ -630,27 +603,27 @@
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
-         <Component Subtype="Construction" Count="10" />
+        <Component Subtype="Construction" Count="10" />
         <Component Subtype="LargeTube" Count="4" />
         <Component Subtype="Motor" Count="6" />
-		      <Component Subtype="SteelPlate" Count="100" />
-      <Component Subtype="MetalGrid" Count="50" />
+        <Component Subtype="SteelPlate" Count="100" />
+        <Component Subtype="MetalGrid" Count="50" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Front" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
-		<MountPoint Side="Back" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
-		<MountPoint Side="Left" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
-		<MountPoint Side="Right" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
-		<MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Front" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
+        <MountPoint Side="Back" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
+        <MountPoint Side="Left" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
+        <MountPoint Side="Right" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
+        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Magnet</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>40</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
@@ -659,9 +632,8 @@
       <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
-	  <PCU>35</PCU>
+      <PCU>35</PCU>
     </Definition>
-
 
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
@@ -682,24 +654,24 @@
 
         <Component Subtype="Construction" Count="5" />
         <Component Subtype="Motor" Count="1" />
-		        <Component Subtype="SteelPlate" Count="1" />
+        <Component Subtype="SteelPlate" Count="1" />
         <Component Subtype="MetalGrid" Count="4" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
-	<MountPoints>
-		<MountPoint Side="Front" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
-		<MountPoint Side="Back" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
-		<MountPoint Side="Left" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
-		<MountPoint Side="Right" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
-		<MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-	</MountPoints>
+      <MountPoints>
+        <MountPoint Side="Front" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
+        <MountPoint Side="Back" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
+        <MountPoint Side="Left" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
+        <MountPoint Side="Right" StartX="0.00" StartY="2.00" EndX="1.00" EndY="3.00" />
+        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+      </MountPoints>
       <BuildProgressModels>
-         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Magnet</BlockPairName>
-	<MirroringX>Z</MirroringX>
-	<MirroringY>None</MirroringY>
-	<MirroringZ>X</MirroringZ>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>40</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
@@ -708,54 +680,11 @@
       <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
-	  <PCU>35</PCU>
-    </Definition>
+      <PCU>35</PCU>
+    </Definition>-->
 
+  </CubeBlocks>
 
-	
-	
-	
-	
-    </CubeBlocks>
-    <BlockPositions></BlockPositions>
-	
-	
-	  <CategoryClasses>
-    <Category xsi:type="MyObjectBuilder_GuiBlockCategoryDefinition">
-      <Id>
-        <TypeId>GuiBlockCategoryDefinition</TypeId>
-        <SubtypeId/>
-      </Id>
-      <DisplayName>MA</DisplayName>
-      <Name>AutoMcD_Astronautical</Name>
-      <ItemIds>
-		<string>MotorAdvancedStator/MA_PocketGear_Base</string>
-		<string>MotorAdvancedRotor/MA_PocketGear_Rotor</string>
+  <BlockPositions></BlockPositions>
 
- 		<string>MotorAdvancedStator/MA_PocketGear_Base_sm</string>
-		<string>MotorAdvancedRotor/MA_PocketGear_Rotor_sm</string>
-
-
-		<string>MotorAdvancedStator/MA_PocketGear_L_Base</string>
-		<string>MotorAdvancedRotor/MA_PocketGear_L_Rotor</string>
-
- 		<string>MotorAdvancedStator/MA_PocketGear_L_Base_sm</string>
-		<string>MotorAdvancedRotor/MA_PocketGear_L_Rotor_sm</string>
-
- 		<string>LandingGear/MA_PocketGear_Magnet</string>
-		<string>LandingGear/MA_PocketGear_Magnet_sm</string>
-
-
-
-
-
-
-		
-      </ItemIds>
-    </Category>
-  </CategoryClasses>
-	
-	
-	
-	
 </Definitions>
