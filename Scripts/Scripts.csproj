@@ -95,6 +95,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logic\PocketGearBaseLogic.cs" />
+    <Compile Include="Logic\PocketGearPadLogic.cs" />
+    <Compile Include="Logic\PocketGearPartLogic.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
