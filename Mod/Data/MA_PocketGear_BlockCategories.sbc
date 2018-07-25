@@ -1,0 +1,20 @@
+<?xml version="1.0"  encoding="utf-8"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CategoryClasses>
+    <Category xsi:type="MyObjectBuilder_GuiBlockCategoryDefinition">
+      <Id>
+        <TypeId>GuiBlockCategoryDefinition</TypeId>
+        <SubtypeId/>
+      </Id>
+      <DisplayName>MA</DisplayName>
+      <Name>AutoMcD_Astronautical</Name>
+      <ItemIds>
+        <string>UpgradeModule/MA_Navball</string>
+		<string>UpgradeModule/MA_Navball_small</string>
+		<string>CameraBlock/MA_Navball_Cam</string>
+		<string>CameraBlock/MA_Navball_Cam_small</string>
+        
+      </ItemIds>
+    </Category>
+  </CategoryClasses>
+</Definitions>
