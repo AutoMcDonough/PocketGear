@@ -8,6 +8,7 @@ using VRage.ObjectBuilders;
 using IMyLandingGear = SpaceEngineers.Game.ModAPI.IMyLandingGear;
 
 namespace AutoMcD.PocketGear.Logic {
+    // note: this LogicComponent can probaböy removed. At the moment there is a bug which prevents me from registering an event handler to IMyLandingGear.LockModeChange.
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_LandingGear), false, POCKETGEAR_PAD, POCKETGEAR_PAD_LARGE, POCKETGEAR_PAD_LARGE_SMALL, POCKETGEAR_PAD_SMALL)]
     public class PocketGearPadLogic : MyGameLogicComponent {
         public const string POCKETGEAR_PAD = "MA_PocketGear_Pad";
