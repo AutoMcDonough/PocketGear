@@ -80,6 +80,10 @@ namespace AutoMcD.PocketGear.Logic {
                 }
 
                 var padPosition = cubeGrid.WorldToGridInteger(origin);
+                if (cubeGrid.CubeExists(padPosition)) {
+                    return;
+                }
+
                 var canPlaceCube = cubeGrid.CanAddCube(padPosition);
                 if (canPlaceCube) {
                     try {
