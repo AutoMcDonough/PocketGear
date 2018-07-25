@@ -94,6 +94,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logic\PocketGearBaseLogic.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="MotorStator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
