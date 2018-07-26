@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using AutoMcD.PocketGear.Net;
 using Sandbox.ModAPI;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Logging.DefaultHandler;
@@ -17,7 +18,12 @@ namespace AutoMcD.PocketGear {
 
         // important: change to info or none before publishing this mod.
         private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.All;
+
         private const string LOG_FILE_TEMPLATE = "{0}.log";
+
+        // important: change to an unused mod and network id.
+        private const ushort MOD_ID = 51500;
+        private const ushort NETWORK_ID = 51500;
         private const string PROFILER_FILE_TEMPLATE = "profiler_{0:yyyy-MM-dd_HH-mm-ss}.txt";
         private const string PROFILER_LOG_FILE = "profiler.log";
         private static readonly string LogFile = string.Format(LOG_FILE_TEMPLATE, NAME);
@@ -29,9 +35,19 @@ namespace AutoMcD.PocketGear {
         }
 
         /// <summary>
+        ///     Indicates if the mod is used on an client.
+        /// </summary>
+        public bool IsPlayer { get; set; }
+
+        /// <summary>
         ///     Logger used for logging.
         /// </summary>
         public ILogger Log { get; private set; }
+
+        /// <summary>
+        ///     Network to handle sycing.
+        /// </summary>
+        public Network Network { get; private set; }
 
         /// <summary>
         ///     The static instance.
@@ -60,6 +76,7 @@ namespace AutoMcD.PocketGear {
                 using (Log.BeginMethod(nameof(Init))) {
                     base.Init(sessionComponent);
 
+                    InitializeNetwork();
                     // todo: we should fix the real issue with the pocketgear if possible.
                     //MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, OnDamage);
                 }
@@ -74,6 +91,7 @@ namespace AutoMcD.PocketGear {
         /// <summary>
         ///     Save mod settings and fire OnSave event.
         /// </summary>
+        // bug?: SaveData is called after the game save. You can use GetObjectBuilder.
         public override void SaveData() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(SaveData)) : null) {
                 using (Log.BeginMethod(nameof(SaveData))) {
@@ -87,6 +105,12 @@ namespace AutoMcD.PocketGear {
         /// </summary>
         protected override void UnloadData() {
             Log?.EnterMethod(nameof(UnloadData));
+
+            if (Network != null) {
+                Log?.Info("Cap network connections");
+                Network.Close();
+                Network = null;
+            }
 
             if (PROFILE) {
                 Log?.Info("Writing profiler data");
@@ -125,6 +149,17 @@ namespace AutoMcD.PocketGear {
 
                 using (Log.BeginMethod(nameof(InitializeLogging))) {
                     Log.Info("Logging initialized");
+                }
+            }
+        }
+
+        private void InitializeNetwork() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeNetwork)) : null) {
+                using (Log.BeginMethod(nameof(InitializeNetwork))) {
+                    Log.Info("Initialize Network");
+                    Network = new Network(NETWORK_ID);
+                    Log.Info($"IsServer: {Network.IsServer}, IsDedicated: {Network.IsDedicated}");
+                    Log.Info("Network initialized");
                 }
             }
         }

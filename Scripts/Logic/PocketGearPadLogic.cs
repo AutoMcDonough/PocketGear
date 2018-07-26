@@ -10,16 +10,16 @@ using VRage.ObjectBuilders;
 using IMyLandingGear = SpaceEngineers.Game.ModAPI.IMyLandingGear;
 
 namespace AutoMcD.PocketGear.Logic {
-    // note: this LogicComponent can probaböy removed. At the moment there is a bug which prevents me from registering an event handler to IMyLandingGear.LockModeChange.
+    // bug: IMyLandingGear.LockModeChange throws "Cannot bind to the target method because its signature or security transparency is not compatible with that of the delegate type.". Once this is solved i should be able to create autolock.
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_LandingGear), false, POCKETGEAR_PAD, POCKETGEAR_PAD_LARGE, POCKETGEAR_PAD_LARGE_SMALL, POCKETGEAR_PAD_SMALL)]
     public class PocketGearPadLogic : MyGameLogicComponent {
         public const string POCKETGEAR_PAD = "MA_PocketGear_Pad";
         public const string POCKETGEAR_PAD_LARGE = "MA_PocketGear_L_Pad";
         public const string POCKETGEAR_PAD_LARGE_SMALL = "MA_PocketGear_L_Pad_sm";
         public const string POCKETGEAR_PAD_SMALL = "MA_PocketGear_Pad_sm";
-        private static readonly HashSet<string> PocketGearIds = new HashSet<string> {POCKETGEAR_PAD, POCKETGEAR_PAD_LARGE, POCKETGEAR_PAD_LARGE_SMALL, POCKETGEAR_PAD_SMALL};
-        private static readonly HashSet<string> HiddenActions = new HashSet<string> {"Autolock"};
-        private static readonly HashSet<string> HiddenControl = new HashSet<string> {"Autolock"};
+        private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_PAD, POCKETGEAR_PAD_LARGE, POCKETGEAR_PAD_LARGE_SMALL, POCKETGEAR_PAD_SMALL };
+        private static readonly HashSet<string> HiddenActions = new HashSet<string> { "Autolock" };
+        private static readonly HashSet<string> HiddenControl = new HashSet<string> { "Autolock" };
 
         private IMyLandingGear _pocketGearPad;
         private static bool AreTerminalControlsInitialized { get; set; }
@@ -131,7 +131,7 @@ namespace AutoMcD.PocketGear.Logic {
                     pocketGearBase.RotorLock = true;
                     landingGear.Lock();
                     var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
-                    logic.ResetRotorLockAfterUpdate();
+                    logic.ResetRotorLockAfterTicks(15);
                 }
             }
         }
@@ -153,7 +153,7 @@ namespace AutoMcD.PocketGear.Logic {
                     pocketGearBase.RotorLock = true;
                     landingGear.Unlock();
                     var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
-                    logic.ResetRotorLockAfterUpdate();
+                    logic.ResetRotorLockAfterTicks(15);
                 }
             }
         }
@@ -162,6 +162,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Init)) : null) {
                 Log = Mod.Static.Log.ForScope<PocketGearPadLogic>();
                 _pocketGearPad = Entity as IMyLandingGear;
+                _pocketGearPad.AutoLock = false;
 
                 if (!AreTerminalControlsInitialized) {
                     InitializeTerminalControls();

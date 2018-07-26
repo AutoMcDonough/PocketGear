@@ -91,7 +91,7 @@ namespace AutoMcD.PocketGear.Logic {
                             SubtypeName = pocketGearPadId,
                             Owner = _pocketGearPart.OwnerId,
                             BuiltBy = _pocketGearPart.OwnerId,
-                            AutoLock = true
+                            AutoLock = false
                         };
 
                         var cubeGridBuilder = new MyObjectBuilder_CubeGrid {
@@ -102,7 +102,7 @@ namespace AutoMcD.PocketGear.Logic {
 
                         cubeGridBuilder.CubeBlocks.Add(landingGearBuilder);
 
-                        var gridsToMerge = new List<MyObjectBuilder_CubeGrid> {cubeGridBuilder};
+                        var gridsToMerge = new List<MyObjectBuilder_CubeGrid> { cubeGridBuilder };
                         (cubeGrid as MyCubeGrid)?.PasteBlocksToGrid(gridsToMerge, 0, false, false);
                     } catch (Exception exception) {
                         Log.Error(exception);
