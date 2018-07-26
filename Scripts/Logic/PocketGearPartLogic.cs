@@ -91,7 +91,7 @@ namespace AutoMcD.PocketGear.Logic {
                             SubtypeName = pocketGearPadId,
                             Owner = _pocketGearPart.OwnerId,
                             BuiltBy = _pocketGearPart.OwnerId,
-                            AutoLock = true
+                            AutoLock = false
                         };
 
                         var cubeGridBuilder = new MyObjectBuilder_CubeGrid {
