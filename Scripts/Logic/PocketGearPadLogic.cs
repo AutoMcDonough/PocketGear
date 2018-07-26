@@ -131,7 +131,7 @@ namespace AutoMcD.PocketGear.Logic {
                     pocketGearBase.RotorLock = true;
                     landingGear.Lock();
                     var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
-                    logic.ResetRotorLockAfterUpdate();
+                    logic.ResetRotorLockAfterTicks(15);
                 }
             }
         }
@@ -153,7 +153,7 @@ namespace AutoMcD.PocketGear.Logic {
                     pocketGearBase.RotorLock = true;
                     landingGear.Unlock();
                     var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
-                    logic.ResetRotorLockAfterUpdate();
+                    logic.ResetRotorLockAfterTicks(15);
                 }
             }
         }
@@ -162,6 +162,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Init)) : null) {
                 Log = Mod.Static.Log.ForScope<PocketGearPadLogic>();
                 _pocketGearPad = Entity as IMyLandingGear;
+                _pocketGearPad.AutoLock = false;
 
                 if (!AreTerminalControlsInitialized) {
                     InitializeTerminalControls();
