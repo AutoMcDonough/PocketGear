@@ -97,6 +97,12 @@
     <Compile Include="Logic\PocketGearBaseLogic.cs" />
     <Compile Include="Logic\PocketGearPadLogic.cs" />
     <Compile Include="Logic\PocketGearPartLogic.cs" />
+    <Compile Include="Net\IEntitySyncMessage.cs" />
+    <Compile Include="Net\IMessage.cs" />
+    <Compile Include="Net\MessageWrapper.cs" />
+    <Compile Include="Net\Network.cs" />
+    <Compile Include="Net\PropertySyncMessage.cs" />
+    <Compile Include="Settings\BlockSettings.cs" />
     <Compile Include="TerminalControlUtils.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

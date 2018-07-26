@@ -43,6 +43,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\EntityComponents.sbc" />
     <None Include="Data\MA_PocketGear_BlockCategories.sbc" />
     <None Include="Data\MA_PocketGear_Cubeblocks.sbc" />
     <None Include="Models\MA_PocketGear_Base.mwm" />
