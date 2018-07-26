@@ -58,15 +58,7 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        public bool IsDeployed {
-            get { return _settings.IsDeployed; }
-            set {
-                if (value != _settings.IsDeployed) {
-                    _settings.IsDeployed = value;
-                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(IsDeployed), Value = BitConverter.GetBytes(IsDeployed) });
-                }
-            }
-        }
+        public bool IsDeployed => MathHelper.ToDegrees(_pocketGearBase.Angle) > FORCED_UPPER_LIMIT_DEG - 10;
 
         protected ILogger Log { get; set; }
 
@@ -155,9 +147,14 @@ namespace AutoMcD.PocketGear.Logic {
                 _deployVelocitySlider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
                     DisplayName(nameof(DeployVelocity)),
                     tooltip: "",
-                    writer: (block, builder) => builder.Append($"{block.GameLogic.GetAs<PocketGearBaseLogic>().DeployVelocity:N2} rpm"),
-                    getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().DeployVelocity,
-                    setter: (block, value) => block.GameLogic.GetAs<PocketGearBaseLogic>().DeployVelocity = value,
+                    writer: (block, builder) => builder.Append($"{block.GameLogic.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
+                    getter: block => block.GameLogic?.GetAs<PocketGearBaseLogic>().DeployVelocity ?? 0,
+                    setter: (block, value) => {
+                        var logic = block.GameLogic.GetAs<PocketGearBaseLogic>();
+                        if (logic != null) {
+                            logic.DeployVelocity = value;
+                        }
+                    },
                     min: block => 0,
                     max: block => (block as IMyMotorAdvancedStator)?.MaxRotorAngularVelocity * 9.549296f ?? 1,
                     enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
@@ -171,8 +168,8 @@ namespace AutoMcD.PocketGear.Logic {
                     tooltip: "Deploy or retract switch",
                     onText: "Deploy",
                     offText: "Retract",
-                    getter: block => !block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeployed,
-                    setter: (block, value) => block.GameLogic.GetAs<PocketGearBaseLogic>().SwitchDeployState(value),
+                    getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeployed,
+                    setter: (block, value) => block.GameLogic.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
                     enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && block.IsWorking,
                     visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
@@ -259,6 +256,7 @@ namespace AutoMcD.PocketGear.Logic {
                     if (_resetManualLockAfterTicks <= 0) {
                         _manualLock = false;
                         _pocketGearBase.RotorLock = false;
+                        _pocketGearBase.TargetVelocityRPM = DeployVelocity;
                     }
                 }
 
@@ -295,16 +293,11 @@ namespace AutoMcD.PocketGear.Logic {
                 _manualLock = true;
                 _manualLockBaseMatrix = _pocketGearBase.CubeGrid.WorldMatrix;
                 _manualLockTopMatrix = _pocketGearBase.TopGrid?.WorldMatrix ?? MatrixD.Zero;
-                _resetManualLockAfterTicks = 5;
+                _resetManualLockAfterTicks = 25;
                 _pocketGearBase.RotorLock = true;
-                NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
-            }
-        }
-
-        public void ResetRotorLockAfterTicks(int ticks) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(ResetRotorLockAfterTicks)) : null) {
-                _resetRotorLockAfterTicks = ticks;
-                _resetRotorLock = true;
+                _pocketGearBase.TargetVelocityRPM = 0;
+                _pocketGearBase.TopGrid?.Physics?.ClearSpeed();
+                _pocketGearBase.CubeGrid?.Physics?.ClearSpeed();
                 NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
             }
         }
@@ -314,6 +307,8 @@ namespace AutoMcD.PocketGear.Logic {
                 _pocketGearBase.TargetVelocityRPM = DeployVelocity * (deploy ? 1 : -1);
                 if (deploy) {
                     ChangePocketGearPadStateAfterTicks(150);
+                } else {
+                    _changePocketGearPadState = false;
                 }
             }
         }
@@ -371,20 +366,11 @@ namespace AutoMcD.PocketGear.Logic {
         private void OnEntitySyncMessageReceived(IEntitySyncMessage message) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnEntitySyncMessageReceived)) : null) {
                 using (Log.BeginMethod(nameof(OnEntitySyncMessageReceived))) {
-                    Log.Debug("Received EntitySyncMessage");
-
                     if (message is PropertySyncMessage) {
                         var syncMessage = message as PropertySyncMessage;
                         switch (syncMessage.Name) {
                             case nameof(DeployVelocity):
                                 _settings.DeployVelocity = BitConverter.ToSingle(syncMessage.Value, 0);
-                                _deployVelocitySlider.UpdateVisual();
-                                Log.Debug($"DeployVelocity: {DeployVelocity}");
-                                break;
-                            case nameof(IsDeployed):
-                                _settings.IsDeployed = BitConverter.ToBoolean(syncMessage.Value, 0);
-                                _switchDeployStateSwitch.UpdateVisual();
-                                Log.Debug($"IsDeployed: {IsDeployed}");
                                 break;
                         }
                     }
@@ -400,10 +386,7 @@ namespace AutoMcD.PocketGear.Logic {
 
         private void OnLimitReached(bool upperLimit) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnLimitReached)) : null) {
-                _pocketGearBase.TargetVelocityRPM = 0;
-                IsDeployed = !upperLimit;
                 ChangePocketGearPadState(upperLimit);
-                _switchDeployStateSwitch.UpdateVisual();
             }
         }
 
