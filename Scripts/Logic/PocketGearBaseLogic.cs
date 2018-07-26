@@ -21,10 +21,11 @@ namespace AutoMcD.PocketGear.Logic {
         private const float FORCED_LOWER_LIMIT_DEG = 333.5f;
         private const float FORCED_UPPER_LIMIT_DEG = 360.0f;
         public static readonly HashSet<string> HiddenActions = new HashSet<string> {"Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement"};
-        public static readonly HashSet<string> HiddenControl = new HashSet<string> {"Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement"};
+        public static readonly HashSet<string> HiddenControl = new HashSet<string> {"Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock"};
         private static readonly HashSet<string> PocketGearIds = new HashSet<string> {POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL};
 
         private bool _isJustPlaced;
+        private bool _requestedRotorLockReset;
         private IMyMotorStator _pocketGearBase;
         private static bool AreTerminalControlsInitialized { get; set; }
 
@@ -37,6 +38,16 @@ namespace AutoMcD.PocketGear.Logic {
                 _pocketGearBase = Entity as IMyMotorStator;
                 _isJustPlaced = _pocketGearBase?.CubeGrid?.Physics != null;
                 NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
+            }
+        }
+
+        public override void UpdateAfterSimulation() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(UpdateAfterSimulation)) : null) {
+                if (_requestedRotorLockReset) {
+                    _pocketGearBase.RotorLock = false;
+                    _requestedRotorLockReset = false;
+                    NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
+                }
             }
         }
 
@@ -60,6 +71,13 @@ namespace AutoMcD.PocketGear.Logic {
                 } catch (Exception exception) {
                     Log.Error(exception);
                 }
+            }
+        }
+
+        public void ResetRotorLockAfterUpdate() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(ResetRotorLockAfterUpdate)) : null) {
+                _requestedRotorLockReset = true;
+                NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
             }
         }
 
