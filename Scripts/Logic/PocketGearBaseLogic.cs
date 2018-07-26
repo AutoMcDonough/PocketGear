@@ -25,8 +25,8 @@ namespace AutoMcD.PocketGear.Logic {
         private static readonly HashSet<string> PocketGearIds = new HashSet<string> {POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL};
 
         private bool _isJustPlaced;
-        private bool _requestedRotorLockReset;
         private IMyMotorStator _pocketGearBase;
+        private bool _requestedRotorLockReset;
         private static bool AreTerminalControlsInitialized { get; set; }
 
         protected ILogger Log { get; set; }
@@ -97,42 +97,22 @@ namespace AutoMcD.PocketGear.Logic {
                 foreach (var control in controls) {
                     if (HiddenControl.Contains(control.Id)) {
                         var original = control.Visible;
-                        control.Visible = block => {
-                            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), "IsControlVisible") : null) {
-                                return !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && original.Invoke(block);
-                            }
-                        };
+                        control.Visible = block => !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && original.Invoke(block);
 
                         if (control.Id == "LowerLimit" && control is IMyTerminalControlSlider) {
                             var slider = control as IMyTerminalControlSlider;
                             var getter = slider.Getter;
                             var setter = slider.Setter;
-                            slider.Getter = block => {
-                                using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), "GetLowerLimit") : null) {
-                                    return PocketGearIds.Contains(block.BlockDefinition.SubtypeId) ? FORCED_LOWER_LIMIT_DEG : getter.Invoke(block);
-                                }
-                            };
-                            slider.Setter = (block, value) => {
-                                using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), "SetLowerLimit") : null) {
-                                    setter.Invoke(block, PocketGearIds.Contains(block.BlockDefinition.SubtypeId) ? FORCED_LOWER_LIMIT_DEG : value);
-                                }
-                            };
+                            slider.Getter = block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId) ? FORCED_LOWER_LIMIT_DEG : getter.Invoke(block);
+                            slider.Setter = (block, value) => { setter.Invoke(block, PocketGearIds.Contains(block.BlockDefinition.SubtypeId) ? FORCED_LOWER_LIMIT_DEG : value); };
                         }
 
                         if (control.Id == "UpperLimit" && control is IMyTerminalControlSlider) {
                             var slider = control as IMyTerminalControlSlider;
                             var getter = slider.Getter;
                             var setter = slider.Setter;
-                            slider.Getter = block => {
-                                using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), "GetUpperLimit") : null) {
-                                    return PocketGearIds.Contains(block.BlockDefinition.SubtypeId) ? FORCED_UPPER_LIMIT_DEG : getter.Invoke(block);
-                                }
-                            };
-                            slider.Setter = (block, value) => {
-                                using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), "SetUpperLimit") : null) {
-                                    setter.Invoke(block, PocketGearIds.Contains(block.BlockDefinition.SubtypeId) ? FORCED_UPPER_LIMIT_DEG : value);
-                                }
-                            };
+                            slider.Getter = block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId) ? FORCED_UPPER_LIMIT_DEG : getter.Invoke(block);
+                            slider.Setter = (block, value) => { setter.Invoke(block, PocketGearIds.Contains(block.BlockDefinition.SubtypeId) ? FORCED_UPPER_LIMIT_DEG : value); };
                         }
                     }
                 }
@@ -140,11 +120,7 @@ namespace AutoMcD.PocketGear.Logic {
                 foreach (var action in actions) {
                     if (HiddenActions.Contains(action.Id)) {
                         var original = action.Enabled;
-                        action.Enabled = block => {
-                            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), "IsActionEnabled") : null) {
-                                return !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && original.Invoke(block);
-                            }
-                        };
+                        action.Enabled = block => !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && original.Invoke(block);
                     }
                 }
             }

@@ -17,9 +17,10 @@ namespace AutoMcD.PocketGear.Logic {
         public const string POCKETGEAR_PAD_LARGE = "MA_PocketGear_L_Pad";
         public const string POCKETGEAR_PAD_LARGE_SMALL = "MA_PocketGear_L_Pad_sm";
         public const string POCKETGEAR_PAD_SMALL = "MA_PocketGear_Pad_sm";
-        private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_PAD, POCKETGEAR_PAD_LARGE, POCKETGEAR_PAD_LARGE_SMALL, POCKETGEAR_PAD_SMALL };
-        private static readonly HashSet<string> HiddenActions = new HashSet<string> { "Autolock" };
-        private static readonly HashSet<string> HiddenControl = new HashSet<string> { "Autolock" };
+        private static readonly HashSet<string> PocketGearIds = new HashSet<string> {POCKETGEAR_PAD, POCKETGEAR_PAD_LARGE, POCKETGEAR_PAD_LARGE_SMALL, POCKETGEAR_PAD_SMALL};
+        private static readonly HashSet<string> HiddenActions = new HashSet<string> {"Autolock"};
+        private static readonly HashSet<string> HiddenControl = new HashSet<string> {"Autolock"};
+
         private IMyLandingGear _pocketGearPad;
         private static bool AreTerminalControlsInitialized { get; set; }
         protected ILogger Log { get; set; }
@@ -86,6 +87,7 @@ namespace AutoMcD.PocketGear.Logic {
                         var original = action.Enabled;
                         action.Enabled = block => !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && original.Invoke(block);
                     }
+
                     if (action.Id == "Lock") {
                         var orginal = action.Action;
                         action.Action = block => {
