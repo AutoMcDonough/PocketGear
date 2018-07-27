@@ -9,6 +9,9 @@ using VRage.Game.Components;
 using VRage.ObjectBuilders;
 using IMyLandingGear = SpaceEngineers.Game.ModAPI.IMyLandingGear;
 
+// ReSharper disable InlineOutVariableDeclaration
+// ReSharper disable MergeCastWithTypeCheck
+
 namespace AutoMcD.PocketGear.Logic {
     // bug: IMyLandingGear.LockModeChange throws "Cannot bind to the target method because its signature or security transparency is not compatible with that of the delegate type.". Once this is solved i should be able to create autolock.
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_LandingGear), false, POCKETGEAR_PAD, POCKETGEAR_PAD_LARGE, POCKETGEAR_PAD_LARGE_SMALL, POCKETGEAR_PAD_SMALL)]
@@ -46,12 +49,12 @@ namespace AutoMcD.PocketGear.Logic {
 
                 AreTerminalControlsInitialized = true;
 
-                List<IMyTerminalControl> controls;
-                List<IMyTerminalAction> actions;
-                MyAPIGateway.TerminalControls.GetControls<IMyLandingGear>(out controls);
-                MyAPIGateway.TerminalControls.GetActions<IMyLandingGear>(out actions);
+                List<IMyTerminalControl> defaultControls;
+                List<IMyTerminalAction> defaultActions;
+                MyAPIGateway.TerminalControls.GetControls<IMyLandingGear>(out defaultControls);
+                MyAPIGateway.TerminalControls.GetActions<IMyLandingGear>(out defaultActions);
 
-                foreach (var control in controls) {
+                foreach (var control in defaultControls) {
                     if (HiddenControl.Contains(control.Id)) {
                         var original = control.Visible;
                         control.Visible = block => !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && original.Invoke(block);
@@ -82,7 +85,7 @@ namespace AutoMcD.PocketGear.Logic {
                     }
                 }
 
-                foreach (var action in actions) {
+                foreach (var action in defaultActions) {
                     if (HiddenActions.Contains(action.Id)) {
                         var original = action.Enabled;
                         action.Enabled = block => !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && original.Invoke(block);
@@ -160,7 +163,9 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Init)) : null) {
                 Log = Mod.Static.Log.ForScope<PocketGearPadLogic>();
                 _pocketGearPad = Entity as IMyLandingGear;
-                _pocketGearPad.AutoLock = false;
+                if (_pocketGearPad != null) {
+                    _pocketGearPad.AutoLock = false;
+                }
 
                 if (!AreTerminalControlsInitialized) {
                     InitializeTerminalControls();

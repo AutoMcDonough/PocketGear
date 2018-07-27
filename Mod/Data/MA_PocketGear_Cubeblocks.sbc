@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <CubeBlocks>
 
@@ -44,8 +45,8 @@
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>5E+09</MaxForceMagnitude>
-      <PropulsionForce>5E+09</PropulsionForce>
+      <MaxForceMagnitude>4.2535293e+37</MaxForceMagnitude>
+      <DangerousTorqueThreshold>4.2535293e+37</DangerousTorqueThreshold>
 
       <RotorPart>MA_PocketGear_Rotor</RotorPart>
 
@@ -62,7 +63,6 @@
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
       <DestroySound>WepSmallWarheadExpl</DestroySound>
       <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-      <DangerousTorqueThreshold>5E+09</DangerousTorqueThreshold>
       <PCU>100</PCU>
     </Definition>
 
@@ -109,8 +109,8 @@
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>1E+09</MaxForceMagnitude>
-      <PropulsionForce>1E+09</PropulsionForce>
+      <MaxForceMagnitude>2.1267647e+37</MaxForceMagnitude>
+      <DangerousTorqueThreshold>2.1267647e+37</DangerousTorqueThreshold>
 
       <RotorPart>MA_PocketGear_Rotor_sm</RotorPart>
 
@@ -127,7 +127,6 @@
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
       <DestroySound>WepSmallWarheadExpl</DestroySound>
       <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
       <PCU>100</PCU>
     </Definition>
 
@@ -339,8 +338,8 @@
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>1E+10</MaxForceMagnitude>
-      <PropulsionForce>1E+10</PropulsionForce>
+      <MaxForceMagnitude>3.40282347E+38</MaxForceMagnitude>
+      <DangerousTorqueThreshold>3.40282347E+38</DangerousTorqueThreshold>
 
       <RotorPart>MA_PocketGear_L_Rotor</RotorPart>
 
@@ -357,7 +356,6 @@
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
       <DestroySound>WepSmallWarheadExpl</DestroySound>
       <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-      <DangerousTorqueThreshold>1E+10</DangerousTorqueThreshold>
       <PCU>100</PCU>
     </Definition>
 
@@ -404,8 +402,8 @@
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>1E+09</MaxForceMagnitude>
-      <PropulsionForce>1E+09</PropulsionForce>
+      <MaxForceMagnitude>1.7014117e+38</MaxForceMagnitude>
+      <DangerousTorqueThreshold>1.7014117e+38</DangerousTorqueThreshold>
 
       <RotorPart>MA_PocketGear_L_Rotor_sm</RotorPart>
 
@@ -422,7 +420,6 @@
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
       <DestroySound>WepSmallWarheadExpl</DestroySound>
       <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
       <PCU>100</PCU>
     </Definition>
 

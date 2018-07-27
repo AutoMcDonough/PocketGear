@@ -16,6 +16,7 @@ using VRage.ModAPI;
 using VRage.ObjectBuilders;
 using VRageMath;
 
+// ReSharper disable MergeCastWithTypeCheck
 // ReSharper disable ArrangeAccessorOwnerBody
 // ReSharper disable InlineOutVariableDeclaration
 
@@ -26,11 +27,10 @@ namespace AutoMcD.PocketGear.Logic {
         public const string POCKETGEAR_BASE_LARGE = "MA_PocketGear_L_Base";
         public const string POCKETGEAR_BASE_LARGE_SMALL = "MA_PocketGear_L_Base_sm";
         public const string POCKETGEAR_BASE_SMALL = "MA_PocketGear_Base_sm";
-        private const float DEFAULT_VELOCITY_RPM = 1f;
         private const float FORCED_LOWER_LIMIT_DEG = 333.5f;
         private const float FORCED_UPPER_LIMIT_DEG = 360.0f;
         public static readonly HashSet<string> HiddenActions = new HashSet<string> { "Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement", "RotorLock", "Reverse", "IncreaseVelocity", "DecreaseVelocity", "ResetVelocity" };
-        public static readonly HashSet<string> HiddenControl = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
+        public static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
         private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
         private static IMyTerminalControlSlider _deployVelocitySlider;
         private static IMyTerminalControlOnOffSwitch _switchDeployStateSwitch;
@@ -44,13 +44,14 @@ namespace AutoMcD.PocketGear.Logic {
         private int _resetManualLockAfterTicks;
         private bool _resetRotorLock;
         private int _resetRotorLockAfterTicks;
-        private BlockSettings _settings;
+        private PocketGearBaseSettings _settings;
 
         private static bool AreTerminalControlsInitialized { get; set; }
 
         public float DeployVelocity {
             get { return _settings.DeployVelocity; }
             set {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value != _settings.DeployVelocity) {
                     _settings.DeployVelocity = value;
                     Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(DeployVelocity), Value = BitConverter.GetBytes(DeployVelocity) });
@@ -112,7 +113,7 @@ namespace AutoMcD.PocketGear.Logic {
                 MyAPIGateway.TerminalControls.GetActions<IMyMotorAdvancedStator>(out defaultActions);
 
                 foreach (var control in defaultControls) {
-                    if (HiddenControl.Contains(control.Id)) {
+                    if (HiddenControls.Contains(control.Id)) {
                         var visible = control.Visible;
                         var enabled = control.Enabled;
                         control.Visible = block => !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && visible.Invoke(block);
@@ -147,10 +148,10 @@ namespace AutoMcD.PocketGear.Logic {
                 _deployVelocitySlider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
                     DisplayName(nameof(DeployVelocity)),
                     tooltip: "",
-                    writer: (block, builder) => builder.Append($"{block.GameLogic.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
-                    getter: block => block.GameLogic?.GetAs<PocketGearBaseLogic>().DeployVelocity ?? 0,
+                    writer: (block, builder) => builder.Append($"{block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
+                    getter: block => block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity ?? 0,
                     setter: (block, value) => {
-                        var logic = block.GameLogic.GetAs<PocketGearBaseLogic>();
+                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
                         if (logic != null) {
                             logic.DeployVelocity = value;
                         }
@@ -169,7 +170,7 @@ namespace AutoMcD.PocketGear.Logic {
                     onText: "Deploy",
                     offText: "Retract",
                     getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeployed,
-                    setter: (block, value) => block.GameLogic.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
+                    setter: (block, value) => block?.GameLogic?.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
                     enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && block.IsWorking,
                     visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
@@ -192,9 +193,7 @@ namespace AutoMcD.PocketGear.Logic {
 
                 _pocketGearBase = Entity as IMyMotorStator;
                 _isJustPlaced = _pocketGearBase?.CubeGrid?.Physics != null;
-                if (!_isJustPlaced) {
-                    _settings = Load(Entity, new Guid(BlockSettings.GUID));
-                }
+                _settings = Load(Entity, new Guid(PocketGearBaseSettings.GUID));
 
                 Mod.Static.Network.RegisterEntitySyncHandler(Entity.EntityId, OnEntitySyncMessageReceived);
 
@@ -212,7 +211,7 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override bool IsSerialized() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(Save)) : null) {
-                Save(_pocketGearBase, new Guid(BlockSettings.GUID), _settings);
+                Save(_pocketGearBase, new Guid(PocketGearBaseSettings.GUID), _settings);
                 return base.IsSerialized();
             }
         }
@@ -273,8 +272,8 @@ namespace AutoMcD.PocketGear.Logic {
                         return;
                     }
 
-                    if (_isJustPlaced && MyAPIGateway.Multiplayer.IsServer) {
-                        DeployVelocity = DEFAULT_VELOCITY_RPM;
+                    if (_isJustPlaced) {
+                        SwitchDeployState(true);
                     }
 
                     _pocketGearBase.LowerLimitDeg = FORCED_LOWER_LIMIT_DEG;
@@ -333,17 +332,17 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        private BlockSettings Load(IMyEntity entity, Guid guid) {
+        private PocketGearBaseSettings Load(IMyEntity entity, Guid guid) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(ChangePocketGearPadStateAfterTicks)) : null) {
                 using (Log.BeginMethod(nameof(Load))) {
                     var storage = entity.Storage;
-                    BlockSettings settings;
+                    PocketGearBaseSettings settings;
                     if (storage != null && storage.ContainsKey(guid)) {
                         try {
                             var str = storage[guid];
                             var data = Convert.FromBase64String(str);
 
-                            settings = MyAPIGateway.Utilities.SerializeFromBinary<BlockSettings>(data);
+                            settings = MyAPIGateway.Utilities.SerializeFromBinary<PocketGearBaseSettings>(data);
                             if (settings != null) {
                                 return settings;
                             }
@@ -354,9 +353,10 @@ namespace AutoMcD.PocketGear.Logic {
                     }
 
                     Log.Info($"No saved setting for '{entity}' found. Using default settings");
-                    settings = new BlockSettings {
-                        DeployVelocity = Math.Abs(_pocketGearBase.TargetVelocityRPM) == 0 ? DEFAULT_VELOCITY_RPM : Math.Abs(_pocketGearBase.TargetVelocityRPM)
-                    };
+                    settings = new PocketGearBaseSettings();
+                    if (!(Math.Abs(Math.Abs(_pocketGearBase.TargetVelocityRPM)) < 0.01)) {
+                        settings.DeployVelocity = Math.Abs(_pocketGearBase.TargetVelocityRPM);
+                    }
 
                     return settings;
                 }
@@ -367,7 +367,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnEntitySyncMessageReceived)) : null) {
                 using (Log.BeginMethod(nameof(OnEntitySyncMessageReceived))) {
                     if (message is PropertySyncMessage) {
-                        var syncMessage = message as PropertySyncMessage;
+                        var syncMessage = (PropertySyncMessage) message;
                         switch (syncMessage.Name) {
                             case nameof(DeployVelocity):
                                 _settings.DeployVelocity = BitConverter.ToSingle(syncMessage.Value, 0);
@@ -390,7 +390,7 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        private void Save(IMyEntity entity, Guid guid, BlockSettings settings) {
+        private void Save(IMyEntity entity, Guid guid, PocketGearBaseSettings settings) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(Save)) : null) {
                 using (Log.BeginMethod(nameof(Save))) {
                     try {
