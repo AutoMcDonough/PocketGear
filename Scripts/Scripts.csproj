@@ -102,7 +102,7 @@
     <Compile Include="Net\MessageWrapper.cs" />
     <Compile Include="Net\Network.cs" />
     <Compile Include="Net\PropertySyncMessage.cs" />
-    <Compile Include="Settings\BlockSettings.cs" />
+    <Compile Include="Settings\PocketGearBaseSettings.cs" />
     <Compile Include="TerminalControlUtils.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
