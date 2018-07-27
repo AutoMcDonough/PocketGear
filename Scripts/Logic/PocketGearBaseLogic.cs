@@ -16,6 +16,7 @@ using VRage.ModAPI;
 using VRage.ObjectBuilders;
 using VRageMath;
 
+// ReSharper disable MergeCastWithTypeCheck
 // ReSharper disable ArrangeAccessorOwnerBody
 // ReSharper disable InlineOutVariableDeclaration
 
@@ -29,7 +30,7 @@ namespace AutoMcD.PocketGear.Logic {
         private const float FORCED_LOWER_LIMIT_DEG = 333.5f;
         private const float FORCED_UPPER_LIMIT_DEG = 360.0f;
         public static readonly HashSet<string> HiddenActions = new HashSet<string> { "Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement", "RotorLock", "Reverse", "IncreaseVelocity", "DecreaseVelocity", "ResetVelocity" };
-        public static readonly HashSet<string> HiddenControl = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
+        public static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
         private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
         private static IMyTerminalControlSlider _deployVelocitySlider;
         private static IMyTerminalControlOnOffSwitch _switchDeployStateSwitch;
@@ -50,6 +51,7 @@ namespace AutoMcD.PocketGear.Logic {
         public float DeployVelocity {
             get { return _settings.DeployVelocity; }
             set {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value != _settings.DeployVelocity) {
                     _settings.DeployVelocity = value;
                     Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(DeployVelocity), Value = BitConverter.GetBytes(DeployVelocity) });
@@ -111,7 +113,7 @@ namespace AutoMcD.PocketGear.Logic {
                 MyAPIGateway.TerminalControls.GetActions<IMyMotorAdvancedStator>(out defaultActions);
 
                 foreach (var control in defaultControls) {
-                    if (HiddenControl.Contains(control.Id)) {
+                    if (HiddenControls.Contains(control.Id)) {
                         var visible = control.Visible;
                         var enabled = control.Enabled;
                         control.Visible = block => !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && visible.Invoke(block);
@@ -365,7 +367,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnEntitySyncMessageReceived)) : null) {
                 using (Log.BeginMethod(nameof(OnEntitySyncMessageReceived))) {
                     if (message is PropertySyncMessage) {
-                        var syncMessage = message as PropertySyncMessage;
+                        var syncMessage = (PropertySyncMessage) message;
                         switch (syncMessage.Name) {
                             case nameof(DeployVelocity):
                                 _settings.DeployVelocity = BitConverter.ToSingle(syncMessage.Value, 0);

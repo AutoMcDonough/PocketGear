@@ -77,6 +77,7 @@ namespace AutoMcD.PocketGear {
                     base.Init(sessionComponent);
 
                     InitializeNetwork();
+                    IsPlayer = !(Network.IsServer && Network.IsDedicated);
                     // todo: we should fix the real issue with the pocketgear if possible.
                     //MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, OnDamage);
                 }
