@@ -270,6 +270,10 @@ namespace AutoMcD.PocketGear.Logic {
                         return;
                     }
 
+                    if (_isJustPlaced) {
+                        SwitchDeployState(true);
+                    }
+
                     _pocketGearBase.LowerLimitDeg = FORCED_LOWER_LIMIT_DEG;
                     _pocketGearBase.UpperLimitDeg = FORCED_UPPER_LIMIT_DEG;
 
