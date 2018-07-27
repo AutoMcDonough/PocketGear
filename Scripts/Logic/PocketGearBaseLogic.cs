@@ -147,10 +147,10 @@ namespace AutoMcD.PocketGear.Logic {
                 _deployVelocitySlider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
                     DisplayName(nameof(DeployVelocity)),
                     tooltip: "",
-                    writer: (block, builder) => builder.Append($"{block.GameLogic.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
-                    getter: block => block.GameLogic?.GetAs<PocketGearBaseLogic>().DeployVelocity ?? 0,
+                    writer: (block, builder) => builder.Append($"{block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
+                    getter: block => block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity ?? 0,
                     setter: (block, value) => {
-                        var logic = block.GameLogic.GetAs<PocketGearBaseLogic>();
+                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
                         if (logic != null) {
                             logic.DeployVelocity = value;
                         }
@@ -169,7 +169,7 @@ namespace AutoMcD.PocketGear.Logic {
                     onText: "Deploy",
                     offText: "Retract",
                     getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeployed,
-                    setter: (block, value) => block.GameLogic.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
+                    setter: (block, value) => block?.GameLogic?.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
                     enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && block.IsWorking,
                     visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
