@@ -8,6 +8,7 @@ using SpaceEngineers.Game.ModAPI.Ingame;
 using VRage.Game.Components;
 using VRage.ObjectBuilders;
 using IMyLandingGear = SpaceEngineers.Game.ModAPI.IMyLandingGear;
+// ReSharper disable InlineOutVariableDeclaration
 
 namespace AutoMcD.PocketGear.Logic {
     // bug: IMyLandingGear.LockModeChange throws "Cannot bind to the target method because its signature or security transparency is not compatible with that of the delegate type.". Once this is solved i should be able to create autolock.
