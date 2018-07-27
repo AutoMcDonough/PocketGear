@@ -3,6 +3,7 @@ setlocal EnableDelayedExpansion
 
 set mod_dir=%~dp0Mod
 set scripts_dir=%~dp0Scripts
+set artifact_dir=%~dp0bin
 for %%* in (.) do set mod_name=%%~nx*
 set se_mods_dir=%appdata%\SpaceEngineers\Mods
 set se_mod_namespace=AutoMcD
@@ -13,7 +14,7 @@ if not exist "%se_mods_dir%" goto NO_SE_MODS_DIR
 if not exist "%mod_dir%\" goto NO_MOD_DIR
 if not exist "%scripts_dir%\" goto NO_SCRIPTS_DIR
 
-REM create exclude lists for robocopy
+::create exclude lists for robocopy
 set file=exclude.txt
 for /f "tokens=*" %%L in (%file%) do (
 	set line=%%L
@@ -39,10 +40,10 @@ for /f "tokens=*" %%L in (%file%) do (
 	)
 )
 
-REM create exclude list for findstr
+:: create exclude list for findstr
 (for /f "tokens=*" %%L in ('FINDSTR "^\\.*" "exclude.txt"') do echo %%~nxL) > "%tmp%\exclude.txt"
 
-REM create additional script exclude list for robocopy
+:: create additional script exclude list for robocopy
 for /F %%G in ('dir /ad /b ^| findstr /l /i /x /v /g:"%tmp%\exclude.txt"') do (
 	if not %%~nxG == Mod (
 		if not %%~nxG == Scripts (
@@ -71,6 +72,24 @@ for /F %%G in ('dir /ad /b ^| findstr /l /i /x /v /g:"%tmp%\exclude.txt"') do (
 )
 
 del "%tmp%\exclude.txt"
+
+:: update zip file
+for %%F in ("%artifact_dir%\*.zip") do (
+	set artifact=%%F
+	goto UPDATE_ARTIFACT
+)
+
+:UPDATE_ARTIFACT
+echo update artifact
+::7z u -up0q3r2x2y2z1w2 "%artifact%" "%se_mod_path%""
+
+where gitversion >nul 2>&1 && (
+	for /f %%R in ('gitversion /showvariable SemVer') do set semver=%%R
+	rename "%artifact%" "%mod_name%.!semver!.zip"
+) || (
+	echo gitversion not installed using default name
+	rename "%artifact%" "%mod_name%.zip"
+)
 
 goto EXIT
 
