@@ -18,5 +18,9 @@ namespace AutoMcD.PocketGear.Settings {
         [ProtoMember(2)]
         [DefaultValue(LockRetractBehaviors.PreventRetract)]
         public LockRetractBehaviors LockRetractBehavior { get; set; } = LockRetractBehaviors.PreventRetract;
+
+        [ProtoMember(3)]
+        [DefaultValue(false)]
+        public bool ShouldDeploy { get; set; }
     }
 }
