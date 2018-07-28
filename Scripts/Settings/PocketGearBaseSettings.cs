@@ -16,7 +16,7 @@ namespace AutoMcD.PocketGear.Settings {
         public float DeployVelocity { get; set; } = DEFAULT_VELOCITY_RPM;
 
         [ProtoMember(2)]
-        [DefaultValue(RetractLockBehaviorModes.PreventRetract)]
-        public RetractLockBehaviorModes RetractLockBehavior { get; set; } = RetractLockBehaviorModes.PreventRetract;
+        [DefaultValue(LockRetractBehaviors.PreventRetract)]
+        public LockRetractBehaviors LockRetractBehavior { get; set; } = LockRetractBehaviors.PreventRetract;
     }
 }

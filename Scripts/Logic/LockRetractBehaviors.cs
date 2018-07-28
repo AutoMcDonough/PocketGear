@@ -1,5 +1,5 @@
 ﻿namespace AutoMcD.PocketGear.Logic {
-    public enum RetractLockBehaviorModes : long {
+    public enum LockRetractBehaviors : long {
         PreventRetract,
         UnlockOnRetract
     }

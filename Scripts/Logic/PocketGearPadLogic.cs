@@ -28,6 +28,28 @@ namespace AutoMcD.PocketGear.Logic {
         private static bool AreTerminalControlsInitialized { get; set; }
         protected ILogger Log { get; set; }
 
+        public static void Lock(IMyLandingGear landingGear) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Lock)) : null) {
+                if (landingGear.LockMode == LandingGearMode.ReadyToLock) {
+                    var pocketGearBase = GetPocketGearBase(landingGear);
+                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
+                    logic.ManualRotorLock();
+                    landingGear.Lock();
+                }
+            }
+        }
+
+        public static void Unlock(IMyLandingGear landingGear) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Unlock)) : null) {
+                if (landingGear.LockMode == LandingGearMode.Locked) {
+                    var pocketGearBase = GetPocketGearBase(landingGear);
+                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
+                    logic.ManualRotorLock();
+                    landingGear.Unlock();
+                }
+            }
+        }
+
         private static IMyMotorStator GetPocketGearBase(IMyLandingGear landingGear) {
             var cubeGrid = landingGear.CubeGrid;
             var gridSize = cubeGrid.GridSize;
@@ -127,34 +149,12 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        private static void Lock(IMyLandingGear landingGear) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Lock)) : null) {
-                if (landingGear.LockMode == LandingGearMode.ReadyToLock) {
-                    var pocketGearBase = GetPocketGearBase(landingGear);
-                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
-                    logic.ManualRotorLock();
-                    landingGear.Lock();
-                }
-            }
-        }
-
         private static void SwitchLock(IMyLandingGear landingGear) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(SwitchLock)) : null) {
                 if (landingGear.IsLocked) {
                     Unlock(landingGear);
                 } else if (landingGear.LockMode == LandingGearMode.ReadyToLock) {
                     Lock(landingGear);
-                }
-            }
-        }
-
-        private static void Unlock(IMyLandingGear landingGear) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Unlock)) : null) {
-                if (landingGear.LockMode == LandingGearMode.Locked) {
-                    var pocketGearBase = GetPocketGearBase(landingGear);
-                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
-                    logic.ManualRotorLock();
-                    landingGear.Unlock();
                 }
             }
         }
