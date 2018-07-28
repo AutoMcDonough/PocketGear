@@ -97,6 +97,7 @@
     <Compile Include="Logic\PocketGearBaseLogic.cs" />
     <Compile Include="Logic\PocketGearPadLogic.cs" />
     <Compile Include="Logic\PocketGearPartLogic.cs" />
+    <Compile Include="Logic\LockRetractBehaviors.cs" />
     <Compile Include="Net\IEntitySyncMessage.cs" />
     <Compile Include="Net\IMessage.cs" />
     <Compile Include="Net\MessageWrapper.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Settings;
@@ -14,6 +15,7 @@ using VRage.Game.Components;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
+using VRage.Utils;
 using VRageMath;
 
 // ReSharper disable MergeCastWithTypeCheck
@@ -33,6 +35,7 @@ namespace AutoMcD.PocketGear.Logic {
         public static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
         private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
         private static IMyTerminalControlSlider _deployVelocitySlider;
+        private static IMyTerminalControlCombobox _lockRetractBehaviorCombobox;
         private static IMyTerminalControlOnOffSwitch _switchDeployStateSwitch;
         private bool _changePocketGearPadState;
         private int _changePocketGearPadStateAfterTicks;
@@ -41,12 +44,29 @@ namespace AutoMcD.PocketGear.Logic {
         private MatrixD _manualLockBaseMatrix;
         private MatrixD _manualLockTopMatrix;
         private IMyMotorStator _pocketGearBase;
+
+        private IMyLandingGear _pocketGearPad;
         private int _resetManualLockAfterTicks;
         private bool _resetRotorLock;
         private int _resetRotorLockAfterTicks;
         private PocketGearBaseSettings _settings;
 
+        private bool _shouldDeploy;
+
         private static bool AreTerminalControlsInitialized { get; set; }
+
+        public bool CanRetract {
+            get {
+                if (_pocketGearPad == null) {
+                    var top = _pocketGearBase.Top;
+                    if (top != null) {
+                        _pocketGearPad = GetPocketGearPad(top);
+                    }
+                }
+
+                return _pocketGearPad == null || !_pocketGearPad.IsLocked || LockRetractBehavior != LockRetractBehaviors.PreventRetract;
+            }
+        }
 
         public float DeployVelocity {
             get { return _settings.DeployVelocity; }
@@ -59,7 +79,18 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        public bool IsDeployed => MathHelper.ToDegrees(_pocketGearBase.Angle) > FORCED_UPPER_LIMIT_DEG - 10;
+        public bool IsDeploying => _pocketGearBase.TargetVelocityRPM > 0 || _shouldDeploy;
+
+        public LockRetractBehaviors LockRetractBehavior {
+            get { return _settings.LockRetractBehavior; }
+            set {
+                if (value != _settings.LockRetractBehavior) {
+                    _settings.LockRetractBehavior = value;
+                    _switchDeployStateSwitch.UpdateVisual();
+                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(LockRetractBehavior), Value = BitConverter.GetBytes((long) value) });
+                }
+            }
+        }
 
         protected ILogger Log { get; set; }
 
@@ -164,14 +195,40 @@ namespace AutoMcD.PocketGear.Logic {
                 );
                 controls.Add(_deployVelocitySlider);
 
+                _lockRetractBehaviorCombobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
+                    DisplayName(nameof(LockRetractBehavior)),
+                    tooltip: "",
+                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
+                    getter: block => (long) (block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
+                    setter: (block, value) => {
+                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+                        if (logic != null) {
+                            logic.LockRetractBehavior = (LockRetractBehaviors) value;
+                        }
+                    },
+                    enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
+                    visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
+                    supportsMultipleBlocks: true
+                );
+                controls.Add(_lockRetractBehaviorCombobox);
+
                 _switchDeployStateSwitch = TerminalControlUtils.CreateOnOffSwitch<IMyMotorAdvancedStator>(
                     DisplayName(nameof(SwitchDeployState)),
                     tooltip: "Deploy or retract switch",
                     onText: "Deploy",
                     offText: "Retract",
-                    getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeployed,
+                    getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeploying,
                     setter: (block, value) => block?.GameLogic?.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
-                    enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && block.IsWorking,
+                    enabled: block => {
+                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+
+                        var enabled = true;
+                        if (logic != null) {
+                            enabled = logic.CanRetract;
+                        }
+
+                        return PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && block.IsWorking && enabled;
+                    },
                     visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
                 );
@@ -255,7 +312,7 @@ namespace AutoMcD.PocketGear.Logic {
                     if (_resetManualLockAfterTicks <= 0) {
                         _manualLock = false;
                         _pocketGearBase.RotorLock = false;
-                        _pocketGearBase.TargetVelocityRPM = DeployVelocity;
+                        _pocketGearBase.TargetVelocityRPM = DeployVelocity * (_shouldDeploy ? 1 : -1);
                     }
                 }
 
@@ -298,17 +355,6 @@ namespace AutoMcD.PocketGear.Logic {
                 _pocketGearBase.TopGrid?.Physics?.ClearSpeed();
                 _pocketGearBase.CubeGrid?.Physics?.ClearSpeed();
                 NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
-            }
-        }
-
-        public void SwitchDeployState(bool deploy) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(SwitchDeployState)) : null) {
-                _pocketGearBase.TargetVelocityRPM = DeployVelocity * (deploy ? 1 : -1);
-                if (deploy) {
-                    ChangePocketGearPadStateAfterTicks(150);
-                } else {
-                    _changePocketGearPadState = false;
-                }
             }
         }
 
@@ -371,6 +417,12 @@ namespace AutoMcD.PocketGear.Logic {
                         switch (syncMessage.Name) {
                             case nameof(DeployVelocity):
                                 _settings.DeployVelocity = BitConverter.ToSingle(syncMessage.Value, 0);
+                                _deployVelocitySlider.UpdateVisual();
+                                break;
+                            case nameof(LockRetractBehavior):
+                                _settings.LockRetractBehavior = (LockRetractBehaviors) BitConverter.ToInt64(syncMessage.Value, 0);
+                                _lockRetractBehaviorCombobox.UpdateVisual();
+                                _switchDeployStateSwitch.UpdateVisual();
                                 break;
                         }
                     }
@@ -387,6 +439,22 @@ namespace AutoMcD.PocketGear.Logic {
         private void OnLimitReached(bool upperLimit) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnLimitReached)) : null) {
                 ChangePocketGearPadState(upperLimit);
+                _switchDeployStateSwitch.UpdateVisual();
+            }
+        }
+
+        private void Retract() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(Retract)) : null) {
+                if (!CanRetract) {
+                    return;
+                }
+
+                _shouldDeploy = false;
+                if (LockRetractBehavior == LockRetractBehaviors.UnlockOnRetract) {
+                    PocketGearPadLogic.Unlock(_pocketGearPad);
+                }
+
+                _pocketGearBase.TargetVelocityRPM = DeployVelocity * -1;
             }
         }
 
@@ -406,6 +474,19 @@ namespace AutoMcD.PocketGear.Logic {
                         Log.Error(exception);
                         Log.Error(exception.StackTrace);
                     }
+                }
+            }
+        }
+
+        private void SwitchDeployState(bool deploy) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(SwitchDeployState)) : null) {
+                if (deploy) {
+                    _shouldDeploy = true;
+                    _pocketGearBase.TargetVelocityRPM = DeployVelocity;
+                    ChangePocketGearPadStateAfterTicks(150);
+                } else {
+                    Retract();
+                    _changePocketGearPadState = false;
                 }
             }
         }
