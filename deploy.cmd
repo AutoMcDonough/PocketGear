@@ -84,7 +84,7 @@ goto  EXIT
 :UPDATE_ARTIFACT
 echo update artifact
 where 7z >nul 2>&1 && (
-	7z u -up0q3r2x2y2z1w2 "%artifact%" "%se_mod_path%""
+	7z u -up0q0r2x2y2z1w2 "%artifact%" "%se_mod_path%""
 ) || (
 	goto EXIT
 )
