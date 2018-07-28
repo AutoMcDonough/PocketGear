@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
+using AutoMcD.PocketGear.Logic;
 using ProtoBuf;
 
+// ReSharper disable ExplicitCallerInfoArgument
 // ReSharper disable ArrangeAccessorOwnerBody
 
 namespace AutoMcD.PocketGear.Settings {
@@ -12,5 +14,9 @@ namespace AutoMcD.PocketGear.Settings {
         [ProtoMember(1)]
         [DefaultValue(1)]
         public float DeployVelocity { get; set; } = DEFAULT_VELOCITY_RPM;
+
+        [ProtoMember(2)]
+        [DefaultValue(RetractLockBehaviorModes.PreventRetract)]
+        public RetractLockBehaviorModes RetractLockBehavior { get; set; } = RetractLockBehaviorModes.PreventRetract;
     }
 }

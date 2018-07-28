@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Settings;
@@ -14,6 +15,7 @@ using VRage.Game.Components;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
+using VRage.Utils;
 using VRageMath;
 
 // ReSharper disable MergeCastWithTypeCheck
@@ -33,6 +35,7 @@ namespace AutoMcD.PocketGear.Logic {
         public static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
         private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
         private static IMyTerminalControlSlider _deployVelocitySlider;
+        private static IMyTerminalControlCombobox _retractLockBehavioCombobox;
         private static IMyTerminalControlOnOffSwitch _switchDeployStateSwitch;
         private bool _changePocketGearPadState;
         private int _changePocketGearPadStateAfterTicks;
@@ -62,6 +65,16 @@ namespace AutoMcD.PocketGear.Logic {
         public bool IsDeployed => MathHelper.ToDegrees(_pocketGearBase.Angle) > FORCED_UPPER_LIMIT_DEG - 10;
 
         protected ILogger Log { get; set; }
+
+        public RetractLockBehaviorModes RetractLockBehavior {
+            get { return _settings.RetractLockBehavior; }
+            set {
+                if (value != _settings.RetractLockBehavior) {
+                    _settings.RetractLockBehavior = value;
+                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(RetractLockBehavior), Value = BitConverter.GetBytes((long) value) });
+                }
+            }
+        }
 
         public static string DisplayName(string name) {
             return Regex.Replace(name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
@@ -163,6 +176,23 @@ namespace AutoMcD.PocketGear.Logic {
                     supportsMultipleBlocks: true
                 );
                 controls.Add(_deployVelocitySlider);
+
+                _retractLockBehavioCombobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
+                    DisplayName(nameof(RetractLockBehavior)),
+                    tooltip: "",
+                    content: list => list.AddRange(Enum.GetValues(typeof(RetractLockBehaviorModes)).Cast<RetractLockBehaviorModes>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
+                    getter: block => (long) (block.GameLogic?.GetAs<PocketGearBaseLogic>()?.RetractLockBehavior ?? RetractLockBehaviorModes.PreventRetract),
+                    setter: (block, value) => {
+                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+                        if (logic != null) {
+                            logic.RetractLockBehavior = (RetractLockBehaviorModes) value;
+                        }
+                    },
+                    enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
+                    visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
+                    supportsMultipleBlocks: true
+                );
+                controls.Add(_retractLockBehavioCombobox);
 
                 _switchDeployStateSwitch = TerminalControlUtils.CreateOnOffSwitch<IMyMotorAdvancedStator>(
                     DisplayName(nameof(SwitchDeployState)),
