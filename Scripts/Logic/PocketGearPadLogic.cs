@@ -20,7 +20,7 @@ namespace AutoMcD.PocketGear.Logic {
         public const string POCKETGEAR_PAD_LARGE = "MA_PocketGear_L_Pad";
         public const string POCKETGEAR_PAD_LARGE_SMALL = "MA_PocketGear_L_Pad_sm";
         public const string POCKETGEAR_PAD_SMALL = "MA_PocketGear_Pad_sm";
-        private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_PAD, POCKETGEAR_PAD_LARGE, POCKETGEAR_PAD_LARGE_SMALL, POCKETGEAR_PAD_SMALL };
+        public static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_PAD, POCKETGEAR_PAD_LARGE, POCKETGEAR_PAD_LARGE_SMALL, POCKETGEAR_PAD_SMALL };
         private static readonly HashSet<string> HiddenActions = new HashSet<string> { "Autolock" };
         private static readonly HashSet<string> HiddenControl = new HashSet<string> { "Autolock" };
 
@@ -35,6 +35,16 @@ namespace AutoMcD.PocketGear.Logic {
                     var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
                     logic.ManualRotorLock();
                     landingGear.Lock();
+                }
+            }
+        }
+
+        public static void SwitchLock(IMyLandingGear landingGear) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(SwitchLock)) : null) {
+                if (landingGear.IsLocked) {
+                    Unlock(landingGear);
+                } else if (landingGear.LockMode == LandingGearMode.ReadyToLock) {
+                    Lock(landingGear);
                 }
             }
         }
@@ -145,16 +155,6 @@ namespace AutoMcD.PocketGear.Logic {
                             }
                         };
                     }
-                }
-            }
-        }
-
-        private static void SwitchLock(IMyLandingGear landingGear) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(SwitchLock)) : null) {
-                if (landingGear.IsLocked) {
-                    Unlock(landingGear);
-                } else if (landingGear.LockMode == LandingGearMode.ReadyToLock) {
-                    Lock(landingGear);
                 }
             }
         }

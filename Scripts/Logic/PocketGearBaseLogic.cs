@@ -25,14 +25,14 @@ using VRageMath;
 namespace AutoMcD.PocketGear.Logic {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL)]
     public class PocketGearBaseLogic : MyGameLogicComponent {
-        public const string POCKETGEAR_BASE = "MA_PocketGear_Base";
-        public const string POCKETGEAR_BASE_LARGE = "MA_PocketGear_L_Base";
-        public const string POCKETGEAR_BASE_LARGE_SMALL = "MA_PocketGear_L_Base_sm";
-        public const string POCKETGEAR_BASE_SMALL = "MA_PocketGear_Base_sm";
         private const float FORCED_LOWER_LIMIT_DEG = 333.5f;
         private const float FORCED_UPPER_LIMIT_DEG = 360.0f;
-        public static readonly HashSet<string> HiddenActions = new HashSet<string> { "Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement", "RotorLock", "Reverse", "IncreaseVelocity", "DecreaseVelocity", "ResetVelocity" };
-        public static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
+        private const string POCKETGEAR_BASE = "MA_PocketGear_Base";
+        private const string POCKETGEAR_BASE_LARGE = "MA_PocketGear_L_Base";
+        private const string POCKETGEAR_BASE_LARGE_SMALL = "MA_PocketGear_L_Base_sm";
+        private const string POCKETGEAR_BASE_SMALL = "MA_PocketGear_Base_sm";
+        private static readonly HashSet<string> HiddenActions = new HashSet<string> { "Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement", "RotorLock", "Reverse", "IncreaseVelocity", "DecreaseVelocity", "ResetVelocity" };
+        private static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
         private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
         private static IMyTerminalControlSlider _deployVelocitySlider;
         private static IMyTerminalControlCombobox _lockRetractBehaviorCombobox;
@@ -44,14 +44,11 @@ namespace AutoMcD.PocketGear.Logic {
         private MatrixD _manualLockBaseMatrix;
         private MatrixD _manualLockTopMatrix;
         private IMyMotorStator _pocketGearBase;
-
         private IMyLandingGear _pocketGearPad;
         private int _resetManualLockAfterTicks;
         private bool _resetRotorLock;
         private int _resetRotorLockAfterTicks;
         private PocketGearBaseSettings _settings;
-
-        private bool _shouldDeploy;
 
         private static bool AreTerminalControlsInitialized { get; set; }
 
@@ -79,7 +76,7 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        public bool IsDeploying => _pocketGearBase.TargetVelocityRPM > 0 || _shouldDeploy;
+        public bool IsDeploying => _pocketGearBase.TargetVelocityRPM > 0 || ShouldDeploy;
 
         public LockRetractBehaviors LockRetractBehavior {
             get { return _settings.LockRetractBehavior; }
@@ -93,6 +90,16 @@ namespace AutoMcD.PocketGear.Logic {
         }
 
         protected ILogger Log { get; set; }
+
+        public bool ShouldDeploy {
+            get { return _settings.ShouldDeploy; }
+            set {
+                if (value != _settings.ShouldDeploy) {
+                    _settings.ShouldDeploy = value;
+                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(ShouldDeploy), Value = BitConverter.GetBytes(value) });
+                }
+            }
+        }
 
         public static string DisplayName(string name) {
             return Regex.Replace(name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
@@ -312,7 +319,7 @@ namespace AutoMcD.PocketGear.Logic {
                     if (_resetManualLockAfterTicks <= 0) {
                         _manualLock = false;
                         _pocketGearBase.RotorLock = false;
-                        _pocketGearBase.TargetVelocityRPM = DeployVelocity * (_shouldDeploy ? 1 : -1);
+                        _pocketGearBase.TargetVelocityRPM = DeployVelocity * (ShouldDeploy ? 1 : -1);
                     }
                 }
 
@@ -424,6 +431,10 @@ namespace AutoMcD.PocketGear.Logic {
                                 _lockRetractBehaviorCombobox.UpdateVisual();
                                 _switchDeployStateSwitch.UpdateVisual();
                                 break;
+                            case nameof(ShouldDeploy):
+                                _settings.ShouldDeploy = BitConverter.ToBoolean(syncMessage.Value, 0);
+                                _switchDeployStateSwitch.UpdateVisual();
+                                break;
                         }
                     }
                 }
@@ -439,7 +450,6 @@ namespace AutoMcD.PocketGear.Logic {
         private void OnLimitReached(bool upperLimit) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnLimitReached)) : null) {
                 ChangePocketGearPadState(upperLimit);
-                _switchDeployStateSwitch.UpdateVisual();
             }
         }
 
@@ -449,7 +459,7 @@ namespace AutoMcD.PocketGear.Logic {
                     return;
                 }
 
-                _shouldDeploy = false;
+                ShouldDeploy = false;
                 if (LockRetractBehavior == LockRetractBehaviors.UnlockOnRetract) {
                     PocketGearPadLogic.Unlock(_pocketGearPad);
                 }
@@ -481,7 +491,7 @@ namespace AutoMcD.PocketGear.Logic {
         private void SwitchDeployState(bool deploy) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(SwitchDeployState)) : null) {
                 if (deploy) {
-                    _shouldDeploy = true;
+                    ShouldDeploy = true;
                     _pocketGearBase.TargetVelocityRPM = DeployVelocity;
                     ChangePocketGearPadStateAfterTicks(150);
                 } else {

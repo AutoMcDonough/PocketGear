@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using AutoMcD.PocketGear.Logic;
 using AutoMcD.PocketGear.Net;
+using Sandbox.Game;
 using Sandbox.ModAPI;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Logging.DefaultHandler;
 using Sisk.Utils.Profiler;
+using SpaceEngineers.Game.ModAPI;
 using VRage.Game;
 using VRage.Game.Components;
+using VRage.Game.ModAPI;
 
 namespace AutoMcD.PocketGear {
     [MySessionComponentDescriptor(MyUpdateOrder.NoUpdate)]
@@ -163,6 +169,39 @@ namespace AutoMcD.PocketGear {
                     Network = new Network(NETWORK_ID);
                     Log.Info($"IsServer: {Network.IsServer}, IsDedicated: {Network.IsDedicated}");
                     Log.Info("Network initialized");
+                }
+            }
+        }
+
+        public override void HandleInput() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(HandleInput)) : null) {
+                if (!IsPlayer || MyAPIGateway.Gui.ChatEntryVisible || MyAPIGateway.Gui.IsCursorVisible) {
+                    return;
+                }
+
+                if (!(MyAPIGateway.Session.ControlledObject is IMyShipController)) {
+                    return;
+                }
+
+                var controller = (IMyShipController)MyAPIGateway.Session.ControlledObject;
+                if (MyAPIGateway.Input.IsNewGameControlPressed(MyControlsSpace.LANDING_GEAR)) {
+                    var cubegrid = controller.CubeGrid;
+                    var grids = MyAPIGateway.GridGroups.GetGroup(cubegrid, GridLinkTypeEnum.Mechanical);
+                    var pocketGearPads = new List<IMyLandingGear>();
+                    foreach (var grid in grids) {
+                        var blocks = new List<IMySlimBlock>();
+                        grid.GetBlocks(blocks, x => PocketGearPadLogic.PocketGearIds.Contains(x.BlockDefinition.Id.SubtypeId.String));
+                        pocketGearPads.AddRange(blocks.Select(x => x.FatBlock).Cast<IMyLandingGear>().Where(x => x.IsWorking));
+                    }
+
+                    var isAnyLocked = pocketGearPads.Any(x => x.IsLocked);
+                    foreach (var landingGear in pocketGearPads) {
+                        if (landingGear.IsLocked == !isAnyLocked) {
+                            continue;
+                        }
+
+                        PocketGearPadLogic.SwitchLock(landingGear);
+                    }
                 }
             }
         }
