@@ -24,8 +24,8 @@ namespace AutoMcD.PocketGear {
         // important: change to an unused mod and network id.
         private const ushort MOD_ID = 51500;
         private const ushort NETWORK_ID = 51500;
-        private const string PROFILER_FILE_TEMPLATE = "profiler_{0:yyyy-MM-dd_HH-mm-ss}.txt";
         private const string PROFILER_LOG_FILE = "profiler.log";
+        private const string PROFILER_SUMMARY_FILE = "profiler_summary.txt";
         private static readonly string LogFile = string.Format(LOG_FILE_TEMPLATE, NAME);
         private ILogger _profilerLog;
 
@@ -60,7 +60,7 @@ namespace AutoMcD.PocketGear {
 
         private static void WriteProfileResults() {
             if (Profiler.Results.Any()) {
-                using (var writer = MyAPIGateway.Utilities.WriteFileInLocalStorage(string.Format(PROFILER_FILE_TEMPLATE, DateTime.Now), typeof(Mod))) {
+                using (var writer = MyAPIGateway.Utilities.WriteFileInLocalStorage(PROFILER_SUMMARY_FILE, typeof(Mod))) {
                     foreach (var result in Profiler.Results.OrderBy(x => x.Avg)) {
                         writer.WriteLine(result);
                     }
@@ -97,6 +97,8 @@ namespace AutoMcD.PocketGear {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(SaveData)) : null) {
                 using (Log.BeginMethod(nameof(SaveData))) {
                     Log.Flush();
+                    _profilerLog.Flush();
+                    WriteProfileResults();
                 }
             }
         }
