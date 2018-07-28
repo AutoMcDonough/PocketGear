@@ -78,10 +78,16 @@ for %%F in ("%artifact_dir%\*.zip") do (
 	set artifact=%%F
 	goto UPDATE_ARTIFACT
 )
+goto  EXIT
+
 
 :UPDATE_ARTIFACT
 echo update artifact
-7z u -up0q3r2x2y2z1w2 "%artifact%" "%se_mod_path%""
+where 7z >nul 2>&1 && (
+	7z u -up0q3r2x2y2z1w2 "%artifact%" "%se_mod_path%""
+) || (
+	goto EXIT
+)
 
 where gitversion >nul 2>&1 && (
 	for /f %%R in ('gitversion /showvariable SemVer') do set semver=%%R
