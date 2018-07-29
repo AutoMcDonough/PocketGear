@@ -33,7 +33,8 @@ namespace AutoMcD.PocketGear.Logic {
         private const string POCKETGEAR_BASE_SMALL = "MA_PocketGear_Base_sm";
         private static readonly HashSet<string> HiddenActions = new HashSet<string> { "Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement", "RotorLock", "Reverse", "IncreaseVelocity", "DecreaseVelocity", "ResetVelocity" };
         private static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
-        private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
+        public static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
+
         private static IMyTerminalControlSlider _deployVelocitySlider;
         private static IMyTerminalControlCombobox _lockRetractBehaviorCombobox;
         private static IMyTerminalControlOnOffSwitch _switchDeployStateSwitch;
@@ -107,6 +108,10 @@ namespace AutoMcD.PocketGear.Logic {
 
         private static IMyLandingGear GetPocketGearPad(IMyAttachableTopBlock rotor) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(GetPocketGearPad)) : null) {
+                if (rotor == null) {
+                    return null;
+                }
+
                 var cubeGrid = rotor.CubeGrid;
                 var gridSize = cubeGrid.GridSize;
                 var position = rotor.GetPosition();
@@ -247,6 +252,8 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(Init)) : null) {
+                _pocketGearBase.LimitReached -= OnLimitReached;
+                _pocketGearBase.CubeGrid.OnIsStaticChanged -= OnIsStaticChanged;
                 Mod.Static.Network.UnRegisterEntitySyncHandler(Entity.EntityId, OnEntitySyncMessageReceived);
             }
         }
@@ -332,8 +339,14 @@ namespace AutoMcD.PocketGear.Logic {
         public override void UpdateOnceBeforeFrame() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(UpdateOnceBeforeFrame)) : null) {
                 try {
-                    if (_pocketGearBase?.CubeGrid?.Physics == null) {
+                    if (_pocketGearBase.CubeGrid?.Physics == null) {
                         return;
+                    }
+
+                    if (IsDeploying) {
+                        Mod.Static.DamageHandler?.EnableProtection(_pocketGearBase);
+                        Mod.Static.DamageHandler?.EnableProtection(_pocketGearBase.Top);
+                        Mod.Static.DamageHandler?.EnableProtection(GetPocketGearPad(_pocketGearBase.Top));
                     }
 
                     if (_isJustPlaced) {
@@ -450,6 +463,15 @@ namespace AutoMcD.PocketGear.Logic {
         private void OnLimitReached(bool upperLimit) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnLimitReached)) : null) {
                 ChangePocketGearPadState(upperLimit);
+                if (upperLimit) {
+                    Mod.Static.DamageHandler?.EnableProtection(_pocketGearBase);
+                    Mod.Static.DamageHandler?.EnableProtection(_pocketGearBase.Top);
+                    Mod.Static.DamageHandler?.EnableProtection(_pocketGearPad);
+                } else {
+                    Mod.Static.DamageHandler?.DisableProtection(_pocketGearBase);
+                    Mod.Static.DamageHandler?.DisableProtection(_pocketGearBase.Top);
+                    Mod.Static.DamageHandler?.DisableProtection(_pocketGearPad);
+                }
             }
         }
 

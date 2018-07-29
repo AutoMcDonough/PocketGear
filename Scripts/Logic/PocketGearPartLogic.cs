@@ -19,6 +19,7 @@ namespace AutoMcD.PocketGear.Logic {
         public const string POCKETGEAR_PART_LARGE = "MA_PocketGear_L_Rotor";
         public const string POCKETGEAR_PART_LARGE_SMALL = "MA_PocketGear_L_Rotor_sm";
         public const string POCKETGEAR_PART_SMALL = "MA_PocketGear_Rotor_sm";
+        public static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_PART, POCKETGEAR_PART_LARGE, POCKETGEAR_PART_LARGE_SMALL, POCKETGEAR_PART_SMALL };
         private IMyMotorRotor _pocketGearPart;
 
         protected ILogger Log { get; set; }
@@ -34,7 +35,7 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void UpdateOnceBeforeFrame() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(UpdateOnceBeforeFrame)) : null) {
-                if (_pocketGearPart?.CubeGrid?.Physics == null) {
+                if (_pocketGearPart.CubeGrid?.Physics == null) {
                     return;
                 }
 
