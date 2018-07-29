@@ -33,7 +33,8 @@ namespace AutoMcD.PocketGear.Logic {
         private const string POCKETGEAR_BASE_SMALL = "MA_PocketGear_Base_sm";
         private static readonly HashSet<string> HiddenActions = new HashSet<string> { "Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement", "RotorLock", "Reverse", "IncreaseVelocity", "DecreaseVelocity", "ResetVelocity" };
         private static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
-        private static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
+        public static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
+
         private static IMyTerminalControlSlider _deployVelocitySlider;
         private static IMyTerminalControlCombobox _lockRetractBehaviorCombobox;
         private static IMyTerminalControlOnOffSwitch _switchDeployStateSwitch;
@@ -84,7 +85,7 @@ namespace AutoMcD.PocketGear.Logic {
                 if (value != _settings.LockRetractBehavior) {
                     _settings.LockRetractBehavior = value;
                     _switchDeployStateSwitch.UpdateVisual();
-                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(LockRetractBehavior), Value = BitConverter.GetBytes((long) value) });
+                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(LockRetractBehavior), Value = BitConverter.GetBytes((long)value) });
                 }
             }
         }
@@ -205,12 +206,12 @@ namespace AutoMcD.PocketGear.Logic {
                 _lockRetractBehaviorCombobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
                     DisplayName(nameof(LockRetractBehavior)),
                     tooltip: "",
-                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
-                    getter: block => (long) (block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
+                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long)x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
+                    getter: block => (long)(block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
                     setter: (block, value) => {
                         var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
                         if (logic != null) {
-                            logic.LockRetractBehavior = (LockRetractBehaviors) value;
+                            logic.LockRetractBehavior = (LockRetractBehaviors)value;
                         }
                     },
                     enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
@@ -247,6 +248,8 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(Init)) : null) {
+                _pocketGearBase.LimitReached -= OnLimitReached;
+                _pocketGearBase.CubeGrid.OnIsStaticChanged -= OnIsStaticChanged;
                 Mod.Static.Network.UnRegisterEntitySyncHandler(Entity.EntityId, OnEntitySyncMessageReceived);
             }
         }
@@ -332,9 +335,11 @@ namespace AutoMcD.PocketGear.Logic {
         public override void UpdateOnceBeforeFrame() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(UpdateOnceBeforeFrame)) : null) {
                 try {
-                    if (_pocketGearBase?.CubeGrid?.Physics == null) {
+                    if (_pocketGearBase.CubeGrid?.Physics == null) {
                         return;
                     }
+
+                    Mod.Static.DamageHandler?.Protect(_pocketGearBase);
 
                     if (_isJustPlaced) {
                         SwitchDeployState(true);
@@ -420,14 +425,14 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnEntitySyncMessageReceived)) : null) {
                 using (Log.BeginMethod(nameof(OnEntitySyncMessageReceived))) {
                     if (message is PropertySyncMessage) {
-                        var syncMessage = (PropertySyncMessage) message;
+                        var syncMessage = (PropertySyncMessage)message;
                         switch (syncMessage.Name) {
                             case nameof(DeployVelocity):
                                 _settings.DeployVelocity = BitConverter.ToSingle(syncMessage.Value, 0);
                                 _deployVelocitySlider.UpdateVisual();
                                 break;
                             case nameof(LockRetractBehavior):
-                                _settings.LockRetractBehavior = (LockRetractBehaviors) BitConverter.ToInt64(syncMessage.Value, 0);
+                                _settings.LockRetractBehavior = (LockRetractBehaviors)BitConverter.ToInt64(syncMessage.Value, 0);
                                 _lockRetractBehaviorCombobox.UpdateVisual();
                                 _switchDeployStateSwitch.UpdateVisual();
                                 break;

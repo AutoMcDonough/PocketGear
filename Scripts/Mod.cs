@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AutoMcD.PocketGear.Logic;
 using AutoMcD.PocketGear.Net;
+using AutoMcD.PocketGear.Settings;
 using Sandbox.Game;
 using Sandbox.ModAPI;
 using Sisk.Utils.Logging;
@@ -32,6 +32,7 @@ namespace AutoMcD.PocketGear {
         private const ushort NETWORK_ID = 51500;
         private const string PROFILER_LOG_FILE = "profiler.log";
         private const string PROFILER_SUMMARY_FILE = "profiler_summary.txt";
+        private const string SETTINGS_FILE = "settings.xml";
         private static readonly string LogFile = string.Format(LOG_FILE_TEMPLATE, NAME);
         private ILogger _profilerLog;
 
@@ -41,9 +42,14 @@ namespace AutoMcD.PocketGear {
         }
 
         /// <summary>
+        ///     Handles impact damage for PocketGears.
+        /// </summary>
+        public DamageHandler DamageHandler { get; private set; }
+
+        /// <summary>
         ///     Indicates if the mod is used on an client.
         /// </summary>
-        public bool IsPlayer { get; set; }
+        public bool IsClient { get; set; }
 
         /// <summary>
         ///     Logger used for logging.
@@ -54,6 +60,11 @@ namespace AutoMcD.PocketGear {
         ///     Network to handle sycing.
         /// </summary>
         public Network Network { get; private set; }
+
+        /// <summary>
+        ///     The Mod Settings.
+        /// </summary>
+        public ModSettings Settings { get; private set; }
 
         /// <summary>
         ///     The static instance.
@@ -74,6 +85,39 @@ namespace AutoMcD.PocketGear {
             }
         }
 
+        public override void HandleInput() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(HandleInput)) : null) {
+                if (!IsClient || MyAPIGateway.Gui.ChatEntryVisible || MyAPIGateway.Gui.IsCursorVisible) {
+                    return;
+                }
+
+                if (!(MyAPIGateway.Session.ControlledObject is IMyShipController)) {
+                    return;
+                }
+
+                var controller = (IMyShipController) MyAPIGateway.Session.ControlledObject;
+                if (MyAPIGateway.Input.IsNewGameControlPressed(MyControlsSpace.LANDING_GEAR)) {
+                    var cubegrid = controller.CubeGrid;
+                    var grids = MyAPIGateway.GridGroups.GetGroup(cubegrid, GridLinkTypeEnum.Mechanical);
+                    var pocketGearPads = new List<IMyLandingGear>();
+                    foreach (var grid in grids) {
+                        var blocks = new List<IMySlimBlock>();
+                        grid.GetBlocks(blocks, x => PocketGearPadLogic.PocketGearIds.Contains(x.BlockDefinition.Id.SubtypeId.String));
+                        pocketGearPads.AddRange(blocks.Select(x => x.FatBlock).Cast<IMyLandingGear>().Where(x => x.IsWorking));
+                    }
+
+                    var isAnyLocked = pocketGearPads.Any(x => x.IsLocked);
+                    foreach (var landingGear in pocketGearPads) {
+                        if (landingGear.IsLocked == !isAnyLocked) {
+                            continue;
+                        }
+
+                        PocketGearPadLogic.SwitchLock(landingGear);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         ///     Initialize the session component.
         /// </summary>
@@ -83,9 +127,7 @@ namespace AutoMcD.PocketGear {
                     base.Init(sessionComponent);
 
                     InitializeNetwork();
-                    IsPlayer = !(Network.IsServer && Network.IsDedicated);
-                    // todo: we should fix the real issue with the pocketgear if possible.
-                    //MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, OnDamage);
+                    InitializeDamageHandler();
                 }
             }
         }
@@ -93,7 +135,11 @@ namespace AutoMcD.PocketGear {
         /// <summary>
         ///     Load mod settings and localize mod definitions.
         /// </summary>
-        public override void LoadData() { }
+        public override void LoadData() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LoadData)) : null) {
+                LoadSettings();
+            }
+        }
 
         /// <summary>
         ///     Save mod settings and fire OnSave event.
@@ -102,6 +148,7 @@ namespace AutoMcD.PocketGear {
         public override void SaveData() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(SaveData)) : null) {
                 using (Log.BeginMethod(nameof(SaveData))) {
+                    SaveSettings();
                     Log.Flush();
                     _profilerLog.Flush();
                     WriteProfileResults();
@@ -114,6 +161,11 @@ namespace AutoMcD.PocketGear {
         /// </summary>
         protected override void UnloadData() {
             Log?.EnterMethod(nameof(UnloadData));
+
+            if (DamageHandler != null) {
+                Log?.Info("Stopping damage handler");
+                DamageHandler = null;
+            }
 
             if (Network != null) {
                 Log?.Info("Cap network connections");
@@ -142,6 +194,15 @@ namespace AutoMcD.PocketGear {
             Static = null;
         }
 
+        private void InitializeDamageHandler() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeDamageHandler)) : null) {
+                if (Settings.UseImpactDamageHandler) {
+                    DamageHandler = new DamageHandler();
+                    DamageHandler.Init();
+                }
+            }
+        }
+
         /// <summary>
         ///     Initalize the logging system.
         /// </summary>
@@ -162,46 +223,77 @@ namespace AutoMcD.PocketGear {
             }
         }
 
+        /// <summary>
+        ///     Initalize the network system.
+        /// </summary>
         private void InitializeNetwork() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeNetwork)) : null) {
                 using (Log.BeginMethod(nameof(InitializeNetwork))) {
                     Log.Info("Initialize Network");
                     Network = new Network(NETWORK_ID);
-                    Log.Info($"IsServer: {Network.IsServer}, IsDedicated: {Network.IsDedicated}");
+                    IsClient = !(Network.IsServer && Network.IsDedicated);
+                    Log.Info($"IsClient {IsClient}, IsServer: {Network.IsServer}, IsDedicated: {Network.IsDedicated}");
                     Log.Info("Network initialized");
                 }
             }
         }
 
-        public override void HandleInput() {
-            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(HandleInput)) : null) {
-                if (!IsPlayer || MyAPIGateway.Gui.ChatEntryVisible || MyAPIGateway.Gui.IsCursorVisible) {
-                    return;
-                }
-
-                if (!(MyAPIGateway.Session.ControlledObject is IMyShipController)) {
-                    return;
-                }
-
-                var controller = (IMyShipController)MyAPIGateway.Session.ControlledObject;
-                if (MyAPIGateway.Input.IsNewGameControlPressed(MyControlsSpace.LANDING_GEAR)) {
-                    var cubegrid = controller.CubeGrid;
-                    var grids = MyAPIGateway.GridGroups.GetGroup(cubegrid, GridLinkTypeEnum.Mechanical);
-                    var pocketGearPads = new List<IMyLandingGear>();
-                    foreach (var grid in grids) {
-                        var blocks = new List<IMySlimBlock>();
-                        grid.GetBlocks(blocks, x => PocketGearPadLogic.PocketGearIds.Contains(x.BlockDefinition.Id.SubtypeId.String));
-                        pocketGearPads.AddRange(blocks.Select(x => x.FatBlock).Cast<IMyLandingGear>().Where(x => x.IsWorking));
-                    }
-
-                    var isAnyLocked = pocketGearPads.Any(x => x.IsLocked);
-                    foreach (var landingGear in pocketGearPads) {
-                        if (landingGear.IsLocked == !isAnyLocked) {
-                            continue;
+        /// <summary>
+        ///     Save mod settings.
+        /// </summary>
+        private void LoadSettings() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LoadSettings)) : null) {
+                using (Log.BeginMethod(nameof(LoadSettings))) {
+                    ModSettings settings = null;
+                    try {
+                        if (MyAPIGateway.Utilities.FileExistsInWorldStorage(SETTINGS_FILE, typeof(Mod))) {
+                            using (var reader = MyAPIGateway.Utilities.ReadFileInWorldStorage(SETTINGS_FILE, typeof(Mod))) {
+                                settings = MyAPIGateway.Utilities.SerializeFromXML<ModSettings>(reader.ReadToEnd());
+                                Log.Debug("Loaded setting from world storage");
+                            }
+                        } else if (MyAPIGateway.Utilities.FileExistsInLocalStorage(SETTINGS_FILE, typeof(Mod))) {
+                            using (var reader = MyAPIGateway.Utilities.ReadFileInLocalStorage(SETTINGS_FILE, typeof(Mod))) {
+                                settings = MyAPIGateway.Utilities.SerializeFromXML<ModSettings>(reader.ReadToEnd());
+                                Log.Debug("Loaded setting from local storage");
+                            }
                         }
-
-                        PocketGearPadLogic.SwitchLock(landingGear);
+                    } catch (Exception exception) {
+                        Log.Error(exception);
                     }
+
+                    if (settings != null) {
+                        if (settings.Version < ModSettings.VERSION) {
+                            // todo: merge old and new settings in future versions.
+                        }
+                    } else {
+                        settings = new ModSettings();
+                    }
+
+                    Settings = settings;
+                    Log.Info("Settings loaded");
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Load mod settings.
+        /// </summary>
+        private void SaveSettings() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(SaveSettings)) : null) {
+                using (Log.BeginMethod(nameof(SaveSettings))) {
+                    if (MyAPIGateway.Utilities.FileExistsInWorldStorage(SETTINGS_FILE, typeof(Mod))) {
+                        using (var writer = MyAPIGateway.Utilities.WriteFileInWorldStorage(SETTINGS_FILE, typeof(Mod))) {
+                            writer.Write(MyAPIGateway.Utilities.SerializeToXML(Settings));
+                            Log.Debug("Saved setting to world storage");
+                        }
+                    } else {
+                        using (var writer = MyAPIGateway.Utilities.WriteFileInLocalStorage(SETTINGS_FILE, typeof(Mod))) {
+                            writer.Write(MyAPIGateway.Utilities.SerializeToXML(Settings));
+                            Log.Debug("Saved setting to local storage");
+                        }
+                    }
+
+                    Log.Info("Settings saved");
                 }
             }
         }
