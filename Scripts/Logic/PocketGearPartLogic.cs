@@ -39,8 +39,6 @@ namespace AutoMcD.PocketGear.Logic {
                     return;
                 }
 
-                Mod.Static.DamageHandler?.Protect(_pocketGearPart);
-
                 try {
                     PlaceLandingPad();
                 } catch (Exception exception) {

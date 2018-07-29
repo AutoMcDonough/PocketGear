@@ -16,28 +16,41 @@ namespace AutoMcD.PocketGear {
         private readonly Dictionary<long, ProtectInfo> _protecedInfos = new Dictionary<long, ProtectInfo>();
         private ILogger Log { get; set; }
 
-        public void Init() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(Init)) : null) {
-                Log = Mod.Static.Log.ForScope<DamageHandler>();
-                MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(100, HandleDamage);
-            }
-        }
-
-        public void Protect(IMyCubeBlock block) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(Protect)) : null) {
+        public void DisableProtection(IMyCubeBlock block) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(DisableProtection)) : null) {
                 if (block == null) {
                     return;
                 }
 
                 var cubegrid = block.CubeGrid;
                 if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
-                    _protecedInfos[cubegrid.EntityId].Protect(block);
+                    _protecedInfos[cubegrid.EntityId].DisableProtection(block);
+                }
+            }
+        }
+
+        public void EnableProtection(IMyCubeBlock block) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(EnableProtection)) : null) {
+                if (block == null) {
+                    return;
+                }
+
+                var cubegrid = block.CubeGrid;
+                if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
+                    _protecedInfos[cubegrid.EntityId].EnableProtection(block);
                 } else {
                     var protecedInfo = new ProtectInfo(cubegrid);
-                    protecedInfo.Protect(block);
+                    protecedInfo.EnableProtection(block);
                     _protecedInfos.Add(cubegrid.EntityId, protecedInfo);
                     cubegrid.OnClose += OnClose;
                 }
+            }
+        }
+
+        public void Init() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(Init)) : null) {
+                Log = Mod.Static.Log.ForScope<DamageHandler>();
+                MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(100, HandleDamage);
             }
         }
 

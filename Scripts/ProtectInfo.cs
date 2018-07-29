@@ -53,8 +53,14 @@ namespace AutoMcD.PocketGear {
             }
         }
 
-        public void Protect(IMyCubeBlock block) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(Protect)) : null) {
+        public void DisableProtection(IMyCubeBlock block) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(DisableProtection)) : null) {
+                OnBlockRemoved(block.SlimBlock);
+            }
+        }
+
+        public void EnableProtection(IMyCubeBlock block) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(EnableProtection)) : null) {
                 OnBlockAdded(block.SlimBlock);
             }
         }

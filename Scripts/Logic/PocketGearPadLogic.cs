@@ -6,7 +6,6 @@ using Sisk.Utils.Logging;
 using Sisk.Utils.Profiler;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using VRage.Game.Components;
-using VRage.ModAPI;
 using VRage.ObjectBuilders;
 using IMyLandingGear = SpaceEngineers.Game.ModAPI.IMyLandingGear;
 
@@ -171,18 +170,6 @@ namespace AutoMcD.PocketGear.Logic {
                 if (!AreTerminalControlsInitialized) {
                     InitializeTerminalControls();
                 }
-
-                NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
-            }
-        }
-
-        public override void UpdateOnceBeforeFrame() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(UpdateOnceBeforeFrame)) : null) {
-                if (_pocketGearPad.CubeGrid?.Physics == null) {
-                    return;
-                }
-
-                Mod.Static.DamageHandler?.Protect(_pocketGearPad);
             }
         }
     }
