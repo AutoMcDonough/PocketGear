@@ -4,7 +4,7 @@ using VRageMath;
 
 // ReSharper disable UsePatternMatching
 
-namespace AutoMcD.PocketGear {
+namespace AutoMcD.PocketGear.DamageSystem {
     public struct AttackerInfo {
         public AttackerInfo(IMyEntity entity) {
             LinearVelocity = GetLinearVelocity(entity);

@@ -23,6 +23,7 @@ using VRageMath;
 // ReSharper disable InlineOutVariableDeclaration
 
 namespace AutoMcD.PocketGear.Logic {
+    // bug: IMyMotorStator.AttachedEntityChanged throws "Cannot bind to the target method because its signature or security transparency is not compatible with that of the delegate type.". Once this is solved i should use this to desable damage protection in with this.
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL)]
     public class PocketGearBaseLogic : MyGameLogicComponent {
         private const float FORCED_LOWER_LIMIT_DEG = 333.5f;
@@ -47,9 +48,8 @@ namespace AutoMcD.PocketGear.Logic {
         private IMyMotorStator _pocketGearBase;
         private IMyLandingGear _pocketGearPad;
         private int _resetManualLockAfterTicks;
-        private bool _resetRotorLock;
-        private int _resetRotorLockAfterTicks;
         private PocketGearBaseSettings _settings;
+        private long _topGridId;
 
         private static bool AreTerminalControlsInitialized { get; set; }
 
@@ -251,10 +251,17 @@ namespace AutoMcD.PocketGear.Logic {
         }
 
         public override void Close() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(Init)) : null) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(Close)) : null) {
+                Mod.Static.Network.UnRegisterEntitySyncHandler(Entity.EntityId, OnEntitySyncMessageReceived);
+
                 _pocketGearBase.LimitReached -= OnLimitReached;
                 _pocketGearBase.CubeGrid.OnIsStaticChanged -= OnIsStaticChanged;
-                Mod.Static.Network.UnRegisterEntitySyncHandler(Entity.EntityId, OnEntitySyncMessageReceived);
+
+                if (Mod.Static.DamageHandler != null) {
+                    _pocketGearBase.CubeGrid.OnPhysicsChanged -= OnPhysicsChanged;
+                    Mod.Static.DamageHandler.DisableProtection(_pocketGearBase.CubeGrid.EntityId);
+                    Mod.Static.DamageHandler.DisableProtection(_topGridId);
+                }
             }
         }
 
@@ -289,11 +296,11 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void UpdateAfterSimulation() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(UpdateAfterSimulation)) : null) {
-                if (_resetRotorLock) {
-                    _resetRotorLockAfterTicks--;
-                    if (_resetRotorLockAfterTicks <= 0) {
+                if (_manualLock) {
+                    if (_resetManualLockAfterTicks <= 0) {
+                        _manualLock = false;
                         _pocketGearBase.RotorLock = false;
-                        _resetRotorLock = false;
+                        _pocketGearBase.TargetVelocityRPM = DeployVelocity * (ShouldDeploy ? 1 : -1);
                     }
                 }
 
@@ -305,7 +312,7 @@ namespace AutoMcD.PocketGear.Logic {
                     }
                 }
 
-                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState && _resetManualLockAfterTicks <= 0 && !_manualLock && _resetRotorLockAfterTicks <= 0 && !_resetRotorLock) {
+                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState && _resetManualLockAfterTicks <= 0 && !_manualLock) {
                     NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
                 }
             }
@@ -322,15 +329,9 @@ namespace AutoMcD.PocketGear.Logic {
                         topGrid.Physics?.ClearSpeed();
                         _pocketGearBase.Physics?.ClearSpeed();
                     }
-
-                    if (_resetManualLockAfterTicks <= 0) {
-                        _manualLock = false;
-                        _pocketGearBase.RotorLock = false;
-                        _pocketGearBase.TargetVelocityRPM = DeployVelocity * (ShouldDeploy ? 1 : -1);
-                    }
                 }
 
-                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState && _resetManualLockAfterTicks <= 0 && !_manualLock && _resetRotorLockAfterTicks <= 0 && !_resetRotorLock) {
+                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState && _resetManualLockAfterTicks <= 0 && !_manualLock) {
                     NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
                 }
             }
@@ -358,8 +359,30 @@ namespace AutoMcD.PocketGear.Logic {
 
                     _pocketGearBase.LimitReached += OnLimitReached;
                     _pocketGearBase.CubeGrid.OnIsStaticChanged += OnIsStaticChanged;
+                    if (_pocketGearBase.TopGrid != null) {
+                        _topGridId = _pocketGearBase.TopGrid.EntityId;
+                    }
+
+                    if (Mod.Static.DamageHandler != null) {
+                        // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
+                        _pocketGearBase.CubeGrid.OnPhysicsChanged += OnPhysicsChanged;
+                    }
                 } catch (Exception exception) {
                     Log.Error(exception);
+                }
+            }
+        }
+
+        public void AttachedEntityChanged(IMyEntity entity) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(AttachedEntityChanged)) : null) {
+                if (entity != null) {
+                    if (IsDeploying) {
+                        Mod.Static.DamageHandler?.EnableProtection(_pocketGearBase);
+                        Mod.Static.DamageHandler?.EnableProtection(_pocketGearBase.Top);
+                        Mod.Static.DamageHandler?.EnableProtection(_pocketGearPad);
+                    }
+                } else {
+                    Mod.Static.DamageHandler?.DisableProtection(_topGridId);
                 }
             }
         }
@@ -471,6 +494,18 @@ namespace AutoMcD.PocketGear.Logic {
                     Mod.Static.DamageHandler?.DisableProtection(_pocketGearBase);
                     Mod.Static.DamageHandler?.DisableProtection(_pocketGearBase.Top);
                     Mod.Static.DamageHandler?.DisableProtection(_pocketGearPad);
+                }
+            }
+        }
+
+        private void OnPhysicsChanged(IMyEntity entity) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnPhysicsChanged)) : null) {
+                if (entity.Physics != null) {
+                    if (_pocketGearBase.TopGrid == null) {
+                        AttachedEntityChanged(null);
+                    } else {
+                        _topGridId = _pocketGearBase.TopGrid.EntityId;
+                    }
                 }
             }
         }
