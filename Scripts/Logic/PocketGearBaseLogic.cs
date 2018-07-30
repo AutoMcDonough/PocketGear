@@ -85,7 +85,7 @@ namespace AutoMcD.PocketGear.Logic {
                 if (value != _settings.LockRetractBehavior) {
                     _settings.LockRetractBehavior = value;
                     _switchDeployStateSwitch.UpdateVisual();
-                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(LockRetractBehavior), Value = BitConverter.GetBytes((long) value) });
+                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(LockRetractBehavior), Value = BitConverter.GetBytes((long)value) });
                 }
             }
         }
@@ -210,12 +210,12 @@ namespace AutoMcD.PocketGear.Logic {
                 _lockRetractBehaviorCombobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
                     DisplayName(nameof(LockRetractBehavior)),
                     tooltip: "",
-                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
-                    getter: block => (long) (block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
+                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long)x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
+                    getter: block => (long)(block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
                     setter: (block, value) => {
                         var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
                         if (logic != null) {
-                            logic.LockRetractBehavior = (LockRetractBehaviors) value;
+                            logic.LockRetractBehavior = (LockRetractBehaviors)value;
                         }
                     },
                     enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
@@ -441,7 +441,7 @@ namespace AutoMcD.PocketGear.Logic {
                         }
                     }
 
-                    Log.Info($"No saved setting for '{entity}' found. Using default settings");
+                    Log.Debug($"No saved setting for '{entity}' found. Using default settings");
                     settings = new PocketGearBaseSettings();
                     if (!(Math.Abs(Math.Abs(_pocketGearBase.TargetVelocityRPM)) < 0.01)) {
                         settings.DeployVelocity = Math.Abs(_pocketGearBase.TargetVelocityRPM);
@@ -456,14 +456,14 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnEntitySyncMessageReceived)) : null) {
                 using (Log.BeginMethod(nameof(OnEntitySyncMessageReceived))) {
                     if (message is PropertySyncMessage) {
-                        var syncMessage = (PropertySyncMessage) message;
+                        var syncMessage = (PropertySyncMessage)message;
                         switch (syncMessage.Name) {
                             case nameof(DeployVelocity):
                                 _settings.DeployVelocity = BitConverter.ToSingle(syncMessage.Value, 0);
                                 _deployVelocitySlider.UpdateVisual();
                                 break;
                             case nameof(LockRetractBehavior):
-                                _settings.LockRetractBehavior = (LockRetractBehaviors) BitConverter.ToInt64(syncMessage.Value, 0);
+                                _settings.LockRetractBehavior = (LockRetractBehaviors)BitConverter.ToInt64(syncMessage.Value, 0);
                                 _lockRetractBehaviorCombobox.UpdateVisual();
                                 _switchDeployStateSwitch.UpdateVisual();
                                 break;
