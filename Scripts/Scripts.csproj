@@ -94,8 +94,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttackerInfo.cs" />
-    <Compile Include="DamageHandler.cs" />
+    <Compile Include="DamageSystem\AttackerInfo.cs" />
+    <Compile Include="DamageSystem\DamageHandler.cs" />
     <Compile Include="Logic\PocketGearBaseLogic.cs" />
     <Compile Include="Logic\PocketGearPadLogic.cs" />
     <Compile Include="Logic\PocketGearPartLogic.cs" />
@@ -105,7 +105,7 @@
     <Compile Include="Net\MessageWrapper.cs" />
     <Compile Include="Net\Network.cs" />
     <Compile Include="Net\PropertySyncMessage.cs" />
-    <Compile Include="ProtectInfo.cs" />
+    <Compile Include="DamageSystem\ProtectInfo.cs" />
     <Compile Include="Settings\ModSettings.cs" />
     <Compile Include="Settings\PocketGearBaseSettings.cs" />
     <Compile Include="TerminalControlUtils.cs" />

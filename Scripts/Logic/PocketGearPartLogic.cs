@@ -24,6 +24,15 @@ namespace AutoMcD.PocketGear.Logic {
 
         protected ILogger Log { get; set; }
 
+        public override void Close() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(Close)) : null) {
+                if (Mod.Static.DamageHandler != null) {
+                    // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
+                    _pocketGearPart.CubeGrid.OnPhysicsChanged -= OnPhysicsChanged;
+                }
+            }
+        }
+
         public override void Init(MyObjectBuilder_EntityBase objectBuilder) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(Init)) : null) {
                 Log = Mod.Static.Log.ForScope<PocketGearPartLogic>();
@@ -39,10 +48,25 @@ namespace AutoMcD.PocketGear.Logic {
                     return;
                 }
 
+                if (Mod.Static.DamageHandler != null) {
+                    // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
+                    _pocketGearPart.CubeGrid.OnPhysicsChanged += OnPhysicsChanged;
+                }
+
                 try {
                     PlaceLandingPad();
                 } catch (Exception exception) {
                     Log.Error(exception);
+                }
+            }
+        }
+
+        private void OnPhysicsChanged(IMyEntity entity) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnPhysicsChanged)) : null) {
+                if (entity.Physics != null) {
+                    if (_pocketGearPart.Base != null) {
+                        _pocketGearPart.Base?.GameLogic?.GetAs<PocketGearBaseLogic>()?.AttachedEntityChanged(_pocketGearPart);
+                    }
                 }
             }
         }

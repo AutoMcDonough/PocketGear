@@ -8,7 +8,7 @@ using VRage.Game.ModAPI;
 using VRage.ModAPI;
 using VRageMath;
 
-namespace AutoMcD.PocketGear {
+namespace AutoMcD.PocketGear.DamageSystem {
     public class ProtectInfo {
         private const int PROTECTION_RADIUS = 2;
         private readonly HashSet<IMySlimBlock> _protectedBlocks = new HashSet<IMySlimBlock>();
@@ -17,6 +17,7 @@ namespace AutoMcD.PocketGear {
             CubeGrid = cubeGrid;
             CubeGrid.OnBlockAdded += OnBlockAdded;
             CubeGrid.OnBlockRemoved += OnBlockRemoved;
+            CubeGrid.OnPhysicsChanged += OnPhysicsChanged;
         }
 
         public AttackerInfo Attacker { get; private set; }
@@ -44,6 +45,14 @@ namespace AutoMcD.PocketGear {
                 var sphere = new BoundingSphereD(center, radius);
                 var slimBlocks = cubeGrid.GetBlocksInsideSphere(ref sphere);
                 return slimBlocks;
+            }
+        }
+
+        public void Close() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(Close)) : null) {
+                CubeGrid.OnBlockAdded -= OnBlockAdded;
+                CubeGrid.OnBlockRemoved -= OnBlockRemoved;
+                CubeGrid.OnPhysicsChanged -= OnPhysicsChanged;
             }
         }
 
@@ -85,7 +94,9 @@ namespace AutoMcD.PocketGear {
                     _protectedBlocks.Add(block);
                 }
 
-                Mass = CalculateMass(CubeGrid);
+                if (block.CubeGrid?.Physics != null) {
+                    Mass = CalculateMass(CubeGrid);
+                }
             }
         }
 
@@ -104,7 +115,17 @@ namespace AutoMcD.PocketGear {
                     _protectedBlocks.Remove(block);
                 }
 
-                Mass = CalculateMass(CubeGrid);
+                if (block.CubeGrid?.Physics != null) {
+                    Mass = CalculateMass(CubeGrid);
+                }
+            }
+        }
+
+        private void OnPhysicsChanged(IMyEntity entity) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(OnPhysicsChanged)) : null) {
+                if (entity.Physics != null) {
+                    Mass = CalculateMass((IMyCubeGrid) entity);
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMcD.PocketGear.DamageSystem;
 using AutoMcD.PocketGear.Logic;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Settings;
@@ -78,7 +79,7 @@ namespace AutoMcD.PocketGear {
         private static void WriteProfileResults() {
             if (Profiler.Results.Any()) {
                 using (var writer = MyAPIGateway.Utilities.WriteFileInLocalStorage(PROFILER_SUMMARY_FILE, typeof(Mod))) {
-                    foreach (var result in Profiler.Results.OrderBy(x => x.Avg)) {
+                    foreach (var result in Profiler.Results.OrderByDescending(x => x.Total)) {
                         writer.WriteLine(result);
                     }
                 }

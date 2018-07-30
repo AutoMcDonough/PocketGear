@@ -7,7 +7,7 @@ using VRage.Game;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
 
-namespace AutoMcD.PocketGear {
+namespace AutoMcD.PocketGear.DamageSystem {
     public class DamageHandler {
         private const int ATTACK_TIMEOUT_IN_MS = 100;
         private const double MAX_IMPACT_TOLERANCE = 24.5;
@@ -25,6 +25,15 @@ namespace AutoMcD.PocketGear {
                 var cubegrid = block.CubeGrid;
                 if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
                     _protecedInfos[cubegrid.EntityId].DisableProtection(block);
+                }
+            }
+        }
+
+        public void DisableProtection(long cubeGridId) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(DisableProtection)) : null) {
+                if (_protecedInfos.ContainsKey(cubeGridId)) {
+                    _protecedInfos[cubeGridId].Close();
+                    _protecedInfos.Remove(cubeGridId);
                 }
             }
         }
@@ -106,21 +115,15 @@ namespace AutoMcD.PocketGear {
                 var impactVelocity = (attackerLinearVelocity - linearVelocity).Length();
                 var tolerance = Math.Min(Math.Max(impactTolerance, MIN_IMPACT_TOLERANCE), MAX_IMPACT_TOLERANCE) * toleranceMultiplicator;
 
-                var oldDamageValue = damage.Amount;
                 if (impactVelocity <= tolerance * 2.5) {
                     if (impactVelocity <= tolerance) {
                         damage.Amount = 0;
                         damage.IsDeformation = false;
-
-                        Log.Debug($"M: {mass:N0} V:{impactVelocity:N2} T:{tolerance:N2} IT: {impactTolerance:N2} => Prevent damage");
                     } else {
                         var multiplicator = Math.Pow(impactVelocity / tolerance, .75) - 1;
                         damage.Amount *= (float) multiplicator;
                         damage.IsDeformation = false;
-                        Log.Debug($"M: {mass:N0} V:{impactVelocity:N2} T:{tolerance:N2} IT: {impactTolerance:N2} => Reduce damage to {damage.Amount}/{oldDamageValue}");
                     }
-                } else {
-                    Log.Debug($"M: {mass:N0} V:{impactVelocity:N2} T:{tolerance:N2} IT: {impactTolerance:N2} => Full damage {damage.Amount}");
                 }
             }
         }
