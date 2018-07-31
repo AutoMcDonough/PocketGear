@@ -109,7 +109,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>20</BuildTimeSeconds>
+      <BuildTimeSeconds>30</BuildTimeSeconds>
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
@@ -204,7 +204,7 @@
       <MirroringY>Z</MirroringY>
       <MirroringZ>Y</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>5</BuildTimeSeconds>
+      <BuildTimeSeconds>10</BuildTimeSeconds>
     </Definition>
 
     <!-- Pad -->
@@ -249,7 +249,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <BuildTimeSeconds>5</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
@@ -293,7 +293,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <BuildTimeSeconds>10</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
@@ -492,7 +492,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>20</BuildTimeSeconds>
+      <BuildTimeSeconds>10</BuildTimeSeconds>
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
@@ -552,7 +552,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>20</BuildTimeSeconds>
+      <BuildTimeSeconds>15</BuildTimeSeconds>
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
@@ -609,7 +609,7 @@
       <MirroringY>Z</MirroringY>
       <MirroringZ>Y</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>5</BuildTimeSeconds>
+      <BuildTimeSeconds>2</BuildTimeSeconds>
       <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
     </Definition>
 
@@ -648,7 +648,7 @@
       <MirroringY>Z</MirroringY>
       <MirroringZ>Y</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>5</BuildTimeSeconds>
+      <BuildTimeSeconds>4</BuildTimeSeconds>
     </Definition>
 
     <!-- Pad -->
@@ -692,7 +692,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <BuildTimeSeconds>2</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
@@ -735,7 +735,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <BuildTimeSeconds>4</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
@@ -785,7 +785,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <BuildTimeSeconds>15</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
@@ -828,7 +828,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <BuildTimeSeconds>30</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
@@ -875,7 +875,7 @@
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <BuildTimeSeconds>25</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
