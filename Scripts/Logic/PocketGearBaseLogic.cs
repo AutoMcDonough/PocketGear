@@ -36,12 +36,15 @@ namespace AutoMcD.PocketGear.Logic {
         private static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
         public static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
 
+        private static IMyTerminalControlButton _createNewPadButton;
+
         private static IMyTerminalControlSlider _deployVelocitySlider;
         private static IMyTerminalControlCombobox _lockRetractBehaviorCombobox;
         private static IMyTerminalControlOnOffSwitch _switchDeployStateSwitch;
         private bool _changePocketGearPadState;
         private int _changePocketGearPadStateAfterTicks;
         private bool _isJustPlaced;
+        private long _lastKnownTopGridId;
         private bool _manualLock;
         private MatrixD _manualLockBaseMatrix;
         private MatrixD _manualLockTopMatrix;
@@ -49,21 +52,18 @@ namespace AutoMcD.PocketGear.Logic {
         private IMyLandingGear _pocketGearPad;
         private int _resetManualLockAfterTicks;
         private PocketGearBaseSettings _settings;
-        private long _topGridId;
-        private static IMyTerminalControlButton _createNewPadButton;
 
         private static bool AreTerminalControlsInitialized { get; set; }
+
+        public bool CanPocketGearBeBuilt => _pocketGearBase.Top != null && _pocketGearPad == null;
 
         public bool CanRetract {
             get {
                 if (_pocketGearPad == null) {
-                    var top = _pocketGearBase.Top;
-                    if (top != null) {
-                        _pocketGearPad = GetPocketGearPad(top);
-                    }
+                    _pocketGearPad = GetPocketGearPad(_pocketGearBase);
                 }
 
-                return _pocketGearPad == null || !_pocketGearPad.IsLocked || LockRetractBehavior != LockRetractBehaviors.PreventRetract;
+                return _pocketGearBase.IsWorking && _pocketGearPad != null && (!_pocketGearPad.IsLocked || LockRetractBehavior != LockRetractBehaviors.PreventRetract);
             }
         }
 
@@ -86,7 +86,7 @@ namespace AutoMcD.PocketGear.Logic {
                 if (value != _settings.LockRetractBehavior) {
                     _settings.LockRetractBehavior = value;
                     _switchDeployStateSwitch.UpdateVisual();
-                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(LockRetractBehavior), Value = BitConverter.GetBytes((long)value) });
+                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(LockRetractBehavior), Value = BitConverter.GetBytes((long) value) });
                 }
             }
         }
@@ -107,8 +107,9 @@ namespace AutoMcD.PocketGear.Logic {
             return Regex.Replace(name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
         }
 
-        private static IMyLandingGear GetPocketGearPad(IMyAttachableTopBlock rotor) {
+        private static IMyLandingGear GetPocketGearPad(IMyMechanicalConnectionBlock stator) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(GetPocketGearPad)) : null) {
+                var rotor = stator?.Top;
                 if (rotor == null) {
                     return null;
                 }
@@ -211,12 +212,12 @@ namespace AutoMcD.PocketGear.Logic {
                 _lockRetractBehaviorCombobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
                     DisplayName(nameof(LockRetractBehavior)),
                     tooltip: "Whether it should prevent retracting if locked or if it should unlock on retract.",
-                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long)x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
-                    getter: block => (long)(block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
+                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
+                    getter: block => (long) (block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
                     setter: (block, value) => {
                         var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
                         if (logic != null) {
-                            logic.LockRetractBehavior = (LockRetractBehaviors)value;
+                            logic.LockRetractBehavior = (LockRetractBehaviors) value;
                         }
                     },
                     enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
@@ -237,11 +238,10 @@ namespace AutoMcD.PocketGear.Logic {
                         var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
                         var enabled = false;
                         if (logic != null) {
-                            enabled = !logic.IsPocketGearPadBuilt;
+                            enabled = logic.CanPocketGearBeBuilt;
                         }
 
                         return enabled;
-
                     },
                     visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
@@ -266,7 +266,7 @@ namespace AutoMcD.PocketGear.Logic {
                             enabled = logic.CanRetract;
                         }
 
-                        return block.IsWorking && enabled;
+                        return enabled;
                     },
                     visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
@@ -276,9 +276,23 @@ namespace AutoMcD.PocketGear.Logic {
                 TerminalControlUtils.RegisterControls<IMyMotorAdvancedStator>(controls);
             }
         }
-        public bool IsPocketGearPadBuilt { get; private set; }
-        private static void PlaceLandingPad(IMyMotorAdvancedStator stator) {
 
+        private static void PlaceLandingPad(IMyMotorAdvancedStator stator) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(PlaceLandingPad)) : null) {
+                var logic = stator?.GameLogic?.GetAs<PocketGearBaseLogic>();
+
+                var pad = logic?._pocketGearPad;
+                if (pad != null) {
+                    return;
+                }
+
+                var top = logic?._pocketGearBase.Top;
+                if (top == null) {
+                    return;
+                }
+
+                top.GameLogic.GetAs<PocketGearPartLogic>()?.PlaceLandingPad();
+            }
         }
 
         public override void Close() {
@@ -291,7 +305,7 @@ namespace AutoMcD.PocketGear.Logic {
                 if (Mod.Static.DamageHandler != null) {
                     _pocketGearBase.CubeGrid.OnPhysicsChanged -= OnPhysicsChanged;
                     Mod.Static.DamageHandler.DisableProtection(_pocketGearBase.CubeGrid.EntityId);
-                    Mod.Static.DamageHandler.DisableProtection(_topGridId);
+                    Mod.Static.DamageHandler.DisableProtection(_lastKnownTopGridId);
                 }
             }
         }
@@ -370,36 +384,37 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void UpdateOnceBeforeFrame() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(UpdateOnceBeforeFrame)) : null) {
-                try {
-                    if (_pocketGearBase.CubeGrid?.Physics == null) {
-                        return;
-                    }
+                if (_pocketGearBase.CubeGrid?.Physics == null) {
+                    return;
+                }
+
+                if (_isJustPlaced) {
+                    SwitchDeployState(true);
+                }
+
+                _pocketGearBase.LowerLimitDeg = FORCED_LOWER_LIMIT_DEG;
+                _pocketGearBase.UpperLimitDeg = FORCED_UPPER_LIMIT_DEG;
+
+                if (_pocketGearBase.TopGrid != null) {
+                    _lastKnownTopGridId = _pocketGearBase.TopGrid.EntityId;
+                    _pocketGearPad = GetPocketGearPad(_pocketGearBase);
 
                     if (IsDeploying) {
                         Mod.Static.DamageHandler?.EnableProtection(_pocketGearBase);
                         Mod.Static.DamageHandler?.EnableProtection(_pocketGearBase.Top);
-                        Mod.Static.DamageHandler?.EnableProtection(GetPocketGearPad(_pocketGearBase.Top));
+                        Mod.Static.DamageHandler?.EnableProtection(_pocketGearPad);
                     }
+                }
 
-                    if (_isJustPlaced) {
-                        SwitchDeployState(true);
-                    }
+                _switchDeployStateSwitch.UpdateVisual();
+                _createNewPadButton.UpdateVisual();
 
-                    _pocketGearBase.LowerLimitDeg = FORCED_LOWER_LIMIT_DEG;
-                    _pocketGearBase.UpperLimitDeg = FORCED_UPPER_LIMIT_DEG;
+                _pocketGearBase.LimitReached += OnLimitReached;
+                _pocketGearBase.CubeGrid.OnIsStaticChanged += OnIsStaticChanged;
 
-                    _pocketGearBase.LimitReached += OnLimitReached;
-                    _pocketGearBase.CubeGrid.OnIsStaticChanged += OnIsStaticChanged;
-                    if (_pocketGearBase.TopGrid != null) {
-                        _topGridId = _pocketGearBase.TopGrid.EntityId;
-                    }
-
-                    if (Mod.Static.DamageHandler != null) {
-                        // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
-                        _pocketGearBase.CubeGrid.OnPhysicsChanged += OnPhysicsChanged;
-                    }
-                } catch (Exception exception) {
-                    Log.Error(exception);
+                if (Mod.Static.DamageHandler != null) {
+                    // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
+                    _pocketGearBase.CubeGrid.OnPhysicsChanged += OnPhysicsChanged;
                 }
             }
         }
@@ -412,8 +427,18 @@ namespace AutoMcD.PocketGear.Logic {
                         Mod.Static.DamageHandler?.EnableProtection(_pocketGearBase.Top);
                         Mod.Static.DamageHandler?.EnableProtection(_pocketGearPad);
                     }
+
+                    _lastKnownTopGridId = _pocketGearBase.TopGrid.EntityId;
+                    _pocketGearPad = GetPocketGearPad(_pocketGearBase);
+                    _switchDeployStateSwitch.UpdateVisual();
+                    _createNewPadButton.UpdateVisual();
+                    Log.Debug($"AttachedEntityChanged => top: {_pocketGearBase.Top != null} | pad: {_pocketGearPad != null}");
                 } else {
-                    Mod.Static.DamageHandler?.DisableProtection(_topGridId);
+                    Mod.Static.DamageHandler?.DisableProtection(_lastKnownTopGridId);
+                    _pocketGearPad = null;
+                    _switchDeployStateSwitch.UpdateVisual();
+                    _createNewPadButton.UpdateVisual();
+                    Log.Debug($"AttachedEntityChanged => top: {_pocketGearBase.Top != null} | pad: {_pocketGearPad != null}");
                 }
             }
         }
@@ -434,12 +459,8 @@ namespace AutoMcD.PocketGear.Logic {
 
         private void ChangePocketGearPadState(bool deployed) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(ChangePocketGearPadState)) : null) {
-                var pocketGearPart = _pocketGearBase.Top;
-                if (pocketGearPart != null) {
-                    var landingGear = GetPocketGearPad(pocketGearPart);
-                    if (landingGear != null) {
-                        landingGear.Enabled = deployed;
-                    }
+                if (_pocketGearPad != null) {
+                    _pocketGearPad.Enabled = deployed;
                 }
             }
         }
@@ -487,14 +508,14 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnEntitySyncMessageReceived)) : null) {
                 using (Log.BeginMethod(nameof(OnEntitySyncMessageReceived))) {
                     if (message is PropertySyncMessage) {
-                        var syncMessage = (PropertySyncMessage)message;
+                        var syncMessage = (PropertySyncMessage) message;
                         switch (syncMessage.Name) {
                             case nameof(DeployVelocity):
                                 _settings.DeployVelocity = BitConverter.ToSingle(syncMessage.Value, 0);
                                 _deployVelocitySlider.UpdateVisual();
                                 break;
                             case nameof(LockRetractBehavior):
-                                _settings.LockRetractBehavior = (LockRetractBehaviors)BitConverter.ToInt64(syncMessage.Value, 0);
+                                _settings.LockRetractBehavior = (LockRetractBehaviors) BitConverter.ToInt64(syncMessage.Value, 0);
                                 _lockRetractBehaviorCombobox.UpdateVisual();
                                 _switchDeployStateSwitch.UpdateVisual();
                                 break;
@@ -532,11 +553,7 @@ namespace AutoMcD.PocketGear.Logic {
         private void OnPhysicsChanged(IMyEntity entity) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnPhysicsChanged)) : null) {
                 if (entity.Physics != null) {
-                    if (_pocketGearBase.TopGrid == null) {
-                        AttachedEntityChanged(null);
-                    } else {
-                        _topGridId = _pocketGearBase.TopGrid.EntityId;
-                    }
+                    AttachedEntityChanged(_pocketGearBase.TopGrid == null ? null : _pocketGearBase.Top);
                 }
             }
         }
