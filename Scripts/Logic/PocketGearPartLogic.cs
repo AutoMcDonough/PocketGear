@@ -102,11 +102,14 @@ namespace AutoMcD.PocketGear.Logic {
                 var canPlaceCube = cubeGrid.CanAddCube(padPosition);
                 if (canPlaceCube) {
                     try {
+                        var buildPercent = MyAPIGateway.Session.CreativeMode ? 1 : 0.00001525902f;
                         var landingGearBuilder = new MyObjectBuilder_LandingGear {
                             SubtypeName = pocketGearPadId,
-                            Owner = _pocketGearPart.OwnerId,
-                            BuiltBy = _pocketGearPart.OwnerId,
-                            AutoLock = false
+                            Owner = _pocketGearPart.Base?.OwnerId ?? _pocketGearPart.OwnerId,
+                            BuiltBy = _pocketGearPart.Base?.OwnerId ?? _pocketGearPart.OwnerId,
+                            AutoLock = false,
+                            BuildPercent = buildPercent,
+                            IntegrityPercent = buildPercent
                         };
 
                         var cubeGridBuilder = new MyObjectBuilder_CubeGrid {

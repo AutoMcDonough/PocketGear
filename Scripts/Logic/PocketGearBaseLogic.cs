@@ -432,13 +432,11 @@ namespace AutoMcD.PocketGear.Logic {
                     _pocketGearPad = GetPocketGearPad(_pocketGearBase);
                     _switchDeployStateSwitch.UpdateVisual();
                     _createNewPadButton.UpdateVisual();
-                    Log.Debug($"AttachedEntityChanged => top: {_pocketGearBase.Top != null} | pad: {_pocketGearPad != null}");
                 } else {
                     Mod.Static.DamageHandler?.DisableProtection(_lastKnownTopGridId);
                     _pocketGearPad = null;
                     _switchDeployStateSwitch.UpdateVisual();
                     _createNewPadButton.UpdateVisual();
-                    Log.Debug($"AttachedEntityChanged => top: {_pocketGearBase.Top != null} | pad: {_pocketGearPad != null}");
                 }
             }
         }
