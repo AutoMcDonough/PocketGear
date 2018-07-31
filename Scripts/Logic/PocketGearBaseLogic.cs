@@ -50,6 +50,7 @@ namespace AutoMcD.PocketGear.Logic {
         private int _resetManualLockAfterTicks;
         private PocketGearBaseSettings _settings;
         private long _topGridId;
+        private static IMyTerminalControlButton _createNewPadButton;
 
         private static bool AreTerminalControlsInitialized { get; set; }
 
@@ -190,7 +191,7 @@ namespace AutoMcD.PocketGear.Logic {
                 var controls = new List<IMyTerminalControl>();
                 _deployVelocitySlider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
                     DisplayName(nameof(DeployVelocity)),
-                    tooltip: "",
+                    tooltip: "The speed at which the PocketGear is retracted / extended.",
                     writer: (block, builder) => builder.Append($"{block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
                     getter: block => block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity ?? 0,
                     setter: (block, value) => {
@@ -209,7 +210,7 @@ namespace AutoMcD.PocketGear.Logic {
 
                 _lockRetractBehaviorCombobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
                     DisplayName(nameof(LockRetractBehavior)),
-                    tooltip: "",
+                    tooltip: "Whether it should prevent retracting if locked or if it should unlock on retract.",
                     content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long)x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
                     getter: block => (long)(block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
                     setter: (block, value) => {
@@ -224,22 +225,48 @@ namespace AutoMcD.PocketGear.Logic {
                 );
                 controls.Add(_lockRetractBehaviorCombobox);
 
+                _createNewPadButton = TerminalControlUtils.CreateButton<IMyMotorAdvancedStator>(
+                    DisplayName(nameof(PlaceLandingPad)),
+                    tooltip: "Place a new PocketGear pad.",
+                    action: PlaceLandingPad,
+                    enabled: block => {
+                        if (!PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
+                            return false;
+                        }
+
+                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+                        var enabled = false;
+                        if (logic != null) {
+                            enabled = !logic.IsPocketGearPadBuilt;
+                        }
+
+                        return enabled;
+
+                    },
+                    visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
+                    supportsMultipleBlocks: true
+                );
+                controls.Add(_createNewPadButton);
+
                 _switchDeployStateSwitch = TerminalControlUtils.CreateOnOffSwitch<IMyMotorAdvancedStator>(
                     DisplayName(nameof(SwitchDeployState)),
-                    tooltip: "Deploy or retract switch",
+                    tooltip: "Switch between deploy and retract.",
                     onText: "Deploy",
                     offText: "Retract",
                     getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeploying,
                     setter: (block, value) => block?.GameLogic?.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
                     enabled: block => {
-                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+                        if (!PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
+                            return false;
+                        }
 
-                        var enabled = true;
+                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+                        var enabled = false;
                         if (logic != null) {
                             enabled = logic.CanRetract;
                         }
 
-                        return PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && block.IsWorking && enabled;
+                        return block.IsWorking && enabled;
                     },
                     visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
@@ -248,6 +275,10 @@ namespace AutoMcD.PocketGear.Logic {
 
                 TerminalControlUtils.RegisterControls<IMyMotorAdvancedStator>(controls);
             }
+        }
+        public bool IsPocketGearPadBuilt { get; private set; }
+        private static void PlaceLandingPad(IMyMotorAdvancedStator stator) {
+
         }
 
         public override void Close() {
