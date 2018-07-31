@@ -162,15 +162,24 @@ namespace AutoMcD.PocketGear {
         private static List<IMyTerminalAction> CreateOnOffActions<TControl, TBlock>(TControl control) where TBlock : IMyTerminalBlock where TControl : IMyTerminalControl, IMyTerminalValueControl<bool>, IMyTerminalControlTitleTooltip {
             var actions = new List<IMyTerminalAction>();
             Action<IMyTerminalBlock, StringBuilder> writer;
+            StringBuilder switchName;
+            StringBuilder onName;
+            StringBuilder offName;
             var @switch = control as IMyTerminalControlOnOffSwitch;
             if (@switch != null) {
+                switchName = new StringBuilder($"{@switch.OnText}/{@switch.OffText}");
+                onName = new StringBuilder($"{@switch.OnText}");
+                offName = new StringBuilder($"{@switch.OffText}");
                 writer = (block, builder) => builder.Append(control.Getter.Invoke(block) ? @switch.OnText : @switch.OffText);
             } else {
+                switchName = new StringBuilder($"{control.Title} On/Off");
+                onName = new StringBuilder($"{control.Title} On");
+                offName = new StringBuilder($"{control.Title} Off");
                 writer = (block, builder) => builder.Append(control.Getter.Invoke(block) ? "On" : "Off");
             }
 
             var onOffAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_OnOff");
-            onOffAction.Name = new StringBuilder($"{control.Title} On/Off");
+            onOffAction.Name = switchName;
             onOffAction.Icon = @"Textures\GUI\Icons\Actions\Toggle.dds";
             onOffAction.Writer = writer;
             onOffAction.Enabled = control.Enabled;
@@ -179,7 +188,7 @@ namespace AutoMcD.PocketGear {
             actions.Add(onOffAction);
 
             var onAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_On");
-            onAction.Name = new StringBuilder($"{control.Title} On");
+            onAction.Name = onName;
             onAction.Icon = @"Textures\GUI\Icons\Actions\SwitchOn.dds";
             onAction.Writer = writer;
             onAction.Enabled = control.Enabled;
@@ -188,7 +197,7 @@ namespace AutoMcD.PocketGear {
             actions.Add(onAction);
 
             var offAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_Off");
-            offAction.Name = new StringBuilder($"{control.Title} Off");
+            offAction.Name = offName;
             offAction.Icon = @"Textures\GUI\Icons\Actions\SwitchOff.dds";
             offAction.Writer = writer;
             offAction.Enabled = control.Enabled;
