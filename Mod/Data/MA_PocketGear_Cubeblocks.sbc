@@ -158,7 +158,7 @@
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
       <MountPoints>
-        <MountPoint Side="Front" StartX="4.17" StartY="0.29" EndX="4.83" EndY="0.71" />
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
       </MountPoints>
       <BuildProgressModels>
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Rotor_Constr1.mwm" />
@@ -196,7 +196,7 @@
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
       <MountPoints>
-        <MountPoint Side="Front" StartX="4.25" StartY="0.34" EndX="4.75" EndY="0.66" />
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
       </MountPoints>
       <BuildProgressModels>
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Rotor_sm_Constr1.mwm" />
@@ -453,7 +453,7 @@
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
       <MountPoints>
-        <MountPoint Side="Front" StartX="8.35" StartY="0.09" EndX="9.65" EndY="0.91" />
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
       </MountPoints>
       <BuildProgressModels>
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_Constr1.mwm" />
@@ -491,7 +491,7 @@
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
       <MountPoints>
-        <MountPoint Side="Front" StartX="8.35" StartY="0.09" EndX="9.65" EndY="0.91" />
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
       </MountPoints>
       <BuildProgressModels>
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_sm_Constr1.mwm" />

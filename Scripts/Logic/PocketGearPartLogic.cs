@@ -61,17 +61,7 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        private void OnPhysicsChanged(IMyEntity entity) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnPhysicsChanged)) : null) {
-                if (entity.Physics != null) {
-                    if (_pocketGearPart.Base != null) {
-                        _pocketGearPart.Base?.GameLogic?.GetAs<PocketGearBaseLogic>()?.AttachedEntityChanged(_pocketGearPart);
-                    }
-                }
-            }
-        }
-
-        private void PlaceLandingPad() {
+        public void PlaceLandingPad() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(PlaceLandingPad)) : null) {
                 var cubeGrid = _pocketGearPart.CubeGrid;
                 var gridSize = cubeGrid.GridSize;
@@ -112,11 +102,14 @@ namespace AutoMcD.PocketGear.Logic {
                 var canPlaceCube = cubeGrid.CanAddCube(padPosition);
                 if (canPlaceCube) {
                     try {
+                        var buildPercent = MyAPIGateway.Session.CreativeMode ? 1 : 0.00001525902f;
                         var landingGearBuilder = new MyObjectBuilder_LandingGear {
                             SubtypeName = pocketGearPadId,
-                            Owner = _pocketGearPart.OwnerId,
-                            BuiltBy = _pocketGearPart.OwnerId,
-                            AutoLock = false
+                            Owner = _pocketGearPart.Base?.OwnerId ?? _pocketGearPart.OwnerId,
+                            BuiltBy = _pocketGearPart.Base?.OwnerId ?? _pocketGearPart.OwnerId,
+                            AutoLock = false,
+                            BuildPercent = buildPercent,
+                            IntegrityPercent = buildPercent
                         };
 
                         var cubeGridBuilder = new MyObjectBuilder_CubeGrid {
@@ -131,6 +124,16 @@ namespace AutoMcD.PocketGear.Logic {
                         (cubeGrid as MyCubeGrid)?.PasteBlocksToGrid(gridsToMerge, 0, false, false);
                     } catch (Exception exception) {
                         Log.Error(exception);
+                    }
+                }
+            }
+        }
+
+        private void OnPhysicsChanged(IMyEntity entity) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnPhysicsChanged)) : null) {
+                if (entity.Physics != null) {
+                    if (_pocketGearPart.Base != null) {
+                        _pocketGearPart.Base?.GameLogic?.GetAs<PocketGearBaseLogic>()?.AttachedEntityChanged(_pocketGearPart);
                     }
                 }
             }
