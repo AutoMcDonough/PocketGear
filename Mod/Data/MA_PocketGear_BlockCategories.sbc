@@ -24,6 +24,11 @@
         <string>MotorAdvancedStator/MA_PocketGear_L_Base_sm</string>
         <string>MotorAdvancedRotor/MA_PocketGear_L_Rotor_sm</string>
 
+        <string>LandingGear/MA_PocketGear_Pad_M</string>
+        <string>LandingGear/MA_PocketGear_Pad_sm_M</string>
+        <string>LandingGear/MA_PocketGear_L_Pad_M</string>
+        <string>LandingGear/MA_PocketGear_L_Pad_sm_M</string>
+
         <string>LandingGear/MA_PocketGear_Magnet</string>
         <string>LandingGear/MA_PocketGear_Magnet_sm</string>
 
