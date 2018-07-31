@@ -103,7 +103,7 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        public static string DisplayName(string name) {
+        private static string DisplayName(string name) {
             return Regex.Replace(name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
         }
 
