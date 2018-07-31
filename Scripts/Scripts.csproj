@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="DamageSystem\AttackerInfo.cs" />
     <Compile Include="DamageSystem\DamageHandler.cs" />
+    <Compile Include="Localization\PocketGearText.cs" />
     <Compile Include="Logic\PocketGearBaseLogic.cs" />
     <Compile Include="Logic\PocketGearPadLogic.cs" />
     <Compile Include="Logic\PocketGearPartLogic.cs" />

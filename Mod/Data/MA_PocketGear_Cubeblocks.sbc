@@ -3,22 +3,20 @@
 <Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <CubeBlocks>
 
+    <!--Large Grid-->
+    <!-- Base -->
     <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
       <Id>
         <TypeId>MotorAdvancedStator</TypeId>
         <SubtypeId>MA_PocketGear_Base</SubtypeId>
       </Id>
-      <DisplayName>PocketGear Base</DisplayName>
+      <DisplayName>DisplayName_PocketGear_Base</DisplayName>
       <Icon>Textures\MA_PocketGear_Base.dds</Icon>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="1" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_Base.mwm</Model>
-      <BuildProgressModels>
-        <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_Base_Constr1.mwm" />
-        <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_Base_Constr2.mwm" />
-      </BuildProgressModels>
       <Components>
         <Component Subtype="SteelPlate" Count="10" />
         <Component Subtype="Construction" Count="20" />
@@ -36,6 +34,16 @@
         <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
         <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
       </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_Base_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_Base_Constr2.mwm" />
+      </BuildProgressModels>
+      <BlockVariants>
+        <BlockVariant>
+          <TypeId>MotorAdvancedStator</TypeId>
+          <SubtypeId>MA_PocketGear_L_Base</SubtypeId>
+        </BlockVariant>
+      </BlockVariants>
       <BlockPairName>MA_PocketGear_Base</BlockPairName>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
@@ -46,62 +54,57 @@
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
       <MaxForceMagnitude>5E+09</MaxForceMagnitude>
-      <PropulsionForce>5E+09</PropulsionForce>
-
+      <DangerousTorqueThreshold>5E+09</DangerousTorqueThreshold>
       <RotorPart>MA_PocketGear_Rotor</RotorPart>
-
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
       <RotorDisplacementMinSmall>-0.11</RotorDisplacementMinSmall>
       <RotorDisplacementMaxSmall>0.11</RotorDisplacementMaxSmall>
       <RotorDisplacementInModel>0.0</RotorDisplacementInModel>
-      <GuiVisible>true</GuiVisible>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <SafetyDetach>10</SafetyDetach>
       <SafetyDetachMax>10</SafetyDetachMax>
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
-      <DestroySound>WepSmallWarheadExpl</DestroySound>
-      <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-      <DangerousTorqueThreshold>5E+09</DangerousTorqueThreshold>
+      <DestroySound>WepSmallWarheadExpl</DestroySound>      
       <PCU>100</PCU>
     </Definition>
 
     <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
       <Id>
         <TypeId>MotorAdvancedStator</TypeId>
-        <SubtypeId>MA_PocketGear_Base_sm</SubtypeId>
+        <SubtypeId>MA_PocketGear_L_Base</SubtypeId>
       </Id>
-      <DisplayName>PocketGear Base Small</DisplayName>
+      <DisplayName>DisplayName_PocketGear_Large_Base</DisplayName>
       <Icon>Textures\MA_PocketGear_Base.dds</Icon>
-      <CubeSize>Small</CubeSize>
+      <GuiVisible>false</GuiVisible>
+      <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
-      <Size x="1" y="1" z="1" />
+      <Size x="2" y="2" z="2" />
       <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_Base_sm.mwm</Model>
-      <BuildProgressModels>
-        <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_Base_sm_Constr1.mwm" />
-        <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_Base_sm_Constr2.mwm" />
-      </BuildProgressModels>
-      <UseModelIntersection>false</UseModelIntersection>
+      <Model>Models\MA_PocketGear_L_Base.mwm</Model>
       <Components>
-        <Component Subtype="SteelPlate" Count="2" />
-        <Component Subtype="Construction" Count="10" />
-        <Component Subtype="SmallTube" Count="4" />
-        <Component Subtype="Motor" Count="1" />
-        <Component Subtype="Computer" Count="1" />
-        <Component Subtype="SteelPlate" Count="2" />
-        <Component Subtype="MetalGrid" Count="1" />
+        <Component Subtype="SteelPlate" Count="40" />
+        <Component Subtype="Construction" Count="80" />
+        <Component Subtype="LargeTube" Count="16" />
+        <Component Subtype="Motor" Count="16" />
+        <Component Subtype="Computer" Count="2" />
+        <Component Subtype="SteelPlate" Count="400" />
+        <Component Subtype="MetalGrid" Count="60" />
       </Components>
       <CriticalComponent Subtype="Computer" Index="0" />
       <MountPoints>
-        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-        <MountPoint Side="Left" StartX="0.50" StartY="0.00" EndX="1.00" EndY="1.00" />
-        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
-        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Left" StartX="1.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
       </MountPoints>
-      <BlockPairName>MA_PocketGear_Base</BlockPairName>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_L_Base_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_L_Base_Constr2.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_L_Base</BlockPairName>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
@@ -110,35 +113,32 @@
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>1E+09</MaxForceMagnitude>
-      <PropulsionForce>1E+09</PropulsionForce>
-
-      <RotorPart>MA_PocketGear_Rotor_sm</RotorPart>
-
+      <MaxForceMagnitude>1E+10</MaxForceMagnitude>
+      <DangerousTorqueThreshold>1E+10</DangerousTorqueThreshold>
+      <RotorPart>MA_PocketGear_L_Rotor</RotorPart>
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
-      <RotorDisplacementMinSmall>-0.05</RotorDisplacementMinSmall>
-      <RotorDisplacementMaxSmall>0.05</RotorDisplacementMaxSmall>
+      <RotorDisplacementMinSmall>-0.11</RotorDisplacementMinSmall>
+      <RotorDisplacementMaxSmall>0.11</RotorDisplacementMaxSmall>
       <RotorDisplacementInModel>0.0</RotorDisplacementInModel>
-      <GuiVisible>true</GuiVisible>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
-      <SafetyDetach>5</SafetyDetach>
-      <SafetyDetachMax>5</SafetyDetachMax>
+      <SafetyDetach>20</SafetyDetach>
+      <SafetyDetachMax>20</SafetyDetachMax>
       <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
       <DestroySound>WepSmallWarheadExpl</DestroySound>
-      <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
       <PCU>100</PCU>
     </Definition>
 
+    <!-- Part -->
     <Definition>
       <Id>
         <TypeId>MotorAdvancedRotor</TypeId>
         <SubtypeId>MA_PocketGear_Rotor</SubtypeId>
       </Id>
-      <DisplayName>PocketGear Part</DisplayName>
+      <DisplayName>DisplayName_PocketGear_Part</DisplayName>
       <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <GuiVisible>false</GuiVisible>
       <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
@@ -146,7 +146,6 @@
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_Rotor.mwm</Model>
       <UseModelIntersection>true</UseModelIntersection>
-      <GuiVisible>false</GuiVisible>
       <Components>
         <Component Subtype="Construction" Count="20" />
         <Component Subtype="LargeTube" Count="24" />
@@ -163,58 +162,60 @@
       <BuildProgressModels>
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Rotor_Constr1.mwm" />
       </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
       <MirroringY>Z</MirroringY>
       <MirroringZ>Y</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>5</BuildTimeSeconds>
-      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
     </Definition>
 
     <Definition>
       <Id>
         <TypeId>MotorAdvancedRotor</TypeId>
-        <SubtypeId>MA_PocketGear_Rotor_sm</SubtypeId>
+        <SubtypeId>MA_PocketGear_L_Rotor</SubtypeId>
       </Id>
-      <DisplayName>PocketGear Part Small</DisplayName>
+      <DisplayName>DisplayName_PocketGear_Large_Part</DisplayName>
       <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
-      <BlockPairName>MA_PocketGear_Rotor_sm</BlockPairName>
-      <CubeSize>Small</CubeSize>
-      <BlockTopology>TriangleMesh</BlockTopology>
-      <Size x="5" y="1" z="1" />
-      <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_Rotor_sm.mwm</Model>
-      <UseModelIntersection>true</UseModelIntersection>
       <GuiVisible>false</GuiVisible>
+      <BlockPairName>MA_PocketGear_L_Rotor</BlockPairName>
+      <CubeSize>Large</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="9" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_L_Rotor.mwm</Model>
+      <UseModelIntersection>true</UseModelIntersection>
       <Components>
-        <Component Subtype="Construction" Count="2" />
-        <Component Subtype="LargeTube" Count="5" />
-        <Component Subtype="Construction" Count="6" />
-        <Component Subtype="SmallTube" Count="7" />
-        <Component Subtype="Motor" Count="4" />
-        <Component Subtype="SteelPlate" Count="10" />
-        <Component Subtype="MetalGrid" Count="10" />
+        <Component Subtype="Construction" Count="40" />
+        <Component Subtype="LargeTube" Count="100" />
+        <Component Subtype="Construction" Count="120" />
+        <Component Subtype="SmallTube" Count="120" />
+        <Component Subtype="Motor" Count="24" />
+        <Component Subtype="SteelPlate" Count="100" />
+        <Component Subtype="MetalGrid" Count="150" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
       <MountPoints>
         <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
       </MountPoints>
       <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Rotor_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_Constr1.mwm" />
       </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
       <MirroringY>Z</MirroringY>
       <MirroringZ>Y</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>5</BuildTimeSeconds>
-      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
     </Definition>
 
+    <!-- Pad -->
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Pad</SubtypeId>
       </Id>
-      <DisplayName>PocketGear Pad</DisplayName>
+      <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <GuiVisible>false</GuiVisible>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="1" y="1" z="1" />
@@ -237,52 +238,11 @@
       <BuildProgressModels>
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_Constr1.mwm" />
       </BuildProgressModels>
-      <BlockPairName>MA_PocketGear_Pad</BlockPairName>
-      <GuiVisible>false</GuiVisible>
-      <MirroringX>Z</MirroringX>
-      <MirroringY>None</MirroringY>
-      <MirroringZ>X</MirroringZ>
-      <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
-      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
-      <DamagedSound>ParticleHeavyMech</DamagedSound>
-      <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
-      <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
-      <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
-      <DestroySound>PoofExplosionCat3</DestroySound>
-    </Definition>
-
-    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
-      <Id>
+      <BlockVariant>
         <TypeId>LandingGear</TypeId>
-        <SubtypeId>MA_PocketGear_Pad_sm</SubtypeId>
-      </Id>
-      <DisplayName>PocketGear Pad Small</DisplayName>
-      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
-      <CubeSize>Small</CubeSize>
-      <BlockTopology>TriangleMesh</BlockTopology>
-      <Size x="1" y="1" z="1" />
-      <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_Pad_sm.mwm</Model>
-      <LockSound>ShipLandGearOn</LockSound>
-      <UnlockSound>ShipLandGearOff</UnlockSound>
-      <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
-      <Components>
-
-        <Component Subtype="Construction" Count="5" />
-        <Component Subtype="Motor" Count="1" />
-        <Component Subtype="SteelPlate" Count="1" />
-        <Component Subtype="MetalGrid" Count="4" />
-      </Components>
-      <CriticalComponent Subtype="Motor" Index="0" />
-      <MountPoints>
-        <MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
-      </MountPoints>
-      <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
-      </BuildProgressModels>
+        <SubtypeId>MA_PocketGear_L_Pad</SubtypeId>
+      </BlockVariant>
       <BlockPairName>MA_PocketGear_Pad</BlockPairName>
-      <GuiVisible>false</GuiVisible>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
@@ -294,213 +254,6 @@
       <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
-    </Definition>
-
-    <!-- Large size -->
-
-    <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
-      <Id>
-        <TypeId>MotorAdvancedStator</TypeId>
-        <SubtypeId>MA_PocketGear_L_Base</SubtypeId>
-      </Id>
-      <DisplayName>PocketGear L Base</DisplayName>
-      <Icon>Textures\MA_PocketGear_Base.dds</Icon>
-      <CubeSize>Large</CubeSize>
-      <BlockTopology>TriangleMesh</BlockTopology>
-      <Size x="2" y="2" z="2" />
-      <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_L_Base.mwm</Model>
-      <BuildProgressModels>
-        <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_L_Base_Constr1.mwm" />
-        <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_L_Base_Constr2.mwm" />
-      </BuildProgressModels>
-      <Components>
-        <Component Subtype="SteelPlate" Count="40" />
-        <Component Subtype="Construction" Count="80" />
-        <Component Subtype="LargeTube" Count="16" />
-        <Component Subtype="Motor" Count="16" />
-        <Component Subtype="Computer" Count="2" />
-        <Component Subtype="SteelPlate" Count="400" />
-        <Component Subtype="MetalGrid" Count="60" />
-      </Components>
-      <CriticalComponent Subtype="Computer" Index="0" />
-      <MountPoints>
-        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-        <MountPoint Side="Left" StartX="1.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-      </MountPoints>
-      <BlockPairName>MA_PocketGear_L_Base</BlockPairName>
-      <MirroringX>Z</MirroringX>
-      <MirroringY>None</MirroringY>
-      <MirroringZ>X</MirroringZ>
-      <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>20</BuildTimeSeconds>
-      <PrimarySound>BlockRotor</PrimarySound>
-      <ResourceSinkGroup>Utility</ResourceSinkGroup>
-      <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>1E+10</MaxForceMagnitude>
-      <PropulsionForce>1E+10</PropulsionForce>
-
-      <RotorPart>MA_PocketGear_L_Rotor</RotorPart>
-
-      <RotorDisplacementMin>-0.1</RotorDisplacementMin>
-      <RotorDisplacementMax>0.1</RotorDisplacementMax>
-      <RotorDisplacementMinSmall>-0.11</RotorDisplacementMinSmall>
-      <RotorDisplacementMaxSmall>0.11</RotorDisplacementMaxSmall>
-      <RotorDisplacementInModel>0.0</RotorDisplacementInModel>
-      <GuiVisible>true</GuiVisible>
-      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
-      <DamagedSound>ParticleHeavyMech</DamagedSound>
-      <SafetyDetach>20</SafetyDetach>
-      <SafetyDetachMax>20</SafetyDetachMax>
-      <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
-      <DestroySound>WepSmallWarheadExpl</DestroySound>
-      <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-      <DangerousTorqueThreshold>1E+10</DangerousTorqueThreshold>
-      <PCU>100</PCU>
-    </Definition>
-
-    <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
-      <Id>
-        <TypeId>MotorAdvancedStator</TypeId>
-        <SubtypeId>MA_PocketGear_L_Base_sm</SubtypeId>
-      </Id>
-      <DisplayName>PocketGear L Base Small</DisplayName>
-      <Icon>Textures\MA_PocketGear_Base.dds</Icon>
-      <CubeSize>Small</CubeSize>
-      <BlockTopology>TriangleMesh</BlockTopology>
-      <Size x="2" y="2" z="2" />
-      <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_L_Base_sm.mwm</Model>
-      <BuildProgressModels>
-        <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_L_Base_sm_Constr1.mwm" />
-        <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_L_Base_sm_Constr2.mwm" />
-      </BuildProgressModels>
-      <UseModelIntersection>false</UseModelIntersection>
-      <Components>
-        <Component Subtype="SteelPlate" Count="8" />
-        <Component Subtype="Construction" Count="40" />
-        <Component Subtype="SmallTube" Count="16" />
-        <Component Subtype="Motor" Count="4" />
-        <Component Subtype="Computer" Count="2" />
-        <Component Subtype="SteelPlate" Count="8" />
-        <Component Subtype="MetalGrid" Count="6" />
-      </Components>
-      <CriticalComponent Subtype="Computer" Index="0" />
-      <MountPoints>
-        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-        <MountPoint Side="Left" StartX="1.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
-      </MountPoints>
-      <BlockPairName>MA_PocketGear_L_Base</BlockPairName>
-      <MirroringX>Z</MirroringX>
-      <MirroringY>None</MirroringY>
-      <MirroringZ>X</MirroringZ>
-      <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>20</BuildTimeSeconds>
-      <PrimarySound>BlockRotor</PrimarySound>
-      <ResourceSinkGroup>Utility</ResourceSinkGroup>
-      <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>1E+09</MaxForceMagnitude>
-      <PropulsionForce>1E+09</PropulsionForce>
-
-      <RotorPart>MA_PocketGear_L_Rotor_sm</RotorPart>
-
-      <RotorDisplacementMin>-0.1</RotorDisplacementMin>
-      <RotorDisplacementMax>0.1</RotorDisplacementMax>
-      <RotorDisplacementMinSmall>-0.05</RotorDisplacementMinSmall>
-      <RotorDisplacementMaxSmall>0.05</RotorDisplacementMaxSmall>
-      <RotorDisplacementInModel>0.0</RotorDisplacementInModel>
-      <GuiVisible>true</GuiVisible>
-      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
-      <DamagedSound>ParticleHeavyMech</DamagedSound>
-      <SafetyDetach>5</SafetyDetach>
-      <SafetyDetachMax>5</SafetyDetachMax>
-      <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
-      <DestroySound>WepSmallWarheadExpl</DestroySound>
-      <GeneralDamageMultiplier>0.5</GeneralDamageMultiplier>
-      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
-      <PCU>100</PCU>
-    </Definition>
-
-    <Definition>
-      <Id>
-        <TypeId>MotorAdvancedRotor</TypeId>
-        <SubtypeId>MA_PocketGear_L_Rotor</SubtypeId>
-      </Id>
-      <DisplayName>PocketGear L Part</DisplayName>
-      <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
-      <BlockPairName>MA_PocketGear_L_Rotor</BlockPairName>
-      <CubeSize>Large</CubeSize>
-      <BlockTopology>TriangleMesh</BlockTopology>
-      <Size x="9" y="1" z="1" />
-      <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_L_Rotor.mwm</Model>
-      <UseModelIntersection>true</UseModelIntersection>
-      <GuiVisible>false</GuiVisible>
-      <Components>
-        <Component Subtype="Construction" Count="40" />
-        <Component Subtype="LargeTube" Count="100" />
-        <Component Subtype="Construction" Count="120" />
-        <Component Subtype="SmallTube" Count="120" />
-        <Component Subtype="Motor" Count="24" />
-        <Component Subtype="SteelPlate" Count="100" />
-        <Component Subtype="MetalGrid" Count="150" />
-      </Components>
-      <CriticalComponent Subtype="Motor" Index="0" />
-      <MountPoints>
-        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
-      </MountPoints>
-      <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_Constr1.mwm" />
-      </BuildProgressModels>
-      <MirroringY>Z</MirroringY>
-      <MirroringZ>Y</MirroringZ>
-      <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>5</BuildTimeSeconds>
-      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
-    </Definition>
-
-    <Definition>
-      <Id>
-        <TypeId>MotorAdvancedRotor</TypeId>
-        <SubtypeId>MA_PocketGear_L_Rotor_sm</SubtypeId>
-      </Id>
-      <DisplayName>PocketGear L Part Small</DisplayName>
-      <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
-      <BlockPairName>MA_PocketGear_L_Rotor_sm</BlockPairName>
-      <CubeSize>Small</CubeSize>
-      <BlockTopology>TriangleMesh</BlockTopology>
-      <Size x="9" y="1" z="1" />
-      <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_L_Rotor_sm.mwm</Model>
-      <UseModelIntersection>true</UseModelIntersection>
-      <GuiVisible>false</GuiVisible>
-      <Components>
-        <Component Subtype="Construction" Count="8" />
-        <Component Subtype="LargeTube" Count="20" />
-        <Component Subtype="Construction" Count="24" />
-        <Component Subtype="SmallTube" Count="28" />
-        <Component Subtype="Motor" Count="10" />
-        <Component Subtype="SteelPlate" Count="15" />
-        <Component Subtype="MetalGrid" Count="20" />
-      </Components>
-      <CriticalComponent Subtype="Motor" Index="0" />
-      <MountPoints>
-        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
-      </MountPoints>
-      <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_sm_Constr1.mwm" />
-      </BuildProgressModels>
-      <MirroringY>Z</MirroringY>
-      <MirroringZ>Y</MirroringZ>
-      <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>5</BuildTimeSeconds>
-      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
     </Definition>
 
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
@@ -508,8 +261,9 @@
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_L_Pad</SubtypeId>
       </Id>
-      <DisplayName>PocketGear L Pad</DisplayName>
+      <DisplayName>DisplayName_PocketGear_Large_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <GuiVisible>false</GuiVisible>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="3" y="1" z="1" />
@@ -519,7 +273,6 @@
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
-
         <Component Subtype="Construction" Count="20" />
         <Component Subtype="LargeTube" Count="8" />
         <Component Subtype="Motor" Count="12" />
@@ -534,7 +287,6 @@
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
-      <GuiVisible>false</GuiVisible>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
@@ -548,56 +300,13 @@
       <DestroySound>PoofExplosionCat3</DestroySound>
     </Definition>
 
-    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
-      <Id>
-        <TypeId>LandingGear</TypeId>
-        <SubtypeId>MA_PocketGear_L_Pad_sm</SubtypeId>
-      </Id>
-      <DisplayName>PocketGear L Pad Small</DisplayName>
-      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
-      <CubeSize>Small</CubeSize>
-      <BlockTopology>TriangleMesh</BlockTopology>
-      <Size x="3" y="1" z="1" />
-      <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_L_Pad_sm.mwm</Model>
-      <LockSound>ShipLandGearOn</LockSound>
-      <UnlockSound>ShipLandGearOff</UnlockSound>
-      <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
-      <Components>
-        <Component Subtype="Construction" Count="10" />
-
-        <Component Subtype="Motor" Count="2" />
-        <Component Subtype="SteelPlate" Count="2" />
-        <Component Subtype="MetalGrid" Count="8" />
-      </Components>
-      <CriticalComponent Subtype="Motor" Index="0" />
-      <MountPoints>
-        <MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
-      </MountPoints>
-      <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
-      </BuildProgressModels>
-      <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
-      <GuiVisible>false</GuiVisible>
-      <MirroringX>Z</MirroringX>
-      <MirroringY>None</MirroringY>
-      <MirroringZ>X</MirroringZ>
-      <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
-      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
-      <DamagedSound>ParticleHeavyMech</DamagedSound>
-      <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
-      <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
-      <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
-      <DestroySound>PoofExplosionCat3</DestroySound>
-    </Definition>
-
+    <!-- MagLock -->
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Magnet</SubtypeId>
       </Id>
-      <DisplayName>PocketGear MagLock</DisplayName>
+      <DisplayName>DisplayName_PocketGear_MagLock</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
@@ -640,12 +349,309 @@
       <PCU>35</PCU>
     </Definition>
 
+    <!-- Small Grid -->
+    <!-- Base -->
+    <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
+      <Id>
+        <TypeId>MotorAdvancedStator</TypeId>
+        <SubtypeId>MA_PocketGear_Base_sm</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Base</DisplayName>
+      <Icon>Textures\MA_PocketGear_Base.dds</Icon>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="1" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_Base_sm.mwm</Model>
+      <Components>
+        <Component Subtype="SteelPlate" Count="2" />
+        <Component Subtype="Construction" Count="10" />
+        <Component Subtype="SmallTube" Count="4" />
+        <Component Subtype="Motor" Count="1" />
+        <Component Subtype="Computer" Count="1" />
+        <Component Subtype="SteelPlate" Count="2" />
+        <Component Subtype="MetalGrid" Count="1" />
+      </Components>
+      <CriticalComponent Subtype="Computer" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Left" StartX="0.50" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_Base_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_Base_sm_Constr2.mwm" />
+      </BuildProgressModels>
+      <BlockVariants>
+        <BlockVariant>
+          <TypeId>MotorAdvancedStator</TypeId>
+          <SubtypeId>MA_PocketGear_L_Base_sm</SubtypeId>
+        </BlockVariant>
+      </BlockVariants>
+      <BlockPairName>MA_PocketGear_Base</BlockPairName>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>20</BuildTimeSeconds>
+      <PrimarySound>BlockRotor</PrimarySound>
+      <ResourceSinkGroup>Utility</ResourceSinkGroup>
+      <RequiredPowerInput>0.002</RequiredPowerInput>
+      <MaxForceMagnitude>1E+09</MaxForceMagnitude>
+      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
+      <RotorPart>MA_PocketGear_Rotor_sm</RotorPart>
+      <RotorDisplacementMin>-0.1</RotorDisplacementMin>
+      <RotorDisplacementMax>0.1</RotorDisplacementMax>
+      <RotorDisplacementMinSmall>-0.05</RotorDisplacementMinSmall>
+      <RotorDisplacementMaxSmall>0.05</RotorDisplacementMaxSmall>
+      <RotorDisplacementInModel>0.0</RotorDisplacementInModel>
+      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+      <DamagedSound>ParticleHeavyMech</DamagedSound>
+      <SafetyDetach>5</SafetyDetach>
+      <SafetyDetachMax>5</SafetyDetachMax>
+      <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
+      <DestroySound>WepSmallWarheadExpl</DestroySound>      
+      <PCU>100</PCU>
+    </Definition>
+
+    <Definition xsi:type="MyObjectBuilder_MotorStatorDefinition">
+      <Id>
+        <TypeId>MotorAdvancedStator</TypeId>
+        <SubtypeId>MA_PocketGear_L_Base_sm</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Large_Base</DisplayName>
+      <Icon>Textures\MA_PocketGear_Base.dds</Icon>
+      <GuiVisible>false</GuiVisible>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="2" y="2" z="2" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_L_Base_sm.mwm</Model>
+      <Components>
+        <Component Subtype="SteelPlate" Count="8" />
+        <Component Subtype="Construction" Count="40" />
+        <Component Subtype="SmallTube" Count="16" />
+        <Component Subtype="Motor" Count="4" />
+        <Component Subtype="Computer" Count="2" />
+        <Component Subtype="SteelPlate" Count="8" />
+        <Component Subtype="MetalGrid" Count="6" />
+      </Components>
+      <CriticalComponent Subtype="Computer" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Left" StartX="1.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+        <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="2.00" EndY="2.00" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="0.5" File="Models\MA_PocketGear_L_Base_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1" File="Models\MA_PocketGear_L_Base_sm_Constr2.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_L_Base</BlockPairName>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>20</BuildTimeSeconds>
+      <PrimarySound>BlockRotor</PrimarySound>
+      <ResourceSinkGroup>Utility</ResourceSinkGroup>
+      <RequiredPowerInput>0.002</RequiredPowerInput>
+      <MaxForceMagnitude>1E+09</MaxForceMagnitude>
+      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
+      <RotorPart>MA_PocketGear_L_Rotor_sm</RotorPart>
+      <RotorDisplacementMin>-0.1</RotorDisplacementMin>
+      <RotorDisplacementMax>0.1</RotorDisplacementMax>
+      <RotorDisplacementMinSmall>-0.05</RotorDisplacementMinSmall>
+      <RotorDisplacementMaxSmall>0.05</RotorDisplacementMaxSmall>
+      <RotorDisplacementInModel>0.0</RotorDisplacementInModel>
+      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+      <DamagedSound>ParticleHeavyMech</DamagedSound>
+      <SafetyDetach>5</SafetyDetach>
+      <SafetyDetachMax>5</SafetyDetachMax>
+      <DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
+      <DestroySound>WepSmallWarheadExpl</DestroySound>
+      <PCU>100</PCU>
+    </Definition>
+
+    <!-- Part -->
+    <Definition>
+      <Id>
+        <TypeId>MotorAdvancedRotor</TypeId>
+        <SubtypeId>MA_PocketGear_Rotor_sm</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Part</DisplayName>
+      <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <GuiVisible>false</GuiVisible>
+      <BlockPairName>MA_PocketGear_Rotor_sm</BlockPairName>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="5" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_Rotor_sm.mwm</Model>
+      <UseModelIntersection>true</UseModelIntersection>
+      <Components>
+        <Component Subtype="Construction" Count="2" />
+        <Component Subtype="LargeTube" Count="5" />
+        <Component Subtype="Construction" Count="6" />
+        <Component Subtype="SmallTube" Count="7" />
+        <Component Subtype="Motor" Count="4" />
+        <Component Subtype="SteelPlate" Count="10" />
+        <Component Subtype="MetalGrid" Count="10" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Rotor_sm_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
+      <MirroringY>Z</MirroringY>
+      <MirroringZ>Y</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>5</BuildTimeSeconds>
+      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
+    </Definition>
+
+    <Definition>
+      <Id>
+        <TypeId>MotorAdvancedRotor</TypeId>
+        <SubtypeId>MA_PocketGear_L_Rotor_sm</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Large_Part</DisplayName>
+      <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <GuiVisible>false</GuiVisible>
+      <BlockPairName>MA_PocketGear_L_Rotor_sm</BlockPairName>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="9" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_L_Rotor_sm.mwm</Model>
+      <UseModelIntersection>true</UseModelIntersection>
+      <Components>
+        <Component Subtype="Construction" Count="8" />
+        <Component Subtype="LargeTube" Count="20" />
+        <Component Subtype="Construction" Count="24" />
+        <Component Subtype="SmallTube" Count="28" />
+        <Component Subtype="Motor" Count="10" />
+        <Component Subtype="SteelPlate" Count="15" />
+        <Component Subtype="MetalGrid" Count="20" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Rotor_sm_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
+      <MirroringY>Z</MirroringY>
+      <MirroringZ>Y</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>5</BuildTimeSeconds>
+    </Definition>
+
+    <!-- Pad -->
+    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+      <Id>
+        <TypeId>LandingGear</TypeId>
+        <SubtypeId>MA_PocketGear_Pad_sm</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
+      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <GuiVisible>false</GuiVisible>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="1" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_Pad_sm.mwm</Model>
+      <LockSound>ShipLandGearOn</LockSound>
+      <UnlockSound>ShipLandGearOff</UnlockSound>
+      <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
+      <Components>
+        <Component Subtype="Construction" Count="5" />
+        <Component Subtype="Motor" Count="1" />
+        <Component Subtype="SteelPlate" Count="1" />
+        <Component Subtype="MetalGrid" Count="4" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockVariant>
+        <TypeId>LandingGear</TypeId>
+        <SubtypeId>MA_PocketGear_L_Pad_sm</SubtypeId>
+      </BlockVariant>
+      <BlockPairName>MA_PocketGear_Pad</BlockPairName>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+      <DamagedSound>ParticleHeavyMech</DamagedSound>
+      <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
+      <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
+      <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
+      <DestroySound>PoofExplosionCat3</DestroySound>
+    </Definition>
+
+    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+      <Id>
+        <TypeId>LandingGear</TypeId>
+        <SubtypeId>MA_PocketGear_L_Pad_sm</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Large_Pad</DisplayName>
+      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <GuiVisible>false</GuiVisible>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="3" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_L_Pad_sm.mwm</Model>
+      <LockSound>ShipLandGearOn</LockSound>
+      <UnlockSound>ShipLandGearOff</UnlockSound>
+      <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
+      <Components>
+        <Component Subtype="Construction" Count="10" />
+        <Component Subtype="Motor" Count="2" />
+        <Component Subtype="SteelPlate" Count="2" />
+        <Component Subtype="MetalGrid" Count="8" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+      <DamagedSound>ParticleHeavyMech</DamagedSound>
+      <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
+      <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
+      <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
+      <DestroySound>PoofExplosionCat3</DestroySound>
+    </Definition>
+
+    <!-- MagLock -->
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Magnet_sm</SubtypeId>
       </Id>
-      <DisplayName>PocketGear MagLock Small</DisplayName>
+      <DisplayName>DisplayName_PocketGear_MagLock</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <CubeSize>Small</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
@@ -656,7 +662,6 @@
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
-
         <Component Subtype="Construction" Count="5" />
         <Component Subtype="Motor" Count="1" />
         <Component Subtype="SteelPlate" Count="1" />

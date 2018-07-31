@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Settings;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.Utils.Localization;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Profiler;
 using SpaceEngineers.Game.ModAPI;
@@ -86,7 +88,7 @@ namespace AutoMcD.PocketGear.Logic {
                 if (value != _settings.LockRetractBehavior) {
                     _settings.LockRetractBehavior = value;
                     _switchDeployStateSwitch.UpdateVisual();
-                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(LockRetractBehavior), Value = BitConverter.GetBytes((long) value) });
+                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(LockRetractBehavior), Value = BitConverter.GetBytes((long)value) });
                 }
             }
         }
@@ -191,8 +193,8 @@ namespace AutoMcD.PocketGear.Logic {
 
                 var controls = new List<IMyTerminalControl>();
                 _deployVelocitySlider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
-                    DisplayName(nameof(DeployVelocity)),
-                    tooltip: "The speed at which the PocketGear is retracted / extended.",
+                    PocketGearText.DeployVelocity.String,
+                    tooltip: PocketGearText.Tooltip_DeployVelocity.String,
                     writer: (block, builder) => builder.Append($"{block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
                     getter: block => block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity ?? 0,
                     setter: (block, value) => {
@@ -210,14 +212,14 @@ namespace AutoMcD.PocketGear.Logic {
                 controls.Add(_deployVelocitySlider);
 
                 _lockRetractBehaviorCombobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
-                    DisplayName(nameof(LockRetractBehavior)),
-                    tooltip: "Whether it should prevent retracting if locked or if it should unlock on retract.",
-                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
-                    getter: block => (long) (block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
+                    PocketGearText.LockRetractBehavior.String,
+                    tooltip: PocketGearText.Tooltip_LockRetractBehavior.String,
+                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long)x, Value = Localize.Get(x.ToString()) })),
+                    getter: block => (long)(block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
                     setter: (block, value) => {
                         var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
                         if (logic != null) {
-                            logic.LockRetractBehavior = (LockRetractBehaviors) value;
+                            logic.LockRetractBehavior = (LockRetractBehaviors)value;
                         }
                     },
                     enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
@@ -227,8 +229,8 @@ namespace AutoMcD.PocketGear.Logic {
                 controls.Add(_lockRetractBehaviorCombobox);
 
                 _createNewPadButton = TerminalControlUtils.CreateButton<IMyMotorAdvancedStator>(
-                    DisplayName(nameof(PlaceLandingPad)),
-                    tooltip: "Place a new PocketGear pad.",
+                    PocketGearText.PlaceLandingPad.String,
+                    tooltip: PocketGearText.Tooltip_PlaceLandingPad.String,
                     action: PlaceLandingPad,
                     enabled: block => {
                         if (!PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
@@ -249,10 +251,10 @@ namespace AutoMcD.PocketGear.Logic {
                 controls.Add(_createNewPadButton);
 
                 _switchDeployStateSwitch = TerminalControlUtils.CreateOnOffSwitch<IMyMotorAdvancedStator>(
-                    DisplayName(nameof(SwitchDeployState)),
-                    tooltip: "Switch between deploy and retract.",
-                    onText: "Deploy",
-                    offText: "Retract",
+                    PocketGearText.SwitchDeployState.String,
+                    tooltip: PocketGearText.Tooltip_SwitchDeployState.String,
+                    onText: PocketGearText.Deploy.String,
+                    offText: PocketGearText.Retract.String,
                     getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeploying,
                     setter: (block, value) => block?.GameLogic?.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
                     enabled: block => {
@@ -506,14 +508,14 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnEntitySyncMessageReceived)) : null) {
                 using (Log.BeginMethod(nameof(OnEntitySyncMessageReceived))) {
                     if (message is PropertySyncMessage) {
-                        var syncMessage = (PropertySyncMessage) message;
+                        var syncMessage = (PropertySyncMessage)message;
                         switch (syncMessage.Name) {
                             case nameof(DeployVelocity):
                                 _settings.DeployVelocity = BitConverter.ToSingle(syncMessage.Value, 0);
                                 _deployVelocitySlider.UpdateVisual();
                                 break;
                             case nameof(LockRetractBehavior):
-                                _settings.LockRetractBehavior = (LockRetractBehaviors) BitConverter.ToInt64(syncMessage.Value, 0);
+                                _settings.LockRetractBehavior = (LockRetractBehaviors)BitConverter.ToInt64(syncMessage.Value, 0);
                                 _lockRetractBehaviorCombobox.UpdateVisual();
                                 _switchDeployStateSwitch.UpdateVisual();
                                 break;

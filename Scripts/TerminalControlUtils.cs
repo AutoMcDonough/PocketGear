@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Sandbox.Game.Localization;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
 using VRage.ModAPI;
@@ -18,15 +19,15 @@ namespace AutoMcD.PocketGear {
 
             listbox.Multiselect = multiselect;
             listbox.VisibleRowsCount = visibleRowsCount;
-            listbox.ListContent = (block, list, sel) => content((TBlock) block, list, sel);
-            listbox.ItemSelected = (block, list) => selected((TBlock) block, list);
+            listbox.ListContent = (block, list, sel) => content((TBlock)block, list, sel);
+            listbox.ItemSelected = (block, list) => selected((TBlock)block, list);
 
             return listbox;
         }
 
         public static IMyTerminalControlButton CreateButton<TBlock>(string title, Action<TBlock> action, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
             var button = CreateControl<IMyTerminalControlButton, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
-            button.Action = block => action((TBlock) block);
+            button.Action = block => action((TBlock)block);
 
             return button;
         }
@@ -34,8 +35,8 @@ namespace AutoMcD.PocketGear {
         public static IMyTerminalControlCheckbox CreateCheckbox<TBlock>(string title, Func<TBlock, bool> getter, Action<TBlock, bool> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
             var checkbox = CreateControl<IMyTerminalControlCheckbox, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
 
-            checkbox.Getter = block => getter((TBlock) block);
-            checkbox.Setter = (block, value) => setter((TBlock) block, value);
+            checkbox.Getter = block => getter((TBlock)block);
+            checkbox.Setter = (block, value) => setter((TBlock)block, value);
 
             return checkbox;
         }
@@ -43,8 +44,8 @@ namespace AutoMcD.PocketGear {
         public static IMyTerminalControlColor CreateColor<TBlock>(string title, Func<TBlock, Color> getter, Action<TBlock, Color> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
             var color = CreateControl<IMyTerminalControlColor, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
 
-            color.Getter = block => getter((TBlock) block);
-            color.Setter = (block, value) => setter((TBlock) block, value);
+            color.Getter = block => getter((TBlock)block);
+            color.Setter = (block, value) => setter((TBlock)block, value);
             return color;
         }
 
@@ -52,8 +53,8 @@ namespace AutoMcD.PocketGear {
             var combobox = CreateControl<IMyTerminalControlCombobox, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
 
             combobox.ComboBoxContent = content;
-            combobox.Getter = block => getter((TBlock) block);
-            combobox.Setter = (block, value) => setter((TBlock) block, value);
+            combobox.Getter = block => getter((TBlock)block);
+            combobox.Setter = (block, value) => setter((TBlock)block, value);
 
             return combobox;
         }
@@ -71,16 +72,16 @@ namespace AutoMcD.PocketGear {
 
             @switch.OnText = MyStringId.GetOrCompute(onText);
             @switch.OffText = MyStringId.GetOrCompute(offText);
-            @switch.Getter = block => getter((TBlock) block);
-            @switch.Setter = (block, value) => setter((TBlock) block, value);
+            @switch.Getter = block => getter((TBlock)block);
+            @switch.Setter = (block, value) => setter((TBlock)block, value);
 
             return @switch;
         }
 
         public static IMyTerminalControlSeparator CreateSeparator<TBlock>(Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
             var seperator = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlSeparator, TBlock>(string.Empty);
-            seperator.Enabled = block => enabled?.Invoke((TBlock) block) ?? true;
-            seperator.Visible = block => visible?.Invoke((TBlock) block) ?? true;
+            seperator.Enabled = block => enabled?.Invoke((TBlock)block) ?? true;
+            seperator.Visible = block => visible?.Invoke((TBlock)block) ?? true;
             seperator.SupportsMultipleBlocks = supportsMultipleBlocks;
             return seperator;
         }
@@ -88,9 +89,9 @@ namespace AutoMcD.PocketGear {
         public static IMyTerminalControlSlider CreateSlider<TBlock>(string title, Action<TBlock, StringBuilder> writer, Func<TBlock, float> getter, Action<TBlock, float> setter, Func<IMyTerminalBlock, float> min, Func<IMyTerminalBlock, float> max, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
             var slider = CreateControl<IMyTerminalControlSlider, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
 
-            slider.Writer = (block, builder) => writer((TBlock) block, builder);
-            slider.Getter = block => getter((TBlock) block);
-            slider.Setter = (block, value) => setter((TBlock) block, value);
+            slider.Writer = (block, builder) => writer((TBlock)block, builder);
+            slider.Getter = block => getter((TBlock)block);
+            slider.Setter = (block, value) => setter((TBlock)block, value);
             slider.SetLimits(min, max);
 
             return slider;
@@ -152,8 +153,8 @@ namespace AutoMcD.PocketGear {
                 titleTooltipControl.Tooltip = MyStringId.GetOrCompute(tooltip);
             }
 
-            control.Enabled = block => enabled?.Invoke((TBlock) block) ?? false;
-            control.Visible = block => visible?.Invoke((TBlock) block) ?? false;
+            control.Enabled = block => enabled?.Invoke((TBlock)block) ?? false;
+            control.Visible = block => visible?.Invoke((TBlock)block) ?? false;
             control.SupportsMultipleBlocks = supportsMultipleBlocks;
 
             return control;
@@ -172,10 +173,11 @@ namespace AutoMcD.PocketGear {
                 offName = new StringBuilder($"{@switch.OffText}");
                 writer = (block, builder) => builder.Append(control.Getter.Invoke(block) ? @switch.OnText : @switch.OffText);
             } else {
-                switchName = new StringBuilder($"{control.Title} On/Off");
-                onName = new StringBuilder($"{control.Title} On");
-                offName = new StringBuilder($"{control.Title} Off");
-                writer = (block, builder) => builder.Append(control.Getter.Invoke(block) ? "On" : "Off");
+
+                switchName = new StringBuilder($"{control.Title} {MySpaceTexts.ON}/{MySpaceTexts.OFF}");
+                onName = new StringBuilder($"{control.Title} {MySpaceTexts.ON}");
+                offName = new StringBuilder($"{control.Title} {MySpaceTexts.OFF}");
+                writer = (block, builder) => builder.Append(control.Getter.Invoke(block) ? $"{MySpaceTexts.ON}" : $"{MySpaceTexts.OFF}");
             }
 
             var onOffAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_OnOff");
