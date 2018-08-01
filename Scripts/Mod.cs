@@ -24,10 +24,10 @@ namespace AutoMcD.PocketGear {
         public const string NAME = "PocketGears";
 
         // important: set profile to false before publishing this mod.
-        public const bool PROFILE = true;
+        public const bool PROFILE = false;
 
         // important: change to info or none before publishing this mod.
-        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.All;
+        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Error;
 
         private const string LOG_FILE_TEMPLATE = "{0}.log";
 
