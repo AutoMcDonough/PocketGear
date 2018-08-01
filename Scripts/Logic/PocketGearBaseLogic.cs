@@ -28,9 +28,9 @@ namespace AutoMcD.PocketGear.Logic {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL)]
     public class PocketGearBaseLogic : MyGameLogicComponent {
         private const float FORCED_LOWER_LIMIT_DEG = 333.5f;
-        private const float FORCED_LOWER_LIMIT_RAD = (float) (Math.PI / 180) * FORCED_UPPER_LIMIT_DEG;
+        private const float FORCED_LOWER_LIMIT_RAD = (float) (Math.PI * FORCED_LOWER_LIMIT_DEG / 180.0);
         private const float FORCED_UPPER_LIMIT_DEG = 360.0f;
-        private const float FORCED_UPPER_LIMIT_RAD = (float) (Math.PI / 180) * FORCED_UPPER_LIMIT_DEG;
+        private const float FORCED_UPPER_LIMIT_RAD = (float) (Math.PI * FORCED_UPPER_LIMIT_DEG / 180.0);
 
         private const string POCKETGEAR_BASE = "MA_PocketGear_Base";
         private const string POCKETGEAR_BASE_LARGE = "MA_PocketGear_L_Base";
