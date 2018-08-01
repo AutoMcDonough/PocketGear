@@ -14,8 +14,8 @@ using VRageMath;
 namespace AutoMcD.PocketGear {
     public static class TerminalControlUtils {
         // todo: finalize this class and move it to mod utils project.
-        public static IMyTerminalControlListbox CreaListbox<TBlock>(string title, Action<TBlock, List<MyTerminalControlListBoxItem>, List<MyTerminalControlListBoxItem>> content, Action<TBlock, List<MyTerminalControlListBoxItem>> selected, bool multiselect, int visibleRowsCount, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
-            var listbox = CreateControl<IMyTerminalControlListbox, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
+        public static IMyTerminalControlListbox CreaListbox<TBlock>(string id, string title, Action<TBlock, List<MyTerminalControlListBoxItem>, List<MyTerminalControlListBoxItem>> content, Action<TBlock, List<MyTerminalControlListBoxItem>> selected, bool multiselect, int visibleRowsCount, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
+            var listbox = CreateControl<IMyTerminalControlListbox, TBlock>(id, title, tooltip, enabled, visible, supportsMultipleBlocks);
 
             listbox.Multiselect = multiselect;
             listbox.VisibleRowsCount = visibleRowsCount;
@@ -25,15 +25,15 @@ namespace AutoMcD.PocketGear {
             return listbox;
         }
 
-        public static IMyTerminalControlButton CreateButton<TBlock>(string title, Action<TBlock> action, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
-            var button = CreateControl<IMyTerminalControlButton, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
+        public static IMyTerminalControlButton CreateButton<TBlock>(string id, string title, Action<TBlock> action, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
+            var button = CreateControl<IMyTerminalControlButton, TBlock>(id, title, tooltip, enabled, visible, supportsMultipleBlocks);
             button.Action = block => action((TBlock) block);
 
             return button;
         }
 
-        public static IMyTerminalControlCheckbox CreateCheckbox<TBlock>(string title, Func<TBlock, bool> getter, Action<TBlock, bool> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
-            var checkbox = CreateControl<IMyTerminalControlCheckbox, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
+        public static IMyTerminalControlCheckbox CreateCheckbox<TBlock>(string id, string title, Func<TBlock, bool> getter, Action<TBlock, bool> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
+            var checkbox = CreateControl<IMyTerminalControlCheckbox, TBlock>(id, title, tooltip, enabled, visible, supportsMultipleBlocks);
 
             checkbox.Getter = block => getter((TBlock) block);
             checkbox.Setter = (block, value) => setter((TBlock) block, value);
@@ -41,16 +41,16 @@ namespace AutoMcD.PocketGear {
             return checkbox;
         }
 
-        public static IMyTerminalControlColor CreateColor<TBlock>(string title, Func<TBlock, Color> getter, Action<TBlock, Color> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
-            var color = CreateControl<IMyTerminalControlColor, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
+        public static IMyTerminalControlColor CreateColor<TBlock>(string id, string title, Func<TBlock, Color> getter, Action<TBlock, Color> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
+            var color = CreateControl<IMyTerminalControlColor, TBlock>(id, title, tooltip, enabled, visible, supportsMultipleBlocks);
 
             color.Getter = block => getter((TBlock) block);
             color.Setter = (block, value) => setter((TBlock) block, value);
             return color;
         }
 
-        public static IMyTerminalControlCombobox CreateCombobox<TBlock>(string title, Action<List<MyTerminalControlComboBoxItem>> content, Func<TBlock, long> getter, Action<TBlock, long> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
-            var combobox = CreateControl<IMyTerminalControlCombobox, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
+        public static IMyTerminalControlCombobox CreateCombobox<TBlock>(string id, string title, Action<List<MyTerminalControlComboBoxItem>> content, Func<TBlock, long> getter, Action<TBlock, long> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
+            var combobox = CreateControl<IMyTerminalControlCombobox, TBlock>(id, title, tooltip, enabled, visible, supportsMultipleBlocks);
 
             combobox.ComboBoxContent = content;
             combobox.Getter = block => getter((TBlock) block);
@@ -59,16 +59,16 @@ namespace AutoMcD.PocketGear {
             return combobox;
         }
 
-        public static IMyTerminalControlLabel CreateLabel<TBlock>(string title, Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
-            var label = CreateControl<IMyTerminalControlLabel, TBlock>(title, null, enabled, visible, supportsMultipleBlocks);
+        public static IMyTerminalControlLabel CreateLabel<TBlock>(string id, string title, Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
+            var label = CreateControl<IMyTerminalControlLabel, TBlock>(id, title, null, enabled, visible, supportsMultipleBlocks);
 
             label.Label = MyStringId.GetOrCompute(title);
 
             return label;
         }
 
-        public static IMyTerminalControlOnOffSwitch CreateOnOffSwitch<TBlock>(string title, Func<TBlock, bool> getter, Action<TBlock, bool> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false, string onText = "On", string offText = "Off") where TBlock : IMyTerminalBlock {
-            var @switch = CreateControl<IMyTerminalControlOnOffSwitch, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
+        public static IMyTerminalControlOnOffSwitch CreateOnOffSwitch<TBlock>(string id, string title, Func<TBlock, bool> getter, Action<TBlock, bool> setter, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false, string onText = "On", string offText = "Off") where TBlock : IMyTerminalBlock {
+            var @switch = CreateControl<IMyTerminalControlOnOffSwitch, TBlock>(id, title, tooltip, enabled, visible, supportsMultipleBlocks);
 
             @switch.OnText = MyStringId.GetOrCompute(onText);
             @switch.OffText = MyStringId.GetOrCompute(offText);
@@ -86,8 +86,8 @@ namespace AutoMcD.PocketGear {
             return seperator;
         }
 
-        public static IMyTerminalControlSlider CreateSlider<TBlock>(string title, Action<TBlock, StringBuilder> writer, Func<TBlock, float> getter, Action<TBlock, float> setter, Func<IMyTerminalBlock, float> min, Func<IMyTerminalBlock, float> max, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
-            var slider = CreateControl<IMyTerminalControlSlider, TBlock>(title, tooltip, enabled, visible, supportsMultipleBlocks);
+        public static IMyTerminalControlSlider CreateSlider<TBlock>(string id, string title, Action<TBlock, StringBuilder> writer, Func<TBlock, float> getter, Action<TBlock, float> setter, Func<IMyTerminalBlock, float> min, Func<IMyTerminalBlock, float> max, string tooltip = "", Func<TBlock, bool> enabled = null, Func<TBlock, bool> visible = null, bool supportsMultipleBlocks = false) where TBlock : IMyTerminalBlock {
+            var slider = CreateControl<IMyTerminalControlSlider, TBlock>(id, title, tooltip, enabled, visible, supportsMultipleBlocks);
 
             slider.Writer = (block, builder) => writer((TBlock) block, builder);
             slider.Getter = block => getter((TBlock) block);
@@ -141,12 +141,12 @@ namespace AutoMcD.PocketGear {
             }
         }
 
-        private static TControl CreateControl<TControl, TBlock>(string title, string tooltip, Func<TBlock, bool> enabled, Func<TBlock, bool> visible, bool supportsMultipleBlocks) where TControl : IMyTerminalControl where TBlock : IMyTerminalBlock {
-            if (string.IsNullOrWhiteSpace(title)) {
-                throw new ArgumentNullException(nameof(title), "Title can't be null or whitespaces");
+        private static TControl CreateControl<TControl, TBlock>(string id, string title, string tooltip, Func<TBlock, bool> enabled, Func<TBlock, bool> visible, bool supportsMultipleBlocks) where TControl : IMyTerminalControl where TBlock : IMyTerminalBlock {
+            if (string.IsNullOrWhiteSpace(id)) {
+                throw new ArgumentNullException(nameof(id), "Title can't be null or whitespaces");
             }
 
-            var control = MyAPIGateway.TerminalControls.CreateControl<TControl, TBlock>($"{Mod.NAME}.{PascalCase(title)}");
+            var control = MyAPIGateway.TerminalControls.CreateControl<TControl, TBlock>(id);
             if (control is IMyTerminalControlTitleTooltip) {
                 var titleTooltipControl = control as IMyTerminalControlTitleTooltip;
                 titleTooltipControl.Title = MyStringId.GetOrCompute(title);
@@ -162,6 +162,7 @@ namespace AutoMcD.PocketGear {
 
         private static List<IMyTerminalAction> CreateOnOffActions<TControl, TBlock>(TControl control) where TBlock : IMyTerminalBlock where TControl : IMyTerminalControl, IMyTerminalValueControl<bool>, IMyTerminalControlTitleTooltip {
             var actions = new List<IMyTerminalAction>();
+            var id = ((IMyTerminalControl) control).Id;
             Action<IMyTerminalBlock, StringBuilder> writer;
             StringBuilder switchName;
             StringBuilder onName;
@@ -179,7 +180,7 @@ namespace AutoMcD.PocketGear {
                 writer = (block, builder) => builder.Append(control.Getter.Invoke(block) ? $"{MySpaceTexts.ON}" : $"{MySpaceTexts.OFF}");
             }
 
-            var onOffAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_OnOff");
+            var onOffAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{id}_OnOff");
             onOffAction.Name = switchName;
             onOffAction.Icon = @"Textures\GUI\Icons\Actions\Toggle.dds";
             onOffAction.Writer = writer;
@@ -188,7 +189,7 @@ namespace AutoMcD.PocketGear {
             onOffAction.ValidForGroups = control.SupportsMultipleBlocks;
             actions.Add(onOffAction);
 
-            var onAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_On");
+            var onAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{id}_On");
             onAction.Name = onName;
             onAction.Icon = @"Textures\GUI\Icons\Actions\SwitchOn.dds";
             onAction.Writer = writer;
@@ -197,7 +198,7 @@ namespace AutoMcD.PocketGear {
             onAction.ValidForGroups = control.SupportsMultipleBlocks;
             actions.Add(onAction);
 
-            var offAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_Off");
+            var offAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{id}_Off");
             offAction.Name = offName;
             offAction.Icon = @"Textures\GUI\Icons\Actions\SwitchOff.dds";
             offAction.Writer = writer;
