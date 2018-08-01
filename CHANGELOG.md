@@ -1,5 +1,15 @@
+<a name="1.1.1"></a>
+# [1.1.1](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.0...v1.1.1) (2018-08-01)
+
+
+### Bug Fixes
+
+* fix an error which prevents the game to save ([9d9092a](https://github.com/AutoMcDonough/PocketGear/commit/9d9092a))
+
+
+
 <a name="1.1.0"></a>
-# [1.10](https://github.com/AutoMcDonough/PocketGear/compare/v1.0.0...v1.10) (2018-08-01)
+# [1.1.0](https://github.com/AutoMcDonough/PocketGear/compare/v1.0.0...v1.1.0) (2018-08-01)
 
 
 ### Bug Fixes
