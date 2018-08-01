@@ -1,5 +1,5 @@
 <a name="1.1.0"></a>
-# [1.10](https://github.com/AutoMcDonough/PocketGear/compare/v1.0.0...v1.10) (2018-08-01)
+# [1.10](https://github.com/AutoMcDonough/PocketGear/compare/v1.0.0...v1.1.0) (2018-08-01)
 
 
 ### Bug Fixes
