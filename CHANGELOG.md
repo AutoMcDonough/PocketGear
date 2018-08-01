@@ -1,3 +1,15 @@
+<a name="1.1.2"></a>
+# [1.1.2](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.1...v1.1.2) (2018-08-01)
+
+
+### Bug Fixes
+
+* enable the damage handler on clients after settings are sync ([5c5a7ad](https://github.com/AutoMcDonough/PocketGear/commit/5c5a7ad))
+* fix an error that prevented PocketGear from being retracted ([fb2b57f](https://github.com/AutoMcDonough/PocketGear/commit/fb2b57f))
+* fix an error which sometimes happens on new created blocks ([ca7c169](https://github.com/AutoMcDonough/PocketGear/commit/ca7c169))
+
+
+
 <a name="1.1.1"></a>
 # [1.1.1](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.0...v1.1.1) (2018-08-01)
 

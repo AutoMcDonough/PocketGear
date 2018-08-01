@@ -366,6 +366,10 @@ namespace AutoMcD.PocketGear {
                     if (settings != null) {
                         Settings = settings;
                     }
+
+                    if (Settings.UseImpactDamageHandler) {
+                        InitializeDamageHandler();
+                    }
                 }
             }
         }
