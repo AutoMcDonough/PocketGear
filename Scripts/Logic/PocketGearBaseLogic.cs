@@ -195,6 +195,7 @@ namespace AutoMcD.PocketGear.Logic {
 
                 var controls = new List<IMyTerminalControl>();
                 _deployVelocitySlider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
+                    nameof(PocketGearText.DeployVelocity),
                     PocketGearText.DeployVelocity.String,
                     tooltip: PocketGearText.Tooltip_DeployVelocity.String,
                     writer: (block, builder) => builder.Append($"{block?.GameLogic.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
@@ -214,6 +215,7 @@ namespace AutoMcD.PocketGear.Logic {
                 controls.Add(_deployVelocitySlider);
 
                 _lockRetractBehaviorCombobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
+                    nameof(PocketGearText.LockRetractBehavior),
                     PocketGearText.LockRetractBehavior.String,
                     tooltip: PocketGearText.Tooltip_LockRetractBehavior.String,
                     content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = Localize.Get(x.ToString()) })),
@@ -231,6 +233,7 @@ namespace AutoMcD.PocketGear.Logic {
                 controls.Add(_lockRetractBehaviorCombobox);
 
                 _createNewPadButton = TerminalControlUtils.CreateButton<IMyMotorAdvancedStator>(
+                    nameof(PocketGearText.PlaceLandingPad),
                     PocketGearText.PlaceLandingPad.String,
                     tooltip: PocketGearText.Tooltip_PlaceLandingPad.String,
                     action: PlaceLandingPad,
@@ -253,6 +256,7 @@ namespace AutoMcD.PocketGear.Logic {
                 controls.Add(_createNewPadButton);
 
                 _switchDeployStateSwitch = TerminalControlUtils.CreateOnOffSwitch<IMyMotorAdvancedStator>(
+                    nameof(PocketGearText.SwitchDeployState),
                     PocketGearText.SwitchDeployState.String,
                     tooltip: PocketGearText.Tooltip_SwitchDeployState.String,
                     onText: PocketGearText.Deploy.String,
