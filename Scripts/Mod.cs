@@ -32,8 +32,7 @@ namespace AutoMcD.PocketGear {
         private const string LOG_FILE_TEMPLATE = "{0}.log";
 
         // important: change to an unused mod and network id.
-        private const ushort MOD_ID = 51500;
-        private const ushort NETWORK_ID = 51500;
+        private const ushort NETWORK_ID = 51510;
         private const string PROFILER_LOG_FILE = "profiler.log";
         private const string PROFILER_SUMMARY_FILE = "profiler_summary.txt";
         private const string SETTINGS_FILE = "settings.xml";
@@ -132,7 +131,13 @@ namespace AutoMcD.PocketGear {
                     base.Init(sessionComponent);
 
                     InitializeNetwork();
-                    InitializeDamageHandler();
+                    if (Network.IsServer) {
+                        Network.SyncRequestReceived += OnSyncRequestReceived;
+                        InitializeDamageHandler();
+                    } else {
+                        Network.SyncResponseReceived += OnSyncResponseReceived;
+                        Network.SendToServer(new SettingsSyncRequestMessage { Sender = Network.MyId });
+                    }
                 }
             }
         }
@@ -338,6 +343,27 @@ namespace AutoMcD.PocketGear {
                     }
 
                     Log.Info("Localizations added");
+                }
+            }
+        }
+
+        private void OnSyncRequestReceived(ISyncRequestMessage message) {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(OnSyncRequestReceived)) : null) {
+                if (message is SettingsSyncRequestMessage) {
+                    var requester = message.Sender;
+                    Network.Send(new SettingsSyncResponseMessage { Requester = requester, Settings = Settings }, requester);
+                }
+            }
+        }
+
+        private void OnSyncResponseReceived(ISyncResponseMessage message) {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(OnSyncResponseReceived)) : null) {
+                var settingSyncReponse = message as SettingsSyncResponseMessage;
+                if (settingSyncReponse != null) {
+                    var settings = settingSyncReponse.Settings;
+                    if (settings != null) {
+                        Settings = settings;
+                    }
                 }
             }
         }
