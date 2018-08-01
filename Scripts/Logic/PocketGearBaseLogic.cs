@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Settings;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.Utils.Localization;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Profiler;
 using SpaceEngineers.Game.ModAPI;
@@ -15,7 +17,6 @@ using VRage.Game.Components;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
-using VRage.Utils;
 using VRageMath;
 
 // ReSharper disable MergeCastWithTypeCheck
@@ -27,7 +28,10 @@ namespace AutoMcD.PocketGear.Logic {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL)]
     public class PocketGearBaseLogic : MyGameLogicComponent {
         private const float FORCED_LOWER_LIMIT_DEG = 333.5f;
+        private const float FORCED_LOWER_LIMIT_RAD = (float) (Math.PI / 180) * FORCED_UPPER_LIMIT_DEG;
         private const float FORCED_UPPER_LIMIT_DEG = 360.0f;
+        private const float FORCED_UPPER_LIMIT_RAD = (float) (Math.PI / 180) * FORCED_UPPER_LIMIT_DEG;
+
         private const string POCKETGEAR_BASE = "MA_PocketGear_Base";
         private const string POCKETGEAR_BASE_LARGE = "MA_PocketGear_L_Base";
         private const string POCKETGEAR_BASE_LARGE_SMALL = "MA_PocketGear_L_Base_sm";
@@ -103,7 +107,7 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        public static string DisplayName(string name) {
+        private static string DisplayName(string name) {
             return Regex.Replace(name, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
         }
 
@@ -191,8 +195,8 @@ namespace AutoMcD.PocketGear.Logic {
 
                 var controls = new List<IMyTerminalControl>();
                 _deployVelocitySlider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
-                    DisplayName(nameof(DeployVelocity)),
-                    tooltip: "The speed at which the PocketGear is retracted / extended.",
+                    PocketGearText.DeployVelocity.String,
+                    tooltip: PocketGearText.Tooltip_DeployVelocity.String,
                     writer: (block, builder) => builder.Append($"{block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
                     getter: block => block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity ?? 0,
                     setter: (block, value) => {
@@ -210,9 +214,9 @@ namespace AutoMcD.PocketGear.Logic {
                 controls.Add(_deployVelocitySlider);
 
                 _lockRetractBehaviorCombobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
-                    DisplayName(nameof(LockRetractBehavior)),
-                    tooltip: "Whether it should prevent retracting if locked or if it should unlock on retract.",
-                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = MyStringId.GetOrCompute(DisplayName(x.ToString())) })),
+                    PocketGearText.LockRetractBehavior.String,
+                    tooltip: PocketGearText.Tooltip_LockRetractBehavior.String,
+                    content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = Localize.Get(x.ToString()) })),
                     getter: block => (long) (block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
                     setter: (block, value) => {
                         var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
@@ -227,8 +231,8 @@ namespace AutoMcD.PocketGear.Logic {
                 controls.Add(_lockRetractBehaviorCombobox);
 
                 _createNewPadButton = TerminalControlUtils.CreateButton<IMyMotorAdvancedStator>(
-                    DisplayName(nameof(PlaceLandingPad)),
-                    tooltip: "Place a new PocketGear pad.",
+                    PocketGearText.PlaceLandingPad.String,
+                    tooltip: PocketGearText.Tooltip_PlaceLandingPad.String,
                     action: PlaceLandingPad,
                     enabled: block => {
                         if (!PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
@@ -249,10 +253,10 @@ namespace AutoMcD.PocketGear.Logic {
                 controls.Add(_createNewPadButton);
 
                 _switchDeployStateSwitch = TerminalControlUtils.CreateOnOffSwitch<IMyMotorAdvancedStator>(
-                    DisplayName(nameof(SwitchDeployState)),
-                    tooltip: "Switch between deploy and retract.",
-                    onText: "Deploy",
-                    offText: "Retract",
+                    PocketGearText.SwitchDeployState.String,
+                    tooltip: PocketGearText.Tooltip_SwitchDeployState.String,
+                    onText: PocketGearText.Deploy.String,
+                    offText: PocketGearText.Retract.String,
                     getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeploying,
                     setter: (block, value) => block?.GameLogic?.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
                     enabled: block => {
@@ -392,8 +396,9 @@ namespace AutoMcD.PocketGear.Logic {
                     SwitchDeployState(true);
                 }
 
-                _pocketGearBase.LowerLimitDeg = FORCED_LOWER_LIMIT_DEG;
-                _pocketGearBase.UpperLimitDeg = FORCED_UPPER_LIMIT_DEG;
+                // bug: ImyRotorStator.UpperLimitDeg requirs an radian.
+                _pocketGearBase.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
+                _pocketGearBase.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
 
                 if (_pocketGearBase.TopGrid != null) {
                     _lastKnownTopGridId = _pocketGearBase.TopGrid.EntityId;

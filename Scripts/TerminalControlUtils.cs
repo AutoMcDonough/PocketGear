@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Sandbox.Game.Localization;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
 using VRage.ModAPI;
 using VRage.Utils;
 using VRageMath;
+
+// ReSharper disable UsePatternMatching
 
 namespace AutoMcD.PocketGear {
     public static class TerminalControlUtils {
@@ -90,18 +93,18 @@ namespace AutoMcD.PocketGear {
             slider.Getter = block => getter((TBlock) block);
             slider.Setter = (block, value) => setter((TBlock) block, value);
             slider.SetLimits(min, max);
-            // todo: set limits.
 
             return slider;
         }
 
         public static void RegisterControls<TBlock>(List<IMyTerminalControl> controls) where TBlock : IMyTerminalBlock {
             foreach (var control in controls) {
-                if (control is IMyTerminalControlCheckbox) {
-                    var actions = CreateOnOffActions<IMyTerminalControlCheckbox, TBlock>(control as IMyTerminalControlCheckbox);
-                    var property = CreateProperty<bool, TBlock>(control as IMyTerminalControlCheckbox);
+                var checkbox = control as IMyTerminalControlCheckbox;
+                if (checkbox != null) {
+                    var actions = CreateOnOffActions<IMyTerminalControlCheckbox, TBlock>(checkbox);
+                    var property = CreateProperty<bool, TBlock>(checkbox);
 
-                    MyAPIGateway.TerminalControls.AddControl<TBlock>(control);
+                    MyAPIGateway.TerminalControls.AddControl<TBlock>(checkbox);
                     MyAPIGateway.TerminalControls.AddControl<TBlock>(property);
                     foreach (var action in actions) {
                         MyAPIGateway.TerminalControls.AddAction<TBlock>(action);
@@ -110,19 +113,21 @@ namespace AutoMcD.PocketGear {
                     continue;
                 }
 
-                if (control is IMyTerminalControlCombobox) {
-                    var property = CreateProperty<long, TBlock>(control as IMyTerminalControlCombobox);
+                var combobox = control as IMyTerminalControlCombobox;
+                if (combobox != null) {
+                    var property = CreateProperty<long, TBlock>(combobox);
 
-                    MyAPIGateway.TerminalControls.AddControl<TBlock>(control);
+                    MyAPIGateway.TerminalControls.AddControl<TBlock>(combobox);
                     MyAPIGateway.TerminalControls.AddControl<TBlock>(property);
                     continue;
                 }
 
-                if (control is IMyTerminalControlOnOffSwitch) {
-                    var actions = CreateOnOffActions<IMyTerminalControlOnOffSwitch, TBlock>(control as IMyTerminalControlOnOffSwitch);
-                    var property = CreateProperty<bool, TBlock>(control as IMyTerminalControlOnOffSwitch);
+                var @switch = control as IMyTerminalControlOnOffSwitch;
+                if (@switch != null) {
+                    var actions = CreateOnOffActions<IMyTerminalControlOnOffSwitch, TBlock>(@switch);
+                    var property = CreateProperty<bool, TBlock>(@switch);
 
-                    MyAPIGateway.TerminalControls.AddControl<TBlock>(control);
+                    MyAPIGateway.TerminalControls.AddControl<TBlock>(@switch);
                     MyAPIGateway.TerminalControls.AddControl<TBlock>(property);
                     foreach (var action in actions) {
                         MyAPIGateway.TerminalControls.AddAction<TBlock>(action);
@@ -157,26 +162,45 @@ namespace AutoMcD.PocketGear {
 
         private static List<IMyTerminalAction> CreateOnOffActions<TControl, TBlock>(TControl control) where TBlock : IMyTerminalBlock where TControl : IMyTerminalControl, IMyTerminalValueControl<bool>, IMyTerminalControlTitleTooltip {
             var actions = new List<IMyTerminalAction>();
+            Action<IMyTerminalBlock, StringBuilder> writer;
+            StringBuilder switchName;
+            StringBuilder onName;
+            StringBuilder offName;
+            var @switch = control as IMyTerminalControlOnOffSwitch;
+            if (@switch != null) {
+                switchName = new StringBuilder($"{@switch.OnText}/{@switch.OffText}");
+                onName = new StringBuilder($"{@switch.OnText}");
+                offName = new StringBuilder($"{@switch.OffText}");
+                writer = (block, builder) => builder.Append(control.Getter.Invoke(block) ? @switch.OnText : @switch.OffText);
+            } else {
+                switchName = new StringBuilder($"{control.Title} {MySpaceTexts.ON}/{MySpaceTexts.OFF}");
+                onName = new StringBuilder($"{control.Title} {MySpaceTexts.ON}");
+                offName = new StringBuilder($"{control.Title} {MySpaceTexts.OFF}");
+                writer = (block, builder) => builder.Append(control.Getter.Invoke(block) ? $"{MySpaceTexts.ON}" : $"{MySpaceTexts.OFF}");
+            }
 
             var onOffAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_OnOff");
-            onOffAction.Name = new StringBuilder($"{control.Title} On/Off");
+            onOffAction.Name = switchName;
             onOffAction.Icon = @"Textures\GUI\Icons\Actions\Toggle.dds";
+            onOffAction.Writer = writer;
             onOffAction.Enabled = control.Enabled;
             onOffAction.Action = block => control.Setter(block, !control.Getter(block));
             onOffAction.ValidForGroups = control.SupportsMultipleBlocks;
             actions.Add(onOffAction);
 
             var onAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_On");
-            onAction.Name = new StringBuilder($"{control.Title} On");
+            onAction.Name = onName;
             onAction.Icon = @"Textures\GUI\Icons\Actions\SwitchOn.dds";
+            onAction.Writer = writer;
             onAction.Enabled = control.Enabled;
             onAction.Action = block => control.Setter(block, true);
             onAction.ValidForGroups = control.SupportsMultipleBlocks;
             actions.Add(onAction);
 
             var offAction = MyAPIGateway.TerminalControls.CreateAction<TBlock>($"{control.Title}_Off");
-            offAction.Name = new StringBuilder($"{control.Title} Off");
+            offAction.Name = offName;
             offAction.Icon = @"Textures\GUI\Icons\Actions\SwitchOff.dds";
+            offAction.Writer = writer;
             offAction.Enabled = control.Enabled;
             offAction.Action = block => control.Setter(block, false);
             offAction.ValidForGroups = control.SupportsMultipleBlocks;

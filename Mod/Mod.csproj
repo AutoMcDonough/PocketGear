@@ -85,7 +85,19 @@
     <None Include="Models\MA_PocketGear_L_Rotor_sm_LOD2.mwm" />
     <None Include="Models\MA_PocketGear_L_Rotor_sm_LOD3.mwm" />
     <None Include="Models\MA_PocketGear_Magnet.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_Constr2.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_Constr3.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_LOD3.mwm" />
     <None Include="Models\MA_PocketGear_Magnet_sm.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_sm_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_sm_Constr2.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_sm_Constr3.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_sm_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_sm_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear_Magnet_sm_LOD3.mwm" />
     <None Include="Models\MA_PocketGear_Pad.mwm" />
     <None Include="Models\MA_PocketGear_Pad_Constr1.mwm" />
     <None Include="Models\MA_PocketGear_Pad_LOD1.mwm" />
@@ -108,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Textures\MA_PocketGear_Base.dds" />
+    <Content Include="Textures\MA_PocketGear_Magnet.dds" />
     <Content Include="Textures\MA_PocketGear_Pad.dds" />
     <Content Include="Textures\MA_PocketGear_Rotor.dds" />
     <Content Include="thumb.png" />

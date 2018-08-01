@@ -1,3 +1,36 @@
+<a name="1.1.0"></a>
+# [1.10](https://github.com/AutoMcDonough/PocketGear/compare/v1.0.0...v1.10) (2018-08-01)
+
+
+### Bug Fixes
+
+* reduce clang on lock/unlock PocketGears ([611f20f](https://github.com/AutoMcDonough/PocketGear/commit/611f20f))
+* reduce rotor resets on grid ship/station convert ([f1da58b](https://github.com/AutoMcDonough/PocketGear/commit/f1da58b))
+
+
+### Features
+
+* add "Lock Retract" behaviors ([b326d2b](https://github.com/AutoMcDonough/PocketGear/commit/b326d2b))
+* add a german translation ([7243405](https://github.com/AutoMcDonough/PocketGear/commit/7243405))
+* add a Maglock block ([893d3a7](https://github.com/AutoMcDonough/PocketGear/commit/893d3a7))
+* add an auto place functionality for PocketGear Pads ([a852d83](https://github.com/AutoMcDonough/PocketGear/commit/a852d83))
+* add Deploy/Retract switch to PG Bases, disable pads if retracted ([17f43c9](https://github.com/AutoMcDonough/PocketGear/commit/17f43c9))
+* add manual placable PocketGear Pads ([441472c](https://github.com/AutoMcDonough/PocketGear/commit/441472c))
+* allow players to place new pads from the PocketGear Base controls ([b5615a9](https://github.com/AutoMcDonough/PocketGear/commit/b5615a9))
+* change voxel damage immunity  to impact damage calculation ([3d1babe](https://github.com/AutoMcDonough/PocketGear/commit/3d1babe))
+* enable PocketGear Pad locking on 'P' keypresses ([f3b5bb1](https://github.com/AutoMcDonough/PocketGear/commit/f3b5bb1))
+* protect only deployed PocketGears ([de592a9](https://github.com/AutoMcDonough/PocketGear/commit/de592a9))
+
+
+### BREAKING CHANGES
+
+* Removed Velocity slider and actions on PocketGear Bases
+* Removed Revert button and action on PocketGear Bases
+* Removed RotorLock ability from PocketGears
+* Removed AutoLock ability from PocketGear Pads
+
+
+
 <a name="1.0.0"></a>
 # 1.0.0 (2018-07-21)
 

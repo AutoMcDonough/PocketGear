@@ -96,16 +96,21 @@
   <ItemGroup>
     <Compile Include="DamageSystem\AttackerInfo.cs" />
     <Compile Include="DamageSystem\DamageHandler.cs" />
+    <Compile Include="Localization\PocketGearText.cs" />
     <Compile Include="Logic\PocketGearBaseLogic.cs" />
     <Compile Include="Logic\PocketGearPadLogic.cs" />
     <Compile Include="Logic\PocketGearPartLogic.cs" />
     <Compile Include="Logic\LockRetractBehaviors.cs" />
     <Compile Include="Net\IEntitySyncMessage.cs" />
     <Compile Include="Net\IMessage.cs" />
+    <Compile Include="Net\ISyncRequestMessage.cs" />
+    <Compile Include="Net\ISyncResponseMessage.cs" />
     <Compile Include="Net\MessageWrapper.cs" />
     <Compile Include="Net\Network.cs" />
     <Compile Include="Net\PropertySyncMessage.cs" />
     <Compile Include="DamageSystem\ProtectInfo.cs" />
+    <Compile Include="Net\SettingsSyncRequestMessage.cs" />
+    <Compile Include="Net\SettingsSyncResponseMessage.cs" />
     <Compile Include="Settings\ModSettings.cs" />
     <Compile Include="Settings\PocketGearBaseSettings.cs" />
     <Compile Include="TerminalControlUtils.cs" />

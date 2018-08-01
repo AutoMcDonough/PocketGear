@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMcD.PocketGear.DamageSystem;
+using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Logic;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Settings;
+using Sandbox.Definitions;
 using Sandbox.Game;
 using Sandbox.ModAPI;
+using Sisk.Utils.Localization;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Logging.DefaultHandler;
 using Sisk.Utils.Profiler;
@@ -21,16 +24,15 @@ namespace AutoMcD.PocketGear {
         public const string NAME = "PocketGears";
 
         // important: set profile to false before publishing this mod.
-        public const bool PROFILE = true;
+        public const bool PROFILE = false;
 
         // important: change to info or none before publishing this mod.
-        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.All;
+        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Error;
 
         private const string LOG_FILE_TEMPLATE = "{0}.log";
 
         // important: change to an unused mod and network id.
-        private const ushort MOD_ID = 51500;
-        private const ushort NETWORK_ID = 51500;
+        private const ushort NETWORK_ID = 51510;
         private const string PROFILER_LOG_FILE = "profiler.log";
         private const string PROFILER_SUMMARY_FILE = "profiler_summary.txt";
         private const string SETTINGS_FILE = "settings.xml";
@@ -40,6 +42,7 @@ namespace AutoMcD.PocketGear {
         public Mod() {
             Static = this;
             InitializeLogging();
+            CreateTranslations();
         }
 
         /// <summary>
@@ -128,7 +131,13 @@ namespace AutoMcD.PocketGear {
                     base.Init(sessionComponent);
 
                     InitializeNetwork();
-                    InitializeDamageHandler();
+                    if (Network.IsServer) {
+                        Network.SyncRequestReceived += OnSyncRequestReceived;
+                        InitializeDamageHandler();
+                    } else {
+                        Network.SyncResponseReceived += OnSyncResponseReceived;
+                        Network.SendToServer(new SettingsSyncRequestMessage { Sender = Network.MyId });
+                    }
                 }
             }
         }
@@ -139,6 +148,7 @@ namespace AutoMcD.PocketGear {
         public override void LoadData() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LoadData)) : null) {
                 LoadSettings();
+                LocalizeModDefinitions();
             }
         }
 
@@ -193,6 +203,44 @@ namespace AutoMcD.PocketGear {
             }
 
             Static = null;
+        }
+
+        /// <summary>
+        ///     Creates all translation for this mod.
+        /// </summary>
+        private void CreateTranslations() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(CreateTranslations)) : null) {
+                using (Log.BeginMethod(nameof(CreateTranslations))) {
+                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Base), "PocketGear Base", German: "PocketGear Basis");
+                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Large_Base), "PocketGear Large Base", German: "PocketGear Basis, Groß");
+
+                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Part), "PocketGear Part", German: "PocketGear Teil");
+                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Large_Part), "PocketGear Large Part", German: "PocketGear Teil, Groß");
+
+                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Pad), "PocketGear Pad", German: "PocketGear Pad");
+                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Large_Pad), "PocketGear Large Pad", German: "PocketGear Pad, Groß");
+
+                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_MagLock), "PocketGear MagLock");
+
+                    Localize.Create(nameof(PocketGearText.DeployVelocity), "Deploy Velocity", German: "Ausfahrgeschwindigkeit");
+                    Localize.Create(nameof(PocketGearText.Tooltip_DeployVelocity), "The speed at which the PocketGear is retracted / extended.", German: "Die Geschwindigkeit, mit der das PocketGear ein- / ausgefahren wird.");
+
+                    Localize.Create(nameof(PocketGearText.LockRetractBehavior), "Lock Retract Behavior", German: "Sperr/Einfahr Verhalten");
+                    Localize.Create(nameof(PocketGearText.Tooltip_LockRetractBehavior), "Whether it should prevent retracting if locked or if it should unlock on retract.", German: "Ob es das Zurückziehen verhindern soll, wenn es gesperrt ist oder ob es beim Zurückziehen entsperrt werden soll.");
+                    Localize.Create(nameof(PocketGearText.PreventRetract), "Prevent Retracting", German: "Einfahren Verhindern");
+                    Localize.Create(nameof(PocketGearText.UnlockOnRetract), "Unlock on retract", German: "Entsperren beim Einfahren");
+
+                    Localize.Create(nameof(PocketGearText.PlaceLandingPad), "Place Pad", German: "Plaziere Pad");
+                    Localize.Create(nameof(PocketGearText.Tooltip_PlaceLandingPad), "Place a new PocketGear Pad.", German: "Plaziere ein neues PocketGear Pad");
+
+                    Localize.Create(nameof(PocketGearText.SwitchDeployState), "Switch Deploy State", German: "Wechsel des Ausfahrstatus");
+                    Localize.Create(nameof(PocketGearText.Tooltip_SwitchDeployState), "Switch between deploy and retract.", German: "Wechsel zwischen aus-/ einfahren.");
+                    Localize.Create(nameof(PocketGearText.Deploy), "Deploy", German: "Ausfahren");
+                    Localize.Create(nameof(PocketGearText.Retract), "Retract", German: "Einfahren");
+
+                    Log.Info("Translation created");
+                }
+            }
         }
 
         private void InitializeDamageHandler() {
@@ -272,6 +320,50 @@ namespace AutoMcD.PocketGear {
 
                     Settings = settings;
                     Log.Info("Settings loaded");
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Localize all definitions add by this mod.
+        /// </summary>
+        private void LocalizeModDefinitions() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LocalizeModDefinitions)) : null) {
+                using (Log.BeginMethod(nameof(LocalizeModDefinitions))) {
+                    Log.Info("Adding localizations");
+                    var definitions = MyDefinitionManager.Static.GetAllDefinitions().Where(x => x.Context.ModId == ModContext.ModId && x.Context.ModName == ModContext.ModName);
+
+                    foreach (var definition in definitions) {
+                        if (definition is MyCubeBlockDefinition) {
+                            if (definition.DisplayNameText.StartsWith("DisplayName_")) {
+                                Log.Debug($"|-> {definition.Id}");
+                                definition.DisplayNameEnum = Localize.Get(definition.DisplayNameText);
+                            }
+                        }
+                    }
+
+                    Log.Info("Localizations added");
+                }
+            }
+        }
+
+        private void OnSyncRequestReceived(ISyncRequestMessage message) {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(OnSyncRequestReceived)) : null) {
+                if (message is SettingsSyncRequestMessage) {
+                    var requester = message.Sender;
+                    Network.Send(new SettingsSyncResponseMessage { Requester = requester, Settings = Settings }, requester);
+                }
+            }
+        }
+
+        private void OnSyncResponseReceived(ISyncResponseMessage message) {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(OnSyncResponseReceived)) : null) {
+                var settingSyncReponse = message as SettingsSyncResponseMessage;
+                if (settingSyncReponse != null) {
+                    var settings = settingSyncReponse.Settings;
+                    if (settings != null) {
+                        Settings = settings;
+                    }
                 }
             }
         }
