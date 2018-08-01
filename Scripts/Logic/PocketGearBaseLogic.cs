@@ -28,9 +28,9 @@ namespace AutoMcD.PocketGear.Logic {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL)]
     public class PocketGearBaseLogic : MyGameLogicComponent {
         private const float FORCED_LOWER_LIMIT_DEG = 333.5f;
-        private const float FORCED_LOWER_LIMIT_RAD = (float) (Math.PI / 180) * FORCED_UPPER_LIMIT_DEG;
+        private const float FORCED_LOWER_LIMIT_RAD = (float) (Math.PI * FORCED_LOWER_LIMIT_DEG / 180.0);
         private const float FORCED_UPPER_LIMIT_DEG = 360.0f;
-        private const float FORCED_UPPER_LIMIT_RAD = (float) (Math.PI / 180) * FORCED_UPPER_LIMIT_DEG;
+        private const float FORCED_UPPER_LIMIT_RAD = (float) (Math.PI * FORCED_UPPER_LIMIT_DEG / 180.0);
 
         private const string POCKETGEAR_BASE = "MA_PocketGear_Base";
         private const string POCKETGEAR_BASE_LARGE = "MA_PocketGear_L_Base";
@@ -189,7 +189,7 @@ namespace AutoMcD.PocketGear.Logic {
                 foreach (var action in defaultActions) {
                     if (HiddenActions.Contains(action.Id)) {
                         var original = action.Enabled;
-                        action.Enabled = block => !PocketGearIds.Contains(block.BlockDefinition.SubtypeId) && original.Invoke(block);
+                        action.Enabled = block => !PocketGearIds.Contains(block?.BlockDefinition.SubtypeId) && original.Invoke(block);
                     }
                 }
 
@@ -197,18 +197,18 @@ namespace AutoMcD.PocketGear.Logic {
                 _deployVelocitySlider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
                     PocketGearText.DeployVelocity.String,
                     tooltip: PocketGearText.Tooltip_DeployVelocity.String,
-                    writer: (block, builder) => builder.Append($"{block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
-                    getter: block => block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity ?? 0,
+                    writer: (block, builder) => builder.Append($"{block?.GameLogic.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm"),
+                    getter: block => block?.GameLogic.GetAs<PocketGearBaseLogic>()?.DeployVelocity ?? 0,
                     setter: (block, value) => {
-                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+                        var logic = block?.GameLogic.GetAs<PocketGearBaseLogic>();
                         if (logic != null) {
                             logic.DeployVelocity = value;
                         }
                     },
                     min: block => 0,
                     max: block => (block as IMyMotorAdvancedStator)?.MaxRotorAngularVelocity * 9.549296f ?? 1,
-                    enabled: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
-                    visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
+                    enabled: block => PocketGearIds.Contains(block?.BlockDefinition.SubtypeId),
+                    visible: block => PocketGearIds.Contains(block?.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
                 );
                 controls.Add(_deployVelocitySlider);
@@ -217,9 +217,9 @@ namespace AutoMcD.PocketGear.Logic {
                     PocketGearText.LockRetractBehavior.String,
                     tooltip: PocketGearText.Tooltip_LockRetractBehavior.String,
                     content: list => list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = Localize.Get(x.ToString()) })),
-                    getter: block => (long) (block.GameLogic?.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
+                    getter: block => (long) (block?.GameLogic.GetAs<PocketGearBaseLogic>()?.LockRetractBehavior ?? LockRetractBehaviors.PreventRetract),
                     setter: (block, value) => {
-                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+                        var logic = block?.GameLogic.GetAs<PocketGearBaseLogic>();
                         if (logic != null) {
                             logic.LockRetractBehavior = (LockRetractBehaviors) value;
                         }
@@ -235,11 +235,11 @@ namespace AutoMcD.PocketGear.Logic {
                     tooltip: PocketGearText.Tooltip_PlaceLandingPad.String,
                     action: PlaceLandingPad,
                     enabled: block => {
-                        if (!PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
+                        if (!PocketGearIds.Contains(block?.BlockDefinition.SubtypeId)) {
                             return false;
                         }
 
-                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+                        var logic = block?.GameLogic.GetAs<PocketGearBaseLogic>();
                         var enabled = false;
                         if (logic != null) {
                             enabled = logic.CanPocketGearBeBuilt;
@@ -247,7 +247,7 @@ namespace AutoMcD.PocketGear.Logic {
 
                         return enabled;
                     },
-                    visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
+                    visible: block => PocketGearIds.Contains(block?.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
                 );
                 controls.Add(_createNewPadButton);
@@ -257,14 +257,14 @@ namespace AutoMcD.PocketGear.Logic {
                     tooltip: PocketGearText.Tooltip_SwitchDeployState.String,
                     onText: PocketGearText.Deploy.String,
                     offText: PocketGearText.Retract.String,
-                    getter: block => block.GameLogic.GetAs<PocketGearBaseLogic>().IsDeploying,
-                    setter: (block, value) => block?.GameLogic?.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
+                    getter: block => block?.GameLogic.GetAs<PocketGearBaseLogic>()?.IsDeploying ?? false,
+                    setter: (block, value) => block?.GameLogic.GetAs<PocketGearBaseLogic>()?.SwitchDeployState(value),
                     enabled: block => {
-                        if (!PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
+                        if (!PocketGearIds.Contains(block?.BlockDefinition.SubtypeId)) {
                             return false;
                         }
 
-                        var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+                        var logic = block?.GameLogic.GetAs<PocketGearBaseLogic>();
                         var enabled = false;
                         if (logic != null) {
                             enabled = logic.CanRetract;
@@ -272,7 +272,7 @@ namespace AutoMcD.PocketGear.Logic {
 
                         return enabled;
                     },
-                    visible: block => PocketGearIds.Contains(block.BlockDefinition.SubtypeId),
+                    visible: block => PocketGearIds.Contains(block?.BlockDefinition.SubtypeId),
                     supportsMultipleBlocks: true
                 );
                 controls.Add(_switchDeployStateSwitch);
@@ -411,8 +411,12 @@ namespace AutoMcD.PocketGear.Logic {
                     }
                 }
 
-                _switchDeployStateSwitch.UpdateVisual();
-                _createNewPadButton.UpdateVisual();
+                try {
+                    _switchDeployStateSwitch.UpdateVisual();
+                    _createNewPadButton.UpdateVisual();
+                } catch (Exception exception) {
+                    Log.Error(exception);
+                }
 
                 _pocketGearBase.LimitReached += OnLimitReached;
                 _pocketGearBase.CubeGrid.OnIsStaticChanged += OnIsStaticChanged;
