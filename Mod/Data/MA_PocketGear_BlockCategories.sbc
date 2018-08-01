@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CategoryClasses>
+
+    <Category xsi:type="MyObjectBuilder_GuiBlockCategoryDefinition">
+      <Id>
+        <TypeId>GuiBlockCategoryDefinition</TypeId>
+        <SubtypeId />
+      </Id>
+      <DisplayName>MA</DisplayName>
+      <Name>AutoMcD_Astronautical</Name>
+      <ItemIds>
+        <string>MotorAdvancedStator/MA_PocketGear_Base</string>
+        <string>MotorAdvancedRotor/MA_PocketGear_Rotor</string>
+
+        <string>MotorAdvancedStator/MA_PocketGear_Base_sm</string>
+        <string>MotorAdvancedRotor/MA_PocketGear_Rotor_sm</string>
+
+
+        <string>MotorAdvancedStator/MA_PocketGear_L_Base</string>
+        <string>MotorAdvancedRotor/MA_PocketGear_L_Rotor</string>
+
+        <string>MotorAdvancedStator/MA_PocketGear_L_Base_sm</string>
+        <string>MotorAdvancedRotor/MA_PocketGear_L_Rotor_sm</string>
+
+        <string>LandingGear/MA_PocketGear_Pad_M</string>
+        <string>LandingGear/MA_PocketGear_Pad_sm_M</string>
+        <string>LandingGear/MA_PocketGear_L_Pad_M</string>
+        <string>LandingGear/MA_PocketGear_L_Pad_sm_M</string>
+
+        <string>LandingGear/MA_PocketGear_Magnet</string>
+        <string>LandingGear/MA_PocketGear_Magnet_sm</string>
+
+      </ItemIds>
+    </Category>
+
+  </CategoryClasses>
+</Definitions>
