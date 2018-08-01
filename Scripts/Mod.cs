@@ -161,8 +161,10 @@ namespace AutoMcD.PocketGear {
                 using (Log.BeginMethod(nameof(SaveData))) {
                     SaveSettings();
                     Log.Flush();
-                    _profilerLog.Flush();
-                    WriteProfileResults();
+                    if (PROFILE) {
+                        _profilerLog.Flush();
+                        WriteProfileResults();
+                    }
                 }
             }
         }
