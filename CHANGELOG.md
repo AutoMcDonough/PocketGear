@@ -1,3 +1,18 @@
+<a name="1.1.3"></a>
+# [1.1.3](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.2...v1.1.3) (2018-08-01)
+
+
+### Bug Fixes
+
+* used translated values as ids for controls and actions ([b2d5de6](https://github.com/AutoMcDonough/PocketGear/commit/b2d5de6))
+
+
+### BREAKING CHANGES
+
+* PocketGear actions that were used on the hotbar may need a new binding because I used previously translated ids, Sorry.
+
+
+
 <a name="1.1.2"></a>
 # [1.1.2](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.1...v1.1.2) (2018-08-01)
 
