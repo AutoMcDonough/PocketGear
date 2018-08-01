@@ -404,7 +404,7 @@
         <SubtypeId>MA_PocketGear_Magnet</SubtypeId>
       </Id>
       <DisplayName>DisplayName_PocketGear_MagLock</DisplayName>
-      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Icon>Textures\MA_PocketGear_Magnet.dds</Icon>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="1" y="3" z="1" />
@@ -429,12 +429,14 @@
         <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
       </MountPoints>
       <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_Constr1.mwm" />
+        <Model BuildPercentUpperBound="0.33" File="Models\MA_PocketGear_Magnet_Constr1.mwm" />
+        <Model BuildPercentUpperBound="0.67" File="Models\MA_PocketGear_Magnet_Constr2.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Magnet_Constr3.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Magnet</BlockPairName>
-      <MirroringX>Z</MirroringX>
-      <MirroringY>None</MirroringY>
-      <MirroringZ>X</MirroringZ>
+      <MirroringX>None</MirroringX>
+      <MirroringY>Z</MirroringY>
+      <MirroringZ>None</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>40</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
@@ -844,10 +846,10 @@
         <SubtypeId>MA_PocketGear_Magnet_sm</SubtypeId>
       </Id>
       <DisplayName>DisplayName_PocketGear_MagLock</DisplayName>
-      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Icon>Textures\MA_PocketGear_Magnet.dds</Icon>
       <CubeSize>Small</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
-      <Size x="1" y="1" z="1" />
+      <Size x="1" y="3" z="1" />
       <ModelOffset x="0" y="0" z="0" />
       <Model>Models\MA_PocketGear_Magnet_sm.mwm</Model>
       <LockSound>ShipLandGearOn</LockSound>
@@ -868,12 +870,14 @@
         <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
       </MountPoints>
       <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="0.33" File="Models\MA_PocketGear_Magnet_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="0.67" File="Models\MA_PocketGear_Magnet_sm_Constr2.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Magnet_sm_Constr3.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Magnet</BlockPairName>
-      <MirroringX>Z</MirroringX>
-      <MirroringY>None</MirroringY>
-      <MirroringZ>X</MirroringZ>
+      <MirroringX>None</MirroringX>
+      <MirroringY>Z</MirroringY>
+      <MirroringZ>None</MirroringZ>
       <EdgeType>Light</EdgeType>
       <BuildTimeSeconds>25</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
