@@ -1,3 +1,13 @@
+<a name="1.1.4"></a>
+# [1.1.4](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.3...v1.1.4) (2018-08-02)
+
+
+### Bug Fixes
+
+* fix some crashes caused by TerminalControls ([b9694f9](https://github.com/AutoMcDonough/PocketGear/commit/b9694f9))
+
+
+
 <a name="1.1.3"></a>
 # [1.1.3](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.2...v1.1.3) (2018-08-01)
 

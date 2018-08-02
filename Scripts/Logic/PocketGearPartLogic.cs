@@ -54,15 +54,16 @@ namespace AutoMcD.PocketGear.Logic {
                 }
 
                 try {
-                    PlaceLandingPad();
+                    PlacePocketGearPad();
                 } catch (Exception exception) {
                     Log.Error(exception);
+                    Log.Error(exception.StackTrace);
                 }
             }
         }
 
-        public void PlaceLandingPad() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(PlaceLandingPad)) : null) {
+        public void PlacePocketGearPad() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(PlacePocketGearPad)) : null) {
                 var cubeGrid = _pocketGearPart.CubeGrid;
                 var gridSize = cubeGrid.GridSize;
                 var left = _pocketGearPart.WorldMatrix.Left;
