@@ -10,7 +10,7 @@ using VRageMath;
 
 namespace AutoMcD.PocketGear.DamageSystem {
     public class ProtectInfo {
-        private const int PROTECTION_RADIUS = 2;
+        //private const int PROTECTION_RADIUS = 2;
         private readonly HashSet<IMySlimBlock> _protectedBlocks = new HashSet<IMySlimBlock>();
 
         public ProtectInfo(IMyCubeGrid cubeGrid) {
@@ -37,16 +37,16 @@ namespace AutoMcD.PocketGear.DamageSystem {
             }
         }
 
-        private static IEnumerable<IMySlimBlock> GetNearbyBlocks(Vector3D position, IMyCubeGrid cubeGrid) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(GetNearbyBlocks)) : null) {
-                var gridSize = cubeGrid.GridSize;
-                var center = position;
-                var radius = PROTECTION_RADIUS * gridSize;
-                var sphere = new BoundingSphereD(center, radius);
-                var slimBlocks = cubeGrid.GetBlocksInsideSphere(ref sphere);
-                return slimBlocks;
-            }
-        }
+        //private static IEnumerable<IMySlimBlock> GetNearbyBlocks(Vector3D position, IMyCubeGrid cubeGrid) {
+        //    using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(GetNearbyBlocks)) : null) {
+        //        var gridSize = cubeGrid.GridSize;
+        //        var center = position;
+        //        var radius = PROTECTION_RADIUS * gridSize;
+        //        var sphere = new BoundingSphereD(center, radius);
+        //        var slimBlocks = cubeGrid.GetBlocksInsideSphere(ref sphere);
+        //        return slimBlocks;
+        //    }
+        //}
 
         public void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(Close)) : null) {
@@ -62,15 +62,15 @@ namespace AutoMcD.PocketGear.DamageSystem {
             }
         }
 
-        public void DisableProtection(IMyCubeBlock block) {
+        public void DisableProtection(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(DisableProtection)) : null) {
-                OnBlockRemoved(block.SlimBlock);
+                OnBlockRemoved(slimBlock);
             }
         }
 
-        public void EnableProtection(IMyCubeBlock block) {
+        public void EnableProtection(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(EnableProtection)) : null) {
-                OnBlockAdded(block.SlimBlock);
+                OnBlockAdded(slimBlock);
             }
         }
 
@@ -82,14 +82,14 @@ namespace AutoMcD.PocketGear.DamageSystem {
         private void OnBlockAdded(IMySlimBlock block) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(OnBlockAdded)) : null) {
                 if (!_protectedBlocks.Contains(block)) {
-                    var subTypeId = block.BlockDefinition.Id.SubtypeId.String;
-                    if (PocketGearBaseLogic.PocketGearIds.Contains(subTypeId)) {
-                        foreach (var slimBlock in GetNearbyBlocks(block.FatBlock.GetPosition(), CubeGrid)) {
-                            if (!_protectedBlocks.Contains(slimBlock)) {
-                                _protectedBlocks.Add(slimBlock);
-                            }
-                        }
-                    }
+                    //var subTypeId = block.BlockDefinition.Id.SubtypeId.String;
+                    //if (PocketGearBaseLogic.PocketGearIds.Contains(subTypeId)) {
+                    //    foreach (var slimBlock in GetNearbyBlocks(slimBlock.FatBlock.GetPosition(), CubeGrid)) {
+                    //        if (!_protectedBlocks.Contains(slimBlock)) {
+                    //            _protectedBlocks.Add(slimBlock);
+                    //        }
+                    //    }
+                    //}
 
                     _protectedBlocks.Add(block);
                 }
@@ -103,14 +103,14 @@ namespace AutoMcD.PocketGear.DamageSystem {
         private void OnBlockRemoved(IMySlimBlock block) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(OnBlockRemoved)) : null) {
                 if (_protectedBlocks.Contains(block)) {
-                    var subTypeId = block.BlockDefinition.Id.SubtypeId.String;
-                    if (PocketGearBaseLogic.PocketGearIds.Contains(subTypeId)) {
-                        foreach (var slimBlock in GetNearbyBlocks(block.FatBlock.GetPosition(), CubeGrid)) {
-                            if (_protectedBlocks.Contains(slimBlock)) {
-                                _protectedBlocks.Remove(slimBlock);
-                            }
-                        }
-                    }
+                    //var subTypeId = block.BlockDefinition.Id.SubtypeId.String;
+                    //if (PocketGearBaseLogic.PocketGearIds.Contains(subTypeId)) {
+                    //    foreach (var slimBlock in GetNearbyBlocks(slimBlock.FatBlock.GetPosition(), CubeGrid)) {
+                    //        if (_protectedBlocks.Contains(slimBlock)) {
+                    //            _protectedBlocks.Remove(slimBlock);
+                    //        }
+                    //    }
+                    //}
 
                     _protectedBlocks.Remove(block);
                 }

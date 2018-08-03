@@ -16,42 +16,51 @@ namespace AutoMcD.PocketGear.DamageSystem {
         private readonly Dictionary<long, ProtectInfo> _protecedInfos = new Dictionary<long, ProtectInfo>();
         private ILogger Log { get; set; }
 
-        public void DisableProtection(IMyCubeBlock block) {
+        public void DisableProtection(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(DisableProtection)) : null) {
-                if (block == null) {
-                    return;
-                }
+                using (Log.BeginMethod(nameof(DisableProtection))) {
+                    if (slimBlock == null) {
+                        return;
+                    }
 
-                var cubegrid = block.CubeGrid;
-                if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
-                    _protecedInfos[cubegrid.EntityId].DisableProtection(block);
+                    Log.Debug($"Disable protection for: {slimBlock}");
+                    var cubegrid = slimBlock.CubeGrid;
+                    if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
+                        _protecedInfos[cubegrid.EntityId].DisableProtection(slimBlock);
+                    }
                 }
             }
         }
 
         public void DisableProtection(long cubeGridId) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(DisableProtection)) : null) {
-                if (_protecedInfos.ContainsKey(cubeGridId)) {
-                    _protecedInfos[cubeGridId].Close();
-                    _protecedInfos.Remove(cubeGridId);
+                using (Log.BeginMethod(nameof(DisableProtection))) {
+                    Log.Debug($"Disable protection for cubegrid: {cubeGridId}");
+                    if (_protecedInfos.ContainsKey(cubeGridId)) {
+                        _protecedInfos[cubeGridId].Close();
+                        _protecedInfos.Remove(cubeGridId);
+                    }
                 }
             }
         }
 
-        public void EnableProtection(IMyCubeBlock block) {
+        public void EnableProtection(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(EnableProtection)) : null) {
-                if (block == null) {
-                    return;
-                }
+                using (Log.BeginMethod(nameof(EnableProtection))) {
+                    if (slimBlock == null) {
+                        return;
+                    }
 
-                var cubegrid = block.CubeGrid;
-                if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
-                    _protecedInfos[cubegrid.EntityId].EnableProtection(block);
-                } else {
-                    var protecedInfo = new ProtectInfo(cubegrid);
-                    protecedInfo.EnableProtection(block);
-                    _protecedInfos.Add(cubegrid.EntityId, protecedInfo);
-                    cubegrid.OnClose += OnClose;
+                    Log.Debug($"Enable protection for: {slimBlock}");
+                    var cubegrid = slimBlock.CubeGrid;
+                    if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
+                        _protecedInfos[cubegrid.EntityId].EnableProtection(slimBlock);
+                    } else {
+                        var protecedInfo = new ProtectInfo(cubegrid);
+                        protecedInfo.EnableProtection(slimBlock);
+                        _protecedInfos.Add(cubegrid.EntityId, protecedInfo);
+                        cubegrid.OnClose += OnClose;
+                    }
                 }
             }
         }
