@@ -28,11 +28,6 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(Close)) : null) {
-                if (Mod.Static.DamageHandler != null) {
-                    // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
-                    _pocketGearPart.CubeGrid.OnPhysicsChanged -= OnPhysicsChanged;
-                }
-
                 _pocketGearPart.CubeGrid.OnBlockAdded -= OnBlockAdded;
                 _pocketGearPart.CubeGrid.OnBlockRemoved -= OnBlockRemoved;
             }
@@ -53,20 +48,10 @@ namespace AutoMcD.PocketGear.Logic {
                     return;
                 }
 
-                if (Mod.Static.DamageHandler != null) {
-                    // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
-                    _pocketGearPart.CubeGrid.OnPhysicsChanged += OnPhysicsChanged;
-                }
+                PlacePocketGearPad();
 
                 _pocketGearPart.CubeGrid.OnBlockAdded += OnBlockAdded;
                 _pocketGearPart.CubeGrid.OnBlockRemoved += OnBlockRemoved;
-
-                try {
-                    PlacePocketGearPad();
-                } catch (Exception exception) {
-                    Log.Error(exception);
-                    Log.Error(exception.StackTrace);
-                }
             }
         }
 
@@ -149,15 +134,7 @@ namespace AutoMcD.PocketGear.Logic {
         private void OnBlockRemoved(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnBlockRemoved)) : null) {
                 if (_pocketGearPart.Base != null && PocketGearPadLogic.PocketGearIds.Contains(slimBlock.BlockDefinition.Id.SubtypeId.String)) {
-                    _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBaseLogic>()?.OnPocketGearPadRemoved();
-                }
-            }
-        }
-
-        private void OnPhysicsChanged(IMyEntity entity) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnPhysicsChanged)) : null) {
-                if (entity.Physics != null && _pocketGearPart.Base != null) {
-                    _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBaseLogic>()?.OnPocketGearPartAttached();
+                    _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBaseLogic>()?.OnPocketGearPadRemoved(slimBlock);
                 }
             }
         }

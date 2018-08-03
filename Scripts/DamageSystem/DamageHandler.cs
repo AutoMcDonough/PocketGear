@@ -16,17 +16,17 @@ namespace AutoMcD.PocketGear.DamageSystem {
         private readonly Dictionary<long, ProtectInfo> _protecedInfos = new Dictionary<long, ProtectInfo>();
         private ILogger Log { get; set; }
 
-        public void DisableProtection(IMyCubeBlock block) {
+        public void DisableProtection(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(DisableProtection)) : null) {
                 using (Log.BeginMethod(nameof(DisableProtection))) {
-                    if (block == null) {
+                    if (slimBlock == null) {
                         return;
                     }
 
-                    Log.Debug($"Disable protection for: {block}");
-                    var cubegrid = block.CubeGrid;
+                    Log.Debug($"Disable protection for: {slimBlock}");
+                    var cubegrid = slimBlock.CubeGrid;
                     if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
-                        _protecedInfos[cubegrid.EntityId].DisableProtection(block);
+                        _protecedInfos[cubegrid.EntityId].DisableProtection(slimBlock);
                     }
                 }
             }
@@ -44,20 +44,20 @@ namespace AutoMcD.PocketGear.DamageSystem {
             }
         }
 
-        public void EnableProtection(IMyCubeBlock block) {
+        public void EnableProtection(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(EnableProtection)) : null) {
                 using (Log.BeginMethod(nameof(EnableProtection))) {
-                    if (block == null) {
+                    if (slimBlock == null) {
                         return;
                     }
 
-                    Log.Debug($"Enable protection for: {block}");
-                    var cubegrid = block.CubeGrid;
+                    Log.Debug($"Enable protection for: {slimBlock}");
+                    var cubegrid = slimBlock.CubeGrid;
                     if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
-                        _protecedInfos[cubegrid.EntityId].EnableProtection(block);
+                        _protecedInfos[cubegrid.EntityId].EnableProtection(slimBlock);
                     } else {
                         var protecedInfo = new ProtectInfo(cubegrid);
-                        protecedInfo.EnableProtection(block);
+                        protecedInfo.EnableProtection(slimBlock);
                         _protecedInfos.Add(cubegrid.EntityId, protecedInfo);
                         cubegrid.OnClose += OnClose;
                     }
