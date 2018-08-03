@@ -18,40 +18,49 @@ namespace AutoMcD.PocketGear.DamageSystem {
 
         public void DisableProtection(IMyCubeBlock block) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(DisableProtection)) : null) {
-                if (block == null) {
-                    return;
-                }
+                using (Log.BeginMethod(nameof(DisableProtection))) {
+                    if (block == null) {
+                        return;
+                    }
 
-                var cubegrid = block.CubeGrid;
-                if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
-                    _protecedInfos[cubegrid.EntityId].DisableProtection(block);
+                    Log.Debug($"Disable protection for: {block}");
+                    var cubegrid = block.CubeGrid;
+                    if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
+                        _protecedInfos[cubegrid.EntityId].DisableProtection(block);
+                    }
                 }
             }
         }
 
         public void DisableProtection(long cubeGridId) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(DisableProtection)) : null) {
-                if (_protecedInfos.ContainsKey(cubeGridId)) {
-                    _protecedInfos[cubeGridId].Close();
-                    _protecedInfos.Remove(cubeGridId);
+                using (Log.BeginMethod(nameof(DisableProtection))) {
+                    Log.Debug($"Disable protection for cubegrid: {cubeGridId}");
+                    if (_protecedInfos.ContainsKey(cubeGridId)) {
+                        _protecedInfos[cubeGridId].Close();
+                        _protecedInfos.Remove(cubeGridId);
+                    }
                 }
             }
         }
 
         public void EnableProtection(IMyCubeBlock block) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(EnableProtection)) : null) {
-                if (block == null) {
-                    return;
-                }
+                using (Log.BeginMethod(nameof(EnableProtection))) {
+                    if (block == null) {
+                        return;
+                    }
 
-                var cubegrid = block.CubeGrid;
-                if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
-                    _protecedInfos[cubegrid.EntityId].EnableProtection(block);
-                } else {
-                    var protecedInfo = new ProtectInfo(cubegrid);
-                    protecedInfo.EnableProtection(block);
-                    _protecedInfos.Add(cubegrid.EntityId, protecedInfo);
-                    cubegrid.OnClose += OnClose;
+                    Log.Debug($"Enable protection for: {block}");
+                    var cubegrid = block.CubeGrid;
+                    if (_protecedInfos.ContainsKey(cubegrid.EntityId)) {
+                        _protecedInfos[cubegrid.EntityId].EnableProtection(block);
+                    } else {
+                        var protecedInfo = new ProtectInfo(cubegrid);
+                        protecedInfo.EnableProtection(block);
+                        _protecedInfos.Add(cubegrid.EntityId, protecedInfo);
+                        cubegrid.OnClose += OnClose;
+                    }
                 }
             }
         }
@@ -69,7 +78,7 @@ namespace AutoMcD.PocketGear.DamageSystem {
                     return;
                 }
 
-                var slimBlock = (IMySlimBlock) target;
+                var slimBlock = (IMySlimBlock)target;
                 if (slimBlock != null) {
                     var cubeGrid = slimBlock.CubeGrid;
                     if (!_protecedInfos.ContainsKey(cubeGrid.EntityId)) {
@@ -121,7 +130,7 @@ namespace AutoMcD.PocketGear.DamageSystem {
                         damage.IsDeformation = false;
                     } else {
                         var multiplicator = Math.Pow(impactVelocity / tolerance, .75) - 1;
-                        damage.Amount *= (float) multiplicator;
+                        damage.Amount *= (float)multiplicator;
                         damage.IsDeformation = false;
                     }
                 }
