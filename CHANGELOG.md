@@ -1,3 +1,15 @@
+<a name="1.1.5"></a>
+# [1.1.5](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.4...v1.1.5) (2018-08-03)
+
+
+### Bug Fixes
+
+* fix a bug that prevents the "Place Pad" button from being activated ([fdb7c97](https://github.com/AutoMcDonough/PocketGear/commit/fdb7c97))
+* hide PocketGear Parts in G menu ([6e118f6](https://github.com/AutoMcDonough/PocketGear/commit/6e118f6))
+* hide special PocketGear Pads in the G menu ([1175a93](https://github.com/AutoMcDonough/PocketGear/commit/1175a93))
+
+
+
 <a name="1.1.4"></a>
 # [1.1.4](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.3...v1.1.4) (2018-08-02)
 
