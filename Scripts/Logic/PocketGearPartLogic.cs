@@ -5,9 +5,11 @@ using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Profiler;
+using SpaceEngineers.Game.ModAPI;
 using VRage;
 using VRage.Game;
 using VRage.Game.Components;
+using VRage.Game.ModAPI;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
 using VRageMath;
@@ -30,6 +32,9 @@ namespace AutoMcD.PocketGear.Logic {
                     // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
                     _pocketGearPart.CubeGrid.OnPhysicsChanged -= OnPhysicsChanged;
                 }
+
+                _pocketGearPart.CubeGrid.OnBlockAdded -= OnBlockAdded;
+                _pocketGearPart.CubeGrid.OnBlockRemoved -= OnBlockRemoved;
             }
         }
 
@@ -52,6 +57,9 @@ namespace AutoMcD.PocketGear.Logic {
                     // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
                     _pocketGearPart.CubeGrid.OnPhysicsChanged += OnPhysicsChanged;
                 }
+
+                _pocketGearPart.CubeGrid.OnBlockAdded += OnBlockAdded;
+                _pocketGearPart.CubeGrid.OnBlockRemoved += OnBlockRemoved;
 
                 try {
                     PlacePocketGearPad();
@@ -130,12 +138,26 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
+        private void OnBlockAdded(IMySlimBlock slimBlock) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnBlockAdded)) : null) {
+                if (_pocketGearPart.Base != null && PocketGearPadLogic.PocketGearIds.Contains(slimBlock.BlockDefinition.Id.SubtypeId.String)) {
+                    _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBaseLogic>()?.OnPocketGearPadAdded((IMyLandingGear) slimBlock.FatBlock);
+                }
+            }
+        }
+
+        private void OnBlockRemoved(IMySlimBlock slimBlock) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnBlockRemoved)) : null) {
+                if (_pocketGearPart.Base != null && PocketGearPadLogic.PocketGearIds.Contains(slimBlock.BlockDefinition.Id.SubtypeId.String)) {
+                    _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBaseLogic>()?.OnPocketGearPadRemoved();
+                }
+            }
+        }
+
         private void OnPhysicsChanged(IMyEntity entity) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnPhysicsChanged)) : null) {
-                if (entity.Physics != null) {
-                    if (_pocketGearPart.Base != null) {
-                        _pocketGearPart.Base?.GameLogic?.GetAs<PocketGearBaseLogic>()?.AttachedEntityChanged(_pocketGearPart);
-                    }
+                if (entity.Physics != null && _pocketGearPart.Base != null) {
+                    _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBaseLogic>()?.OnPocketGearPartAttached();
                 }
             }
         }
