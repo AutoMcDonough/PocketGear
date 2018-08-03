@@ -78,7 +78,7 @@ namespace AutoMcD.PocketGear.DamageSystem {
                     return;
                 }
 
-                var slimBlock = (IMySlimBlock)target;
+                var slimBlock = (IMySlimBlock) target;
                 if (slimBlock != null) {
                     var cubeGrid = slimBlock.CubeGrid;
                     if (!_protecedInfos.ContainsKey(cubeGrid.EntityId)) {
@@ -130,7 +130,7 @@ namespace AutoMcD.PocketGear.DamageSystem {
                         damage.IsDeformation = false;
                     } else {
                         var multiplicator = Math.Pow(impactVelocity / tolerance, .75) - 1;
-                        damage.Amount *= (float)multiplicator;
+                        damage.Amount *= (float) multiplicator;
                         damage.IsDeformation = false;
                     }
                 }
