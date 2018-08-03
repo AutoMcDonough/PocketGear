@@ -138,6 +138,7 @@
       </Id>
       <DisplayName>DisplayName_PocketGear_Part</DisplayName>
       <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
       <CubeSize>Large</CubeSize>
@@ -176,6 +177,7 @@
       </Id>
       <DisplayName>DisplayName_PocketGear_Large_Part</DisplayName>
       <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <BlockPairName>MA_PocketGear_L_Rotor</BlockPairName>
       <CubeSize>Large</CubeSize>
@@ -585,6 +587,7 @@
       </Id>
       <DisplayName>DisplayName_PocketGear_Part</DisplayName>
       <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <BlockPairName>MA_PocketGear_Rotor_sm</BlockPairName>
       <CubeSize>Small</CubeSize>
@@ -624,6 +627,7 @@
       </Id>
       <DisplayName>DisplayName_PocketGear_Large_Part</DisplayName>
       <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <BlockPairName>MA_PocketGear_L_Rotor_sm</BlockPairName>
       <CubeSize>Small</CubeSize>
