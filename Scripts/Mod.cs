@@ -27,7 +27,7 @@ namespace AutoMcD.PocketGear {
         public const bool PROFILE = false;
 
         // important: change to info or none before publishing this mod.
-        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Error;
+        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Info | LogEventLevel.Warning | LogEventLevel.Error;
         private const string LOG_FILE_TEMPLATE = "{0}.log";
         private const ushort NETWORK_ID = 51510;
         private const string PROFILER_LOG_FILE = "profiler.log";
