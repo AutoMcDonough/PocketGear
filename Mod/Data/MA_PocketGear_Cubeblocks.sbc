@@ -215,6 +215,7 @@
       </Id>
       <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
@@ -265,6 +266,7 @@
       </Id>
       <DisplayName>DisplayName_PocketGear_Large_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
@@ -661,6 +663,7 @@
       </Id>
       <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <CubeSize>Small</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
@@ -710,6 +713,7 @@
       </Id>
       <DisplayName>DisplayName_PocketGear_Large_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <CubeSize>Small</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
