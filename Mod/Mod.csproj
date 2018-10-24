@@ -119,6 +119,8 @@
     <None Include="modinfo.sbmi" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="beta\thumb.png" />
+    <Content Include="dev\thumb.png" />
     <Content Include="Textures\MA_PocketGear_Base.dds" />
     <Content Include="Textures\MA_PocketGear_Magnet.dds" />
     <Content Include="Textures\MA_PocketGear_Pad.dds" />
