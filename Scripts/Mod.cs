@@ -14,6 +14,7 @@ using Sisk.Utils.Logging;
 using Sisk.Utils.Logging.DefaultHandler;
 using Sisk.Utils.Profiler;
 using SpaceEngineers.Game.ModAPI;
+using VRage;
 using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.ModAPI;
@@ -38,8 +39,6 @@ namespace AutoMcD.PocketGear {
 
         public Mod() {
             Static = this;
-            InitializeLogging();
-            CreateTranslations();
         }
 
         /// <summary>
@@ -144,7 +143,9 @@ namespace AutoMcD.PocketGear {
         /// </summary>
         public override void LoadData() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LoadData)) : null) {
+                InitializeLogging();
                 LoadSettings();
+                LoadTranslation();
                 LocalizeModDefinitions();
             }
         }
@@ -202,44 +203,6 @@ namespace AutoMcD.PocketGear {
             }
 
             Static = null;
-        }
-
-        /// <summary>
-        ///     Creates all translation for this mod.
-        /// </summary>
-        private void CreateTranslations() {
-            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(CreateTranslations)) : null) {
-                using (Log.BeginMethod(nameof(CreateTranslations))) {
-                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Base), "PocketGear Base", German: "PocketGear Basis");
-                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Large_Base), "PocketGear Large Base", German: "PocketGear Basis, Groß");
-
-                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Part), "PocketGear Part", German: "PocketGear Teil");
-                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Large_Part), "PocketGear Large Part", German: "PocketGear Teil, Groß");
-
-                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Pad), "PocketGear Pad", German: "PocketGear Pad");
-                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_Large_Pad), "PocketGear Large Pad", German: "PocketGear Pad, Groß");
-
-                    Localize.Create(nameof(PocketGearText.DisplayName_PocketGear_MagLock), "PocketGear MagLock");
-
-                    Localize.Create(nameof(PocketGearText.DeployVelocity), "Deploy Velocity", German: "Ausfahrgeschwindigkeit");
-                    Localize.Create(nameof(PocketGearText.Tooltip_DeployVelocity), "The speed at which the PocketGear is retracted / extended.", German: "Die Geschwindigkeit, mit der das PocketGear ein- / ausgefahren wird.");
-
-                    Localize.Create(nameof(PocketGearText.LockRetractBehavior), "Lock Retract Behavior", German: "Sperr/Einfahr Verhalten");
-                    Localize.Create(nameof(PocketGearText.Tooltip_LockRetractBehavior), "Whether it should prevent retracting if locked or if it should unlock on retract.", German: "Ob es das Zurückziehen verhindern soll, wenn es gesperrt ist oder ob es beim Zurückziehen entsperrt werden soll.");
-                    Localize.Create(nameof(PocketGearText.PreventRetract), "Prevent Retracting", German: "Einfahren Verhindern");
-                    Localize.Create(nameof(PocketGearText.UnlockOnRetract), "Unlock on retract", German: "Entsperren beim Einfahren");
-
-                    Localize.Create(nameof(PocketGearText.PlaceLandingPad), "Place Pad", German: "Plaziere Pad");
-                    Localize.Create(nameof(PocketGearText.Tooltip_PlaceLandingPad), "Place a new PocketGear Pad.", German: "Plaziere ein neues PocketGear Pad");
-
-                    Localize.Create(nameof(PocketGearText.SwitchDeployState), "Switch Deploy State", German: "Wechsel des Ausfahrstatus");
-                    Localize.Create(nameof(PocketGearText.Tooltip_SwitchDeployState), "Switch between deploy and retract.", German: "Wechsel zwischen aus-/ einfahren.");
-                    Localize.Create(nameof(PocketGearText.Deploy), "Deploy", German: "Ausfahren");
-                    Localize.Create(nameof(PocketGearText.Retract), "Retract", German: "Einfahren");
-
-                    Log.Info("Translation created");
-                }
-            }
         }
 
         private void InitializeDamageHandler() {
@@ -324,6 +287,76 @@ namespace AutoMcD.PocketGear {
         }
 
         /// <summary>
+        ///     Load translations for this mod.
+        /// </summary>
+        private void LoadTranslation() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LoadTranslation)) : null) {
+                using (Log.BeginMethod(nameof(LoadTranslation))) {
+                    var currentLanguage = MyAPIGateway.Session.Config.Language;
+                    var supportedLanguages = new HashSet<MyLanguagesEnum>();
+
+                    switch (currentLanguage) {
+                        case MyLanguagesEnum.English:
+                            Lang.Add(MyLanguagesEnum.English, new Dictionary<string, string> {
+                                { nameof(ModText.DisplayName_PocketGear_Base), "PocketGear Base" },
+                                { nameof(ModText.DisplayName_PocketGear_Large_Base), "PocketGear Large Base" },
+                                { nameof(ModText.DisplayName_PocketGear_Part), "PocketGear Part" },
+                                { nameof(ModText.DisplayName_PocketGear_Large_Part), "PocketGear Large Part" },
+                                { nameof(ModText.DisplayName_PocketGear_Pad), "PocketGear Pad" },
+                                { nameof(ModText.DisplayName_PocketGear_Large_Pad), "PocketGear Large Pad" },
+                                { nameof(ModText.DisplayName_PocketGear_MagLock), "PocketGear MagLock" },
+                                { nameof(ModText.DeployVelocity), "Deploy Velocity" },
+                                { nameof(ModText.Tooltip_DeployVelocity), "The speed at which the PocketGear is retracted / extended." },
+                                { nameof(ModText.LockRetractBehavior), "Lock Retract Behavior" },
+                                { nameof(ModText.Tooltip_LockRetractBehavior), "Whether it should prevent retracting if locked or if it should unlock on retract." },
+                                { nameof(ModText.PreventRetract), "Prevent Retracting" },
+                                { nameof(ModText.UnlockOnRetract), "Unlock on retract" },
+                                { nameof(ModText.PlaceLandingPad), "Place Pad" },
+                                { nameof(ModText.Tooltip_PlaceLandingPad), "Place a new PocketGear Pad." },
+                                { nameof(ModText.SwitchDeployState), "Switch Deploy State" },
+                                { nameof(ModText.Tooltip_SwitchDeployState), "Switch between deploy and retract." },
+                                { nameof(ModText.Deploy), "Deploy" },
+                                { nameof(ModText.Retract), "Retract" }
+                            });
+                            break;
+                        case MyLanguagesEnum.German:
+                            Lang.Add(MyLanguagesEnum.German, new Dictionary<string, string> {
+                                { nameof(ModText.DisplayName_PocketGear_Base), "PocketGear Basis" },
+                                { nameof(ModText.DisplayName_PocketGear_Large_Base), "PocketGear Basis, Groß" },
+                                { nameof(ModText.DisplayName_PocketGear_Part), "PocketGear Teil" },
+                                { nameof(ModText.DisplayName_PocketGear_Large_Part), "PocketGear Teil, Groß" },
+                                { nameof(ModText.DisplayName_PocketGear_Pad), "PocketGear Pad" },
+                                { nameof(ModText.DisplayName_PocketGear_Large_Pad), "PocketGear Pad, Groß" },
+                                { nameof(ModText.DisplayName_PocketGear_MagLock), "PocketGear MagLock" },
+                                { nameof(ModText.DeployVelocity), "Ausfahrgeschwindigkeit" },
+                                { nameof(ModText.Tooltip_DeployVelocity), "Die Geschwindigkeit, mit der das PocketGear ein- / ausgefahren wird." },
+                                { nameof(ModText.LockRetractBehavior), "Sperr/Einfahr Verhalten" },
+                                { nameof(ModText.Tooltip_LockRetractBehavior), "Ob es das Zurückziehen verhindern soll, wenn es gesperrt ist oder ob es beim Zurückziehen entsperrt werden soll." },
+                                { nameof(ModText.PreventRetract), "Einfahren Verhindern" },
+                                { nameof(ModText.UnlockOnRetract), "Entsperren beim Einfahren" },
+                                { nameof(ModText.PlaceLandingPad), "Plaziere Pad" },
+                                { nameof(ModText.Tooltip_PlaceLandingPad), "Plaziere ein neues PocketGear Pad" },
+                                { nameof(ModText.SwitchDeployState), "Wechsel des Ausfahrstatus" },
+                                { nameof(ModText.Tooltip_SwitchDeployState), "Wechsel zwischen aus-/ einfahren." },
+                                { nameof(ModText.Deploy), "Ausfahren" },
+                                { nameof(ModText.Retract), "Einfahren" }
+                            });
+                            break;
+                    }
+
+                    Texts.LoadSupportedLanguages(supportedLanguages);
+                    if (supportedLanguages.Contains(currentLanguage)) {
+                        Texts.LoadTexts(currentLanguage);
+                        Log.Info($"Loaded {currentLanguage} translations.");
+                    } else if (supportedLanguages.Contains(MyLanguagesEnum.English)) {
+                        Texts.LoadTexts();
+                        Log.Warning($"No {currentLanguage} translations found. Fall back to {MyLanguagesEnum.English} translations.");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Localize all definitions add by this mod.
         /// </summary>
         private void LocalizeModDefinitions() {
@@ -336,7 +369,8 @@ namespace AutoMcD.PocketGear {
                         if (definition is MyCubeBlockDefinition) {
                             if (definition.DisplayNameText.StartsWith("DisplayName_")) {
                                 Log.Debug($"|-> {definition.Id}");
-                                definition.DisplayNameEnum = Localize.Get(definition.DisplayNameText);
+                                definition.DisplayNameString = Texts.GetString(definition.DisplayNameText);
+                                definition.DisplayNameEnum = null;
                             }
                         }
                     }

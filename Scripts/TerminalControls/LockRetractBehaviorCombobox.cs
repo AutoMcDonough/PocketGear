@@ -6,7 +6,9 @@ using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
 using Sisk.Utils.Localization;
+using Sisk.Utils.Localization.Extensions;
 using VRage.ModAPI;
+using VRage.Utils;
 
 // ReSharper disable ArgumentsStyleOther
 // ReSharper disable ArgumentsStyleNamedExpression
@@ -16,9 +18,9 @@ namespace AutoMcD.PocketGear.TerminalControls {
     public static class LockRetractBehaviorCombobox {
         public static IMyTerminalControlCombobox Create() {
             var combobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
-                id: nameof(PocketGearText.LockRetractBehavior),
-                title: PocketGearText.LockRetractBehavior.String,
-                tooltip: PocketGearText.Tooltip_LockRetractBehavior.String,
+                id: nameof(ModText.LockRetractBehavior),
+                title: ModText.LockRetractBehavior.GetString(),
+                tooltip: ModText.Tooltip_LockRetractBehavior.GetString(),
                 content: Content,
                 getter: Getter,
                 setter: Setter,
@@ -29,7 +31,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static void Content(List<MyTerminalControlComboBoxItem> list) {
-            list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = Localize.Get(x.ToString()) }));
+            list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = MyStringId.GetOrCompute(Texts.GetString(x.ToString())) }));
         }
 
         private static long Getter(IMyTerminalBlock block) {

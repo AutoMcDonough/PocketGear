@@ -2,6 +2,7 @@
 using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.Utils.Localization.Extensions;
 
 // ReSharper disable ArgumentsStyleOther
 // ReSharper disable ArgumentsStyleNamedExpression
@@ -11,11 +12,11 @@ namespace AutoMcD.PocketGear.TerminalControls {
     public static class DeployRetractSwitch {
         public static IMyTerminalControlOnOffSwitch Create() {
             var @switch = TerminalControlUtils.CreateOnOffSwitch<IMyMotorAdvancedStator>(
-                id: nameof(PocketGearText.SwitchDeployState),
-                title: PocketGearText.SwitchDeployState.String,
-                tooltip: PocketGearText.Tooltip_SwitchDeployState.String,
-                onText: PocketGearText.Deploy.String,
-                offText: PocketGearText.Retract.String,
+                id: nameof(ModText.SwitchDeployState),
+                title: ModText.SwitchDeployState.GetString(),
+                tooltip: ModText.Tooltip_SwitchDeployState.GetString(),
+                onText: ModText.Deploy.GetString(),
+                offText: ModText.Retract.GetString(),
                 getter: Getter,
                 setter: Setter,
                 enabled: Enabled,

@@ -2,6 +2,7 @@
 using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.Utils.Localization.Extensions;
 
 // ReSharper disable UseNegatedPatternMatching
 // ReSharper disable ArgumentsStyleOther
@@ -12,9 +13,9 @@ namespace AutoMcD.PocketGear.TerminalControls {
     public static class PlacePocketGearPadButton {
         public static IMyTerminalControlButton Create() {
             var button = TerminalControlUtils.CreateButton<IMyMotorAdvancedStator>(
-                id: nameof(PocketGearText.PlaceLandingPad),
-                title: PocketGearText.PlaceLandingPad.String,
-                tooltip: PocketGearText.Tooltip_PlaceLandingPad.String,
+                id: nameof(ModText.PlaceLandingPad),
+                title: ModText.PlaceLandingPad.GetString(),
+                tooltip: ModText.Tooltip_PlaceLandingPad.GetString(),
                 action: Action,
                 enabled: Enabled,
                 visible: PocketGearBaseControls.IsPocketGearBase,
