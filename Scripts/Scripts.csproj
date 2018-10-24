@@ -125,12 +125,16 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Utils\Localization\Localization.csproj">
-      <Project>{afc6b29d-80d1-48ab-9b45-7230216c285f}</Project>
+      <Project>{2675bec6-9106-4ab8-a2dc-77cd569d9954}</Project>
       <Name>Localization</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Logging\Logging.csproj">
       <Project>{d8581c43-f65d-49eb-bfe3-75f185371512}</Project>
       <Name>Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Net\Net.csproj">
+      <Project>{2285e3a1-63a2-4632-aa74-caa8dac96c71}</Project>
+      <Name>Net</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Profiler\Profiler.csproj">
       <Project>{30c726df-f15b-4df0-b579-dfc84c74d6e2}</Project>
