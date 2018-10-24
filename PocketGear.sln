@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net", "Utils\Net\Net.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Localization", "Utils\Localization\Localization.csproj", "{2675BEC6-9106-4AB8-A2DC-77CD569D9954}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerminalControls", "Utils\TerminalControls\TerminalControls.csproj", "{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,6 +86,14 @@ Global
 		{2675BEC6-9106-4AB8-A2DC-77CD569D9954}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2675BEC6-9106-4AB8-A2DC-77CD569D9954}.Release|x64.ActiveCfg = Release|Any CPU
 		{2675BEC6-9106-4AB8-A2DC-77CD569D9954}.Release|x64.Build.0 = Release|Any CPU
+		{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B}.Debug|x64.Build.0 = Debug|Any CPU
+		{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B}.Release|x64.ActiveCfg = Release|Any CPU
+		{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +103,7 @@ Global
 		{30C726DF-F15B-4DF0-B579-DFC84C74D6E2} = {E2CD4268-6882-4FEF-9EBE-DEBBCCE595D0}
 		{2285E3A1-63A2-4632-AA74-CAA8DAC96C71} = {E2CD4268-6882-4FEF-9EBE-DEBBCCE595D0}
 		{2675BEC6-9106-4AB8-A2DC-77CD569D9954} = {E2CD4268-6882-4FEF-9EBE-DEBBCCE595D0}
+		{BEAE5F29-1B17-4F13-8262-6EE88B8CC41B} = {E2CD4268-6882-4FEF-9EBE-DEBBCCE595D0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {49E94350-C0F0-4CAF-9DF4-1655AA3AD3C6}
