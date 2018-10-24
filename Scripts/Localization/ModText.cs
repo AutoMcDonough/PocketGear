@@ -3,7 +3,7 @@
 // ReSharper disable InconsistentNaming
 
 namespace AutoMcD.PocketGear.Localization {
-    public static class PocketGearText {
+    public static class ModText {
         public static readonly MyStringId Deploy = MyStringId.GetOrCompute(nameof(Deploy));
 
         public static readonly MyStringId DeployVelocity = MyStringId.GetOrCompute(nameof(DeployVelocity));

@@ -3,6 +3,7 @@ using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.Utils.Localization.Extensions;
 
 // ReSharper disable ArgumentsStyleOther
 // ReSharper disable ArgumentsStyleNamedExpression
@@ -12,9 +13,9 @@ namespace AutoMcD.PocketGear.TerminalControls {
     public static class DeployVelocitySlider {
         public static IMyTerminalControlSlider Create() {
             var slider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
-                id: nameof(PocketGearText.DeployVelocity),
-                title: PocketGearText.DeployVelocity.String,
-                tooltip: PocketGearText.Tooltip_DeployVelocity.String,
+                id: nameof(ModText.DeployVelocity),
+                title: ModText.DeployVelocity.GetString(),
+                tooltip: ModText.Tooltip_DeployVelocity.GetString(),
                 writer: Writer,
                 getter: Getter,
                 setter: Setter,
