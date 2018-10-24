@@ -68,7 +68,7 @@ namespace AutoMcD.PocketGear.Logic {
                 if (value != _settings.LockRetractBehavior) {
                     _settings.LockRetractBehavior = value;
                     PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
-                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(CurrentBehavior), Value = BitConverter.GetBytes((long) value) });
+                    Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(CurrentBehavior), value));
                 }
             }
         }
@@ -79,7 +79,7 @@ namespace AutoMcD.PocketGear.Logic {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value != _settings.DeployVelocity) {
                     _settings.DeployVelocity = value;
-                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(DeployVelocity), Value = BitConverter.GetBytes(DeployVelocity) });
+                    Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(DeployVelocity), value));
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace AutoMcD.PocketGear.Logic {
             set {
                 if (value != _settings.ShouldDeploy) {
                     _settings.ShouldDeploy = value;
-                    Mod.Static.Network.Sync(new PropertySyncMessage { EntityId = Entity.EntityId, Name = nameof(ShouldDeploy), Value = BitConverter.GetBytes(value) });
+                    Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(ShouldDeploy), value));
                 }
             }
         }
@@ -152,7 +152,9 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(Close)) : null) {
-                Mod.Static.Network.Unregister<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
+                if (Mod.Static.Network != null) {
+                    Mod.Static.Network.Unregister<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
+                }
 
                 _pocketGearBase.LimitReached -= OnLimitReached;
                 _pocketGearBase.CubeGrid.OnIsStaticChanged -= OnIsStaticChanged;
@@ -179,7 +181,9 @@ namespace AutoMcD.PocketGear.Logic {
                 _isJustPlaced = _pocketGearBase?.CubeGrid?.Physics != null;
                 _settings = Load(Entity, new Guid(PocketGearBaseSettings.GUID));
 
-                Mod.Static.Network.Register<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
+                if (Mod.Static.Network != null) {
+                    Mod.Static.Network.Register<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
+                }
 
                 if (Entity.Storage == null) {
                     Entity.Storage = new MyModStorageComponent();
@@ -523,16 +527,16 @@ namespace AutoMcD.PocketGear.Logic {
 
                 switch (message.Name) {
                     case nameof(DeployVelocity):
-                        _settings.DeployVelocity = BitConverter.ToSingle(message.Value, 0);
+                        _settings.DeployVelocity = message.GetValueAs<float>();
                         PocketGearBaseControls.DeployVelocitySlider.UpdateVisual();
                         break;
                     case nameof(CurrentBehavior):
-                        _settings.LockRetractBehavior = (LockRetractBehaviors) BitConverter.ToInt64(message.Value, 0);
+                        _settings.LockRetractBehavior = message.GetValueAs<LockRetractBehaviors>();
                         PocketGearBaseControls.LockRetractBehaviorCombobox.UpdateVisual();
                         PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
                         break;
                     case nameof(ShouldDeploy):
-                        _settings.ShouldDeploy = BitConverter.ToBoolean(message.Value, 0);
+                        _settings.ShouldDeploy = message.GetValueAs<bool>();
                         PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
                         break;
                 }
