@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoMcD.PocketGear.Net;
+using AutoMcD.PocketGear.Net.Messages;
 using AutoMcD.PocketGear.Settings;
 using AutoMcD.PocketGear.TerminalControls;
 using Sandbox.Common.ObjectBuilders;
@@ -152,7 +152,7 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(Close)) : null) {
-                Mod.Static.Network.UnRegisterEntitySyncHandler(Entity.EntityId, OnEntitySyncMessageReceived);
+                Mod.Static.Network.Unregister<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
 
                 _pocketGearBase.LimitReached -= OnLimitReached;
                 _pocketGearBase.CubeGrid.OnIsStaticChanged -= OnIsStaticChanged;
@@ -179,7 +179,7 @@ namespace AutoMcD.PocketGear.Logic {
                 _isJustPlaced = _pocketGearBase?.CubeGrid?.Physics != null;
                 _settings = Load(Entity, new Guid(PocketGearBaseSettings.GUID));
 
-                Mod.Static.Network.RegisterEntitySyncHandler(Entity.EntityId, OnEntitySyncMessageReceived);
+                Mod.Static.Network.Register<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
 
                 if (Entity.Storage == null) {
                     Entity.Storage = new MyModStorageComponent();
@@ -488,31 +488,6 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        private void OnEntitySyncMessageReceived(IEntitySyncMessage message) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnEntitySyncMessageReceived)) : null) {
-                using (Log.BeginMethod(nameof(OnEntitySyncMessageReceived))) {
-                    var syncMessage = message as PropertySyncMessage;
-                    if (syncMessage != null) {
-                        switch (syncMessage.Name) {
-                            case nameof(DeployVelocity):
-                                _settings.DeployVelocity = BitConverter.ToSingle(syncMessage.Value, 0);
-                                PocketGearBaseControls.DeployVelocitySlider.UpdateVisual();
-                                break;
-                            case nameof(CurrentBehavior):
-                                _settings.LockRetractBehavior = (LockRetractBehaviors) BitConverter.ToInt64(syncMessage.Value, 0);
-                                PocketGearBaseControls.LockRetractBehaviorCombobox.UpdateVisual();
-                                PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
-                                break;
-                            case nameof(ShouldDeploy):
-                                _settings.ShouldDeploy = BitConverter.ToBoolean(syncMessage.Value, 0);
-                                PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-
         private void OnHierarchyUpdated(MyCubeGrid cubeGrid) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnHierarchyUpdated)) : null) {
                 if (_lastAttachedState && _pocketGearBase.TopGrid == null) {
@@ -536,6 +511,30 @@ namespace AutoMcD.PocketGear.Logic {
                     EnableProtection();
                 } else {
                     DisableProtection();
+                }
+            }
+        }
+
+        private void OnPropertySyncMessage(ulong sender, PropertySyncMessage message) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBaseLogic), nameof(OnPropertySyncMessage)) : null) {
+                if (message == null) {
+                    return;
+                }
+
+                switch (message.Name) {
+                    case nameof(DeployVelocity):
+                        _settings.DeployVelocity = BitConverter.ToSingle(message.Value, 0);
+                        PocketGearBaseControls.DeployVelocitySlider.UpdateVisual();
+                        break;
+                    case nameof(CurrentBehavior):
+                        _settings.LockRetractBehavior = (LockRetractBehaviors) BitConverter.ToInt64(message.Value, 0);
+                        PocketGearBaseControls.LockRetractBehaviorCombobox.UpdateVisual();
+                        PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
+                        break;
+                    case nameof(ShouldDeploy):
+                        _settings.ShouldDeploy = BitConverter.ToBoolean(message.Value, 0);
+                        PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
+                        break;
                 }
             }
         }

@@ -5,6 +5,7 @@ using AutoMcD.PocketGear.DamageSystem;
 using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Logic;
 using AutoMcD.PocketGear.Net;
+using AutoMcD.PocketGear.Net.Messages;
 using AutoMcD.PocketGear.Settings;
 using Sandbox.Definitions;
 using Sandbox.Game;
@@ -12,10 +13,10 @@ using Sandbox.ModAPI;
 using Sisk.Utils.Localization;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Logging.DefaultHandler;
+using Sisk.Utils.Net;
 using Sisk.Utils.Profiler;
 using SpaceEngineers.Game.ModAPI;
 using VRage;
-using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.ModAPI;
 
@@ -35,6 +36,7 @@ namespace AutoMcD.PocketGear {
         private const string PROFILER_SUMMARY_FILE = "profiler_summary.txt";
         private const string SETTINGS_FILE = "settings.xml";
         private static readonly string LogFile = string.Format(LOG_FILE_TEMPLATE, NAME);
+        private NetworkHandlerBase _networkHandler;
         private ILogger _profilerLog;
 
         public Mod() {
@@ -47,17 +49,12 @@ namespace AutoMcD.PocketGear {
         public DamageHandler DamageHandler { get; private set; }
 
         /// <summary>
-        ///     Indicates if the mod is used on an client.
-        /// </summary>
-        public bool IsClient { get; set; }
-
-        /// <summary>
         ///     Logger used for logging.
         /// </summary>
         public ILogger Log { get; private set; }
 
         /// <summary>
-        ///     Network to handle sycing.
+        ///     Network to handle syncing.
         /// </summary>
         public Network Network { get; private set; }
 
@@ -87,7 +84,7 @@ namespace AutoMcD.PocketGear {
 
         public override void HandleInput() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(HandleInput)) : null) {
-                if (!IsClient || MyAPIGateway.Gui.ChatEntryVisible || MyAPIGateway.Gui.IsCursorVisible) {
+                if (MyAPIGateway.Multiplayer.MultiplayerActive && MyAPIGateway.Utilities.IsDedicated || MyAPIGateway.Gui.ChatEntryVisible || MyAPIGateway.Gui.IsCursorVisible) {
                     return;
                 }
 
@@ -119,34 +116,32 @@ namespace AutoMcD.PocketGear {
         }
 
         /// <summary>
-        ///     Initialize the session component.
-        /// </summary>
-        public override void Init(MyObjectBuilder_SessionComponent sessionComponent) {
-            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(Init)) : null) {
-                using (Log.BeginMethod(nameof(Init))) {
-                    base.Init(sessionComponent);
-
-                    InitializeNetwork();
-                    if (Network.IsServer) {
-                        Network.SyncRequestReceived += OnSyncRequestReceived;
-                        InitializeDamageHandler();
-                    } else {
-                        Network.SyncResponseReceived += OnSyncResponseReceived;
-                        Network.SendToServer(new SettingsSyncRequestMessage { Sender = Network.MyId });
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         ///     Load mod settings and localize mod definitions.
         /// </summary>
         public override void LoadData() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LoadData)) : null) {
                 InitializeLogging();
-                LoadSettings();
                 LoadTranslation();
                 LocalizeModDefinitions();
+
+                if (MyAPIGateway.Multiplayer.MultiplayerActive) {
+                    InitializeNetwork();
+
+                    if (Network != null) {
+                        if (Network.IsServer) {
+                            LoadSettings();
+                            _networkHandler = new ServerHandler(Log, Network);
+
+                            InitializeDamageHandler();
+                            if (Network.IsDedicated) { }
+                        } else {
+                            _networkHandler = new ClientHandler(Log, Network);
+                            Network.SendToServer(new SettingsRequestMessage());
+                        }
+                    }
+                } else {
+                    LoadSettings();
+                }
             }
         }
 
@@ -179,6 +174,9 @@ namespace AutoMcD.PocketGear {
             }
 
             if (Network != null) {
+                _networkHandler.Close();
+                _networkHandler = null;
+
                 Log?.Info("Cap network connections");
                 Network.Close();
                 Network = null;
@@ -205,6 +203,20 @@ namespace AutoMcD.PocketGear {
             Static = null;
         }
 
+        /// <summary>
+        ///     Executed when received a <see cref="SettingsResponseMessage" />.
+        /// </summary>
+        /// <param name="settings">The setting received from server.</param>
+        public void OnSettingsReceived(ModSettings settings) {
+            if (settings != null) {
+                Settings = settings;
+
+                if (Settings.UseImpactDamageHandler) {
+                    InitializeDamageHandler();
+                }
+            }
+        }
+
         private void InitializeDamageHandler() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeDamageHandler)) : null) {
                 if (Settings.UseImpactDamageHandler) {
@@ -215,7 +227,7 @@ namespace AutoMcD.PocketGear {
         }
 
         /// <summary>
-        ///     Initalize the logging system.
+        ///     Initialize the logging system.
         /// </summary>
         private void InitializeLogging() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeLogging)) : null) {
@@ -235,15 +247,14 @@ namespace AutoMcD.PocketGear {
         }
 
         /// <summary>
-        ///     Initalize the network system.
+        ///     Initialize the network system.
         /// </summary>
         private void InitializeNetwork() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeNetwork)) : null) {
                 using (Log.BeginMethod(nameof(InitializeNetwork))) {
                     Log.Info("Initialize Network");
                     Network = new Network(NETWORK_ID);
-                    IsClient = !(Network.IsServer && Network.IsDedicated);
-                    Log.Info($"IsClient {IsClient}, IsServer: {Network.IsServer}, IsDedicated: {Network.IsDedicated}");
+                    Log.Info($"IsClient {Network.IsClient}, IsServer: {Network.IsServer}, IsDedicated: {Network.IsDedicated}");
                     Log.Info("Network initialized");
                 }
             }
@@ -376,31 +387,6 @@ namespace AutoMcD.PocketGear {
                     }
 
                     Log.Info("Localizations added");
-                }
-            }
-        }
-
-        private void OnSyncRequestReceived(ISyncRequestMessage message) {
-            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(OnSyncRequestReceived)) : null) {
-                if (message is SettingsSyncRequestMessage) {
-                    var requester = message.Sender;
-                    Network.Send(new SettingsSyncResponseMessage { Requester = requester, Settings = Settings }, requester);
-                }
-            }
-        }
-
-        private void OnSyncResponseReceived(ISyncResponseMessage message) {
-            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(OnSyncResponseReceived)) : null) {
-                var settingSyncReponse = message as SettingsSyncResponseMessage;
-                if (settingSyncReponse != null) {
-                    var settings = settingSyncReponse.Settings;
-                    if (settings != null) {
-                        Settings = settings;
-                    }
-
-                    if (Settings.UseImpactDamageHandler) {
-                        InitializeDamageHandler();
-                    }
                 }
             }
         }
