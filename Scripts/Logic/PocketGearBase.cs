@@ -97,16 +97,16 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        private static void GetNeighbours(IMySlimBlock slimBlock, int radius, ref HashSet<IMySlimBlock> slimBlocks) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(GetNeighbours)) : null) {
-                foreach (var neighbour in slimBlock.Neighbours) {
-                    if (slimBlocks.Contains(neighbour)) {
+        private static void GetNeighbors(IMySlimBlock slimBlock, int radius, ref HashSet<IMySlimBlock> slimBlocks) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(GetNeighbors)) : null) {
+                foreach (var neighbor in slimBlock.Neighbours) {
+                    if (slimBlocks.Contains(neighbor)) {
                         continue;
                     }
 
-                    slimBlocks.Add(neighbour);
+                    slimBlocks.Add(neighbor);
                     if (radius > 1) {
-                        GetNeighbours(neighbour, radius - 1, ref slimBlocks);
+                        GetNeighbors(neighbor, radius - 1, ref slimBlocks);
                     }
                 }
             }
@@ -252,7 +252,7 @@ namespace AutoMcD.PocketGear.Logic {
                     SwitchDeployState(true);
                 }
 
-                // bug: ImyRotorStator.UpperLimitDeg requirs an radian.
+                // bug: ImyRotorStator.UpperLimitDeg requires an radian.
                 _pocketGearBase.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
                 _pocketGearBase.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
 
@@ -280,7 +280,7 @@ namespace AutoMcD.PocketGear.Logic {
                     _pocketGearBase.CubeGrid.OnBlockAdded += OnBlockAdded;
                     _pocketGearBase.CubeGrid.OnBlockRemoved += OnBlockRemoved;
 
-                    GetNeighbours(_pocketGearBase.SlimBlock, PROTECTION_RADIUS, ref _neighbors);
+                    GetNeighbors(_pocketGearBase.SlimBlock, PROTECTION_RADIUS, ref _neighbors);
 
                     if (IsDeploying) {
                         EnableProtection();
