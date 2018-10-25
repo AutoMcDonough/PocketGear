@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMcD.PocketGear.DamageSystem;
@@ -29,8 +29,7 @@ namespace AutoMcD.PocketGear {
         // important: set profile to false before publishing this mod.
         public const bool PROFILE = true;
 
-        // important: change to info or none before publishing this mod.
-        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Info | LogEventLevel.Warning | LogEventLevel.Error | LogEventLevel.Debug;
+        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Info | LogEventLevel.Warning | LogEventLevel.Error;
         private const string LOG_FILE_TEMPLATE = "{0}.log";
         private const ushort NETWORK_ID = 51510;
         private const string PROFILER_LOG_FILE = "profiler.log";
@@ -53,6 +52,11 @@ namespace AutoMcD.PocketGear {
         ///     Handles impact damage for PocketGears.
         /// </summary>
         public DamageHandler DamageHandler { get; private set; }
+
+        /// <summary>
+        ///     Indicates if mod is a dev version.
+        /// </summary>
+        private bool IsDevVersion => ModContext.ModName.EndsWith("_DEV");
 
         /// <summary>
         ///     Logger used for logging.
@@ -251,7 +255,7 @@ namespace AutoMcD.PocketGear {
         private void InitializeLogging() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeLogging)) : null) {
                 Log = Logger.ForScope<Mod>();
-                Log.Register(new LocalStorageHandler(LogFile, LogFormatter, DEFAULT_LOG_EVENT_LEVEL, PROFILE ? -1 : 500));
+                Log.Register(new LocalStorageHandler(LogFile, LogFormatter, IsDevVersion ? LogEventLevel.All : DEFAULT_LOG_EVENT_LEVEL, PROFILE ? 0 : 500));
 
                 if (PROFILE) {
                     _profilerLog = Logger.ForScope<Mod>();
