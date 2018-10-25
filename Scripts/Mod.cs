@@ -104,6 +104,9 @@ namespace AutoMcD.PocketGear {
             }
         }
 
+        /// <summary>
+        ///     Handle input to switch lock of pocket gear pads on 'p' press.
+        /// </summary>
         public override void HandleInput() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(HandleInput)) : null) {
                 if (Network != null && Network.IsDedicated || MyAPIGateway.Gui.ChatEntryVisible || MyAPIGateway.Gui.IsCursorVisible) {
@@ -167,15 +170,12 @@ namespace AutoMcD.PocketGear {
         /// <summary>
         ///     Save mod settings and fire OnSave event.
         /// </summary>
-        // bug?: SaveData is called after the game save. You can use GetObjectBuilder.
         public override void SaveData() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(SaveData)) : null) {
-                using (Log.BeginMethod(nameof(SaveData))) {
-                    Log.Flush();
-                    if (PROFILE) {
-                        _profilerLog.Flush();
-                        WriteProfileResults();
-                    }
+                Log.Flush();
+                if (PROFILE) {
+                    _profilerLog.Flush();
+                    WriteProfileResults();
                 }
             }
         }
