@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMcD.PocketGear.DamageSystem;
@@ -171,7 +171,6 @@ namespace AutoMcD.PocketGear {
         public override void SaveData() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(SaveData)) : null) {
                 using (Log.BeginMethod(nameof(SaveData))) {
-                    SaveSettings();
                     Log.Flush();
                     if (PROFILE) {
                         _profilerLog.Flush();
@@ -325,6 +324,7 @@ namespace AutoMcD.PocketGear {
                         }
                     } else {
                         settings = new ModSettings();
+                        SaveSettings();
                     }
 
                     Settings = settings;
