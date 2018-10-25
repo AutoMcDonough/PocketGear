@@ -124,7 +124,7 @@ namespace AutoMcD.PocketGear {
                     var pocketGearPads = new List<IMyLandingGear>();
                     foreach (var grid in grids) {
                         var blocks = new List<IMySlimBlock>();
-                        grid.GetBlocks(blocks, x => PocketGearPadLogic.PocketGearIds.Contains(x.BlockDefinition.Id.SubtypeId.String));
+                        grid.GetBlocks(blocks, x => PocketGearPad.PocketGearIds.Contains(x.BlockDefinition.Id.SubtypeId.String));
                         pocketGearPads.AddRange(blocks.Select(x => x.FatBlock).Cast<IMyLandingGear>().Where(x => x.IsWorking));
                     }
 
@@ -134,7 +134,7 @@ namespace AutoMcD.PocketGear {
                             continue;
                         }
 
-                        PocketGearPadLogic.SwitchLock(landingGear);
+                        PocketGearPad.SwitchLock(landingGear);
                     }
                 }
             }

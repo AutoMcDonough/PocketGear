@@ -546,7 +546,7 @@ namespace AutoMcD.PocketGear.Logic {
 
                 ShouldDeploy = false;
                 if (CurrentBehavior == LockRetractBehaviors.UnlockOnRetract) {
-                    PocketGearPadLogic.Unlock(_pocketGearPad);
+                    PocketGearPad.Unlock(_pocketGearPad);
                 }
 
                 _pocketGearBase.TargetVelocityRPM = DeployVelocity * -1;

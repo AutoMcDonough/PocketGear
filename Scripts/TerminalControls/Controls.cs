@@ -29,7 +29,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
                     Base.OnCustomActionGetter(block, actions);
                 }
 
-                if (block.BlockDefinition.TypeId == typeof(MyObjectBuilder_LandingGear) && PocketGearPadLogic.PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
+                if (block.BlockDefinition.TypeId == typeof(MyObjectBuilder_LandingGear) && PocketGearPad.PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
                     Pad.OnCustomActionGetter(block, actions);
                 }
             }
@@ -41,7 +41,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
                     Base.OnCustomControlGetter(block, controls);
                 }
 
-                if (block.BlockDefinition.TypeId == typeof(MyObjectBuilder_LandingGear) && PocketGearPadLogic.PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
+                if (block.BlockDefinition.TypeId == typeof(MyObjectBuilder_LandingGear) && PocketGearPad.PocketGearIds.Contains(block.BlockDefinition.SubtypeId)) {
                     Pad.OnCustomControlGetter(block, controls);
                 }
             }

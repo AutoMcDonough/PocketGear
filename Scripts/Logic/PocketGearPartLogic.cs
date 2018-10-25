@@ -69,19 +69,19 @@ namespace AutoMcD.PocketGear.Logic {
                 string pocketGearPadId;
                 switch (_pocketGearPart.BlockDefinition.SubtypeId) {
                     case POCKETGEAR_PART:
-                        pocketGearPadId = PocketGearPadLogic.POCKETGEAR_PAD;
+                        pocketGearPadId = PocketGearPad.POCKETGEAR_PAD;
                         origin = position + left * gridSize * 2 + forward * gridSize;
                         break;
                     case POCKETGEAR_PART_LARGE:
-                        pocketGearPadId = PocketGearPadLogic.POCKETGEAR_PAD_LARGE;
+                        pocketGearPadId = PocketGearPad.POCKETGEAR_PAD_LARGE;
                         origin = position + left * (gridSize * 5) + forward * gridSize;
                         break;
                     case POCKETGEAR_PART_SMALL:
-                        pocketGearPadId = PocketGearPadLogic.POCKETGEAR_PAD_SMALL;
+                        pocketGearPadId = PocketGearPad.POCKETGEAR_PAD_SMALL;
                         origin = position + left + forward * gridSize;
                         break;
                     case POCKETGEAR_PART_LARGE_SMALL:
-                        pocketGearPadId = PocketGearPadLogic.POCKETGEAR_PAD_LARGE_SMALL;
+                        pocketGearPadId = PocketGearPad.POCKETGEAR_PAD_LARGE_SMALL;
                         origin = position + left * (gridSize * 5) + forward * gridSize;
                         break;
                     default:
@@ -125,7 +125,7 @@ namespace AutoMcD.PocketGear.Logic {
 
         private void OnBlockAdded(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnBlockAdded)) : null) {
-                if (_pocketGearPart.Base != null && PocketGearPadLogic.PocketGearIds.Contains(slimBlock.BlockDefinition.Id.SubtypeId.String)) {
+                if (_pocketGearPart.Base != null && PocketGearPad.PocketGearIds.Contains(slimBlock.BlockDefinition.Id.SubtypeId.String)) {
                     _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBase>()?.OnPocketGearPadAdded((IMyLandingGear) slimBlock.FatBlock);
                 }
             }
@@ -133,7 +133,7 @@ namespace AutoMcD.PocketGear.Logic {
 
         private void OnBlockRemoved(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnBlockRemoved)) : null) {
-                if (_pocketGearPart.Base != null && PocketGearPadLogic.PocketGearIds.Contains(slimBlock.BlockDefinition.Id.SubtypeId.String)) {
+                if (_pocketGearPart.Base != null && PocketGearPad.PocketGearIds.Contains(slimBlock.BlockDefinition.Id.SubtypeId.String)) {
                     _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBase>()?.OnPocketGearPadRemoved(slimBlock);
                 }
             }
