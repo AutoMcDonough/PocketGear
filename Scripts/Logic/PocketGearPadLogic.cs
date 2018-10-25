@@ -75,10 +75,6 @@ namespace AutoMcD.PocketGear.Logic {
                 if (_pocketGearPad != null) {
                     _pocketGearPad.AutoLock = false;
                 }
-
-                if (!PocketGearPadControls.AreTerminalControlsInitialized) {
-                    PocketGearPadControls.InitializeTerminalControls();
-                }
             }
         }
     }

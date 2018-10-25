@@ -1,30 +1,55 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
 using Sisk.Utils.Localization.Extensions;
-
-// ReSharper disable ArgumentsStyleOther
-// ReSharper disable ArgumentsStyleNamedExpression
-// ReSharper disable ArgumentsStyleLiteral
+using Sisk.Utils.TerminalControls;
+using VRage.Utils;
 
 namespace AutoMcD.PocketGear.TerminalControls {
     public static class DeployVelocitySlider {
-        public static IMyTerminalControlSlider Create() {
-            var slider = TerminalControlUtils.CreateSlider<IMyMotorAdvancedStator>(
-                id: nameof(ModText.DeployVelocity),
-                title: ModText.DeployVelocity.GetString(),
-                tooltip: ModText.Tooltip_DeployVelocity.GetString(),
-                writer: Writer,
-                getter: Getter,
-                setter: Setter,
-                min: Min,
-                max: Max,
-                enabled: PocketGearBaseControls.IsPocketGearBase,
-                visible: PocketGearBaseControls.IsPocketGearBase,
-                supportsMultipleBlocks: true);
-            return slider;
+        private const string ID = nameof(ModText.DeployVelocity);
+
+        private static IEnumerable<IMyTerminalAction> _actions;
+        private static IMyTerminalControlSlider _control;
+        private static IMyTerminalControlProperty<float> _property;
+
+        public static IEnumerable<IMyTerminalAction> Actions => _actions ?? (_actions = CreateActions());
+
+        public static IMyTerminalControlSlider Control => _control ?? (_control = CreateControl());
+
+        public static IMyTerminalControlProperty<float> Property => _property ?? (_property = CreateProperty());
+
+        private static IEnumerable<IMyTerminalAction> CreateActions() {
+            var actions = new List<IMyTerminalAction> {
+                Control.CreateResetAction<IMyMotorAdvancedStator>(DefaultValue),
+                Control.CreateIncreaseAction<IMyMotorAdvancedStator>(0.1f, MinGetter, MaxGetter),
+                Control.CreateDecreaseAction<IMyMotorAdvancedStator>(0.1f, MinGetter, MaxGetter)
+            };
+
+            return actions;
+        }
+
+        private static IMyTerminalControlSlider CreateControl() {
+            var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlSlider, IMyMotorAdvancedStator>(ID);
+            control.Title = MyStringId.GetOrCompute(ModText.DeployVelocity.GetString());
+            control.Tooltip = MyStringId.GetOrCompute(ModText.Tooltip_DeployVelocity.GetString());
+            control.Writer = Writer;
+            control.Getter = Getter;
+            control.Setter = Setter;
+            control.SetLimits(MinGetter, MaxGetter);
+            control.SupportsMultipleBlocks = true;
+            return control;
+        }
+
+        private static IMyTerminalControlProperty<float> CreateProperty() {
+            return Control.CreateProperty<IMyMotorAdvancedStator>();
+        }
+
+        private static float DefaultValue(IMyTerminalBlock block) {
+            return MinGetter(block);
         }
 
         private static float Getter(IMyTerminalBlock block) {
@@ -36,11 +61,11 @@ namespace AutoMcD.PocketGear.TerminalControls {
             return 0;
         }
 
-        private static float Max(IMyTerminalBlock block) {
+        private static float MaxGetter(IMyTerminalBlock block) {
             return (block as IMyMotorAdvancedStator)?.MaxRotorAngularVelocity * 9.549296f ?? 1;
         }
 
-        private static float Min(IMyTerminalBlock block) {
+        private static float MinGetter(IMyTerminalBlock block) {
             return 0;
         }
 
@@ -52,7 +77,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static void Writer(IMyTerminalBlock block, StringBuilder builder) {
-            builder.Append($"{block.GameLogic?.GetAs<PocketGearBaseLogic>()?.DeployVelocity:N2} rpm");
+            builder.Append($"{Getter(block):F2} rpm");
         }
     }
 }

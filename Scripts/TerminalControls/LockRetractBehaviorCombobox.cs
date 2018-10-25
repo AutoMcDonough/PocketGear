@@ -10,28 +10,26 @@ using Sisk.Utils.Localization.Extensions;
 using VRage.ModAPI;
 using VRage.Utils;
 
-// ReSharper disable ArgumentsStyleOther
-// ReSharper disable ArgumentsStyleNamedExpression
-// ReSharper disable ArgumentsStyleLiteral
-
 namespace AutoMcD.PocketGear.TerminalControls {
     public static class LockRetractBehaviorCombobox {
-        public static IMyTerminalControlCombobox Create() {
-            var combobox = TerminalControlUtils.CreateCombobox<IMyMotorAdvancedStator>(
-                id: nameof(ModText.LockRetractBehavior),
-                title: ModText.LockRetractBehavior.GetString(),
-                tooltip: ModText.Tooltip_LockRetractBehavior.GetString(),
-                content: Content,
-                getter: Getter,
-                setter: Setter,
-                enabled: PocketGearBaseControls.IsPocketGearBase,
-                visible: PocketGearBaseControls.IsPocketGearBase,
-                supportsMultipleBlocks: true);
-            return combobox;
-        }
+        private const string ID = nameof(ModText.LockRetractBehavior);
+
+        private static IMyTerminalControlCombobox _control;
+        public static IMyTerminalControlCombobox Control => _control ?? (_control = CreateControl());
 
         private static void Content(List<MyTerminalControlComboBoxItem> list) {
             list.AddRange(Enum.GetValues(typeof(LockRetractBehaviors)).Cast<LockRetractBehaviors>().Select(x => new MyTerminalControlComboBoxItem { Key = (long) x, Value = MyStringId.GetOrCompute(Texts.GetString(x.ToString())) }));
+        }
+
+        private static IMyTerminalControlCombobox CreateControl() {
+            var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlCombobox, IMyMotorAdvancedStator>(ID);
+            control.Title = MyStringId.GetOrCompute(ModText.LockRetractBehavior.GetString());
+            control.Tooltip = MyStringId.GetOrCompute(ModText.Tooltip_LockRetractBehavior.GetString());
+            control.ComboBoxContent = Content;
+            control.Getter = Getter;
+            control.Setter = Setter;
+            control.SupportsMultipleBlocks = true;
+            return control;
         }
 
         private static long Getter(IMyTerminalBlock block) {

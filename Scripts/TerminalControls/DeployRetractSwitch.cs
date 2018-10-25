@@ -1,62 +1,59 @@
-﻿using AutoMcD.PocketGear.Localization;
+﻿using System.Collections.Generic;
+using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
 using Sisk.Utils.Localization.Extensions;
-
-// ReSharper disable ArgumentsStyleOther
-// ReSharper disable ArgumentsStyleNamedExpression
-// ReSharper disable ArgumentsStyleLiteral
+using Sisk.Utils.TerminalControls;
+using VRage.Utils;
 
 namespace AutoMcD.PocketGear.TerminalControls {
     public static class DeployRetractSwitch {
-        public static IMyTerminalControlOnOffSwitch Create() {
-            var @switch = TerminalControlUtils.CreateOnOffSwitch<IMyMotorAdvancedStator>(
-                id: nameof(ModText.SwitchDeployState),
-                title: ModText.SwitchDeployState.GetString(),
-                tooltip: ModText.Tooltip_SwitchDeployState.GetString(),
-                onText: ModText.Deploy.GetString(),
-                offText: ModText.Retract.GetString(),
-                getter: Getter,
-                setter: Setter,
-                enabled: Enabled,
-                visible: PocketGearBaseControls.IsPocketGearBase,
-                supportsMultipleBlocks: true);
-            return @switch;
+        private const string ID = nameof(ModText.SwitchDeployState);
+        private static IEnumerable<IMyTerminalAction> _actions;
+        private static IMyTerminalControlOnOffSwitch _control;
+        private static IMyTerminalControlProperty<bool> _property;
+
+        public static IEnumerable<IMyTerminalAction> Actions => _actions ?? (_actions = CreateActions());
+
+        public static IMyTerminalControlOnOffSwitch Control => _control ?? (_control = CreateControl());
+
+        public static IMyTerminalControlProperty<bool> Property => _property ?? (_property = CreateProperty());
+
+        private static IEnumerable<IMyTerminalAction> CreateActions() {
+            var actions = new List<IMyTerminalAction> {
+                Control.CreateToggleAction<IMyMotorAdvancedStator>(),
+                Control.CreateOnAction<IMyMotorAdvancedStator>(),
+                Control.CreateOffAction<IMyMotorAdvancedStator>()
+            };
+
+            return actions;
         }
 
-        private static bool Enabled(IMyTerminalBlock block) {
-            if (block == null) {
-                return false;
-            }
+        private static IMyTerminalControlOnOffSwitch CreateControl() {
+            var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlOnOffSwitch, IMyMotorAdvancedStator>(ID);
+            control.Title = MyStringId.GetOrCompute(ModText.SwitchDeployState.GetString());
+            control.Tooltip = MyStringId.GetOrCompute(ModText.Tooltip_SwitchDeployState.GetString());
+            control.OnText = MyStringId.GetOrCompute(ModText.Deploy.GetString());
+            control.OffText = MyStringId.GetOrCompute(ModText.Retract.GetString());
+            control.Getter = Getter;
+            control.Setter = Setter;
+            control.SupportsMultipleBlocks = true;
+            return control;
+        }
 
-            if (!PocketGearBaseControls.IsPocketGearBase(block)) {
-                return false;
-            }
-
-            var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
-            var enabled = false;
-            if (logic != null) {
-                enabled = logic.CanRetract;
-            }
-
-            return enabled;
+        private static IMyTerminalControlProperty<bool> CreateProperty() {
+            return Control.CreateProperty<IMyMotorAdvancedStator>();
         }
 
         private static bool Getter(IMyTerminalBlock block) {
             var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
-            if (logic != null) {
-                return logic.IsDeploying;
-            }
-
-            return false;
+            return logic != null && logic.IsDeploying;
         }
 
         private static void Setter(IMyTerminalBlock block, bool value) {
             var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
-            if (logic != null) {
-                logic.SwitchDeployState(value);
-            }
+            logic?.SwitchDeployState(value);
         }
     }
 }
