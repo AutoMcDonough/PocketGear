@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using AutoMcD.PocketGear.Logic;
 using ProtoBuf;
 
 // ReSharper disable ExplicitCallerInfoArgument

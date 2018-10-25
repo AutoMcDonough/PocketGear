@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AutoMcD.PocketGear.TerminalControls;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.ModAPI;
 using Sisk.Utils.Logging;
