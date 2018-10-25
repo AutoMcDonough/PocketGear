@@ -48,7 +48,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static bool IsPocketGearBase(IMyTerminalBlock block) {
-            return block != null && PocketGearBaseLogic.PocketGearIds.Contains(block.BlockDefinition.SubtypeId);
+            return block != null && PocketGearBase.PocketGearIds.Contains(block.BlockDefinition.SubtypeId);
         }
 
         private void ModifyVanillaControls() {
@@ -63,8 +63,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
                             var getter = slider.Getter;
                             var setter = slider.Setter;
 
-                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBaseLogic.FORCED_LOWER_LIMIT_DEG : getter.Invoke(block);
-                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBaseLogic.FORCED_LOWER_LIMIT_DEG : value);
+                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBase.FORCED_LOWER_LIMIT_DEG : getter.Invoke(block);
+                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBase.FORCED_LOWER_LIMIT_DEG : value);
                         }
 
                         break;
@@ -75,8 +75,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
                             var getter = slider.Getter;
                             var setter = slider.Setter;
 
-                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBaseLogic.FORCED_UPPER_LIMIT_DEG : getter.Invoke(block);
-                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBaseLogic.FORCED_UPPER_LIMIT_DEG : value);
+                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBase.FORCED_UPPER_LIMIT_DEG : getter.Invoke(block);
+                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBase.FORCED_UPPER_LIMIT_DEG : value);
                         }
 
                         break;

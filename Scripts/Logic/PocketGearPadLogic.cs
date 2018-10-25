@@ -27,7 +27,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Lock)) : null) {
                 if (landingGear.LockMode == LandingGearMode.ReadyToLock) {
                     var pocketGearBase = GetPocketGearBase(landingGear);
-                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
+                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBase>();
                     logic.ManualRotorLock();
                     landingGear.Lock();
                 }
@@ -48,7 +48,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPadLogic), nameof(Unlock)) : null) {
                 if (landingGear.LockMode == LandingGearMode.Locked) {
                     var pocketGearBase = GetPocketGearBase(landingGear);
-                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBaseLogic>();
+                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBase>();
                     logic.ManualRotorLock();
                     landingGear.Unlock();
                 }

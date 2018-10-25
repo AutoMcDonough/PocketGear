@@ -44,7 +44,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static bool Enabled(IMyTerminalBlock block) {
-            var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
             var enabled = false;
             if (logic != null) {
                 enabled = logic.CanPocketGearBeBuilt;
