@@ -22,7 +22,7 @@ namespace AutoMcD.PocketGear.Logic {
     // bug: IMyMotorStator.AttachedEntityChanged throws "Cannot bind to the target method because its signature or security transparency is not compatible with that of the delegate type.". Once this is solved i should use this to desable damage protection in with this.
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL)]
     public class PocketGearBase : MyGameLogicComponent {
-        public const float FORCED_LOWER_LIMIT_DEG = 333.5f;
+        public const float FORCED_LOWER_LIMIT_DEG = 334.0f;
         public const float FORCED_UPPER_LIMIT_DEG = 360.0f;
         private const float FORCED_LOWER_LIMIT_RAD = (float) (Math.PI * FORCED_LOWER_LIMIT_DEG / 180.0);
         private const float FORCED_UPPER_LIMIT_RAD = (float) (Math.PI * FORCED_UPPER_LIMIT_DEG / 180.0);
