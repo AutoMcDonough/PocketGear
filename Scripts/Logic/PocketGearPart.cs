@@ -16,7 +16,7 @@ using VRageMath;
 
 namespace AutoMcD.PocketGear.Logic {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedRotor), false, POCKETGEAR_PART, POCKETGEAR_PART_LARGE, POCKETGEAR_PART_SMALL, POCKETGEAR_PART_LARGE_SMALL)]
-    public class PocketGearPartLogic : MyGameLogicComponent {
+    public class PocketGearPart : MyGameLogicComponent {
         public const string POCKETGEAR_PART = "MA_PocketGear_Rotor";
         public const string POCKETGEAR_PART_LARGE = "MA_PocketGear_L_Rotor";
         public const string POCKETGEAR_PART_LARGE_SMALL = "MA_PocketGear_L_Rotor_sm";
@@ -27,15 +27,15 @@ namespace AutoMcD.PocketGear.Logic {
         protected ILogger Log { get; set; }
 
         public override void Close() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(Close)) : null) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPart), nameof(Close)) : null) {
                 _pocketGearPart.CubeGrid.OnBlockAdded -= OnBlockAdded;
                 _pocketGearPart.CubeGrid.OnBlockRemoved -= OnBlockRemoved;
             }
         }
 
         public override void Init(MyObjectBuilder_EntityBase objectBuilder) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(Init)) : null) {
-                Log = Mod.Static.Log.ForScope<PocketGearPartLogic>();
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPart), nameof(Init)) : null) {
+                Log = Mod.Static.Log.ForScope<PocketGearPart>();
 
                 _pocketGearPart = Entity as IMyMotorRotor;
                 NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
@@ -43,7 +43,7 @@ namespace AutoMcD.PocketGear.Logic {
         }
 
         public override void UpdateOnceBeforeFrame() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(UpdateOnceBeforeFrame)) : null) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPart), nameof(UpdateOnceBeforeFrame)) : null) {
                 if (_pocketGearPart.CubeGrid?.Physics == null) {
                     return;
                 }
@@ -56,7 +56,7 @@ namespace AutoMcD.PocketGear.Logic {
         }
 
         public void PlacePocketGearPad() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(PlacePocketGearPad)) : null) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPart), nameof(PlacePocketGearPad)) : null) {
                 var cubeGrid = _pocketGearPart.CubeGrid;
                 var gridSize = cubeGrid.GridSize;
                 var left = _pocketGearPart.WorldMatrix.Left;
@@ -124,7 +124,7 @@ namespace AutoMcD.PocketGear.Logic {
         }
 
         private void OnBlockAdded(IMySlimBlock slimBlock) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnBlockAdded)) : null) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPart), nameof(OnBlockAdded)) : null) {
                 if (_pocketGearPart.Base != null && PocketGearPad.PocketGearIds.Contains(slimBlock.BlockDefinition.Id.SubtypeId.String)) {
                     _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBase>()?.OnPocketGearPadAdded((IMyLandingGear) slimBlock.FatBlock);
                 }
@@ -132,7 +132,7 @@ namespace AutoMcD.PocketGear.Logic {
         }
 
         private void OnBlockRemoved(IMySlimBlock slimBlock) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPartLogic), nameof(OnBlockRemoved)) : null) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPart), nameof(OnBlockRemoved)) : null) {
                 if (_pocketGearPart.Base != null && PocketGearPad.PocketGearIds.Contains(slimBlock.BlockDefinition.Id.SubtypeId.String)) {
                     _pocketGearPart.Base.GameLogic?.GetAs<PocketGearBase>()?.OnPocketGearPadRemoved(slimBlock);
                 }

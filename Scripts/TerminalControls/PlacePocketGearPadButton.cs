@@ -21,7 +21,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         private static void Action(IMyTerminalBlock block) {
             var stator = block as IMyMotorStator;
             var top = stator?.Top;
-            var logic = top?.GameLogic?.GetAs<PocketGearPartLogic>();
+            var logic = top?.GameLogic?.GetAs<PocketGearPart>();
             logic?.PlacePocketGearPad();
         }
 

@@ -126,16 +126,16 @@ namespace AutoMcD.PocketGear.Logic {
                 var left = rotor.WorldMatrix.Left;
                 Vector3D origin;
                 switch (rotor.BlockDefinition.SubtypeId) {
-                    case PocketGearPartLogic.POCKETGEAR_PART:
+                    case PocketGearPart.POCKETGEAR_PART:
                         origin = position + left * gridSize * 2 + forward * gridSize;
                         break;
-                    case PocketGearPartLogic.POCKETGEAR_PART_LARGE:
+                    case PocketGearPart.POCKETGEAR_PART_LARGE:
                         origin = position + left * (gridSize * 5) + forward * gridSize;
                         break;
-                    case PocketGearPartLogic.POCKETGEAR_PART_SMALL:
+                    case PocketGearPart.POCKETGEAR_PART_SMALL:
                         origin = position + left + forward * gridSize;
                         break;
-                    case PocketGearPartLogic.POCKETGEAR_PART_LARGE_SMALL:
+                    case PocketGearPart.POCKETGEAR_PART_LARGE_SMALL:
                         origin = position + left * (gridSize * 5) + forward * gridSize;
                         break;
                     default:
