@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Sandbox.Common.ObjectBuilders;
-using Sandbox.ModAPI;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Profiler;
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -25,9 +24,6 @@ namespace AutoMcD.PocketGear.Logic {
         public static void Lock(IMyLandingGear landingGear) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPad), nameof(Lock)) : null) {
                 if (landingGear.LockMode == LandingGearMode.ReadyToLock) {
-                    var pocketGearBase = GetPocketGearBase(landingGear);
-                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBase>();
-                    logic.ManualRotorLock();
                     landingGear.Lock();
                 }
             }
@@ -46,25 +42,9 @@ namespace AutoMcD.PocketGear.Logic {
         public static void Unlock(IMyLandingGear landingGear) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPad), nameof(Unlock)) : null) {
                 if (landingGear.LockMode == LandingGearMode.Locked) {
-                    var pocketGearBase = GetPocketGearBase(landingGear);
-                    var logic = pocketGearBase.GameLogic.GetAs<PocketGearBase>();
-                    logic.ManualRotorLock();
                     landingGear.Unlock();
                 }
             }
-        }
-
-        private static IMyMotorStator GetPocketGearBase(IMyLandingGear landingGear) {
-            var cubeGrid = landingGear.CubeGrid;
-            var gridSize = cubeGrid.GridSize;
-            var position = landingGear.GetPosition();
-            var backward = landingGear.WorldMatrix.Backward;
-            var origin = position + backward * gridSize;
-            var rotorPosition = cubeGrid.WorldToGridInteger(origin);
-            var slimBlock = cubeGrid.GetCubeBlock(rotorPosition);
-            var rotor = slimBlock?.FatBlock as IMyMotorRotor;
-            var stator = rotor?.Base as IMyMotorStator;
-            return stator;
         }
 
         public override void Init(MyObjectBuilder_EntityBase objectBuilder) {

@@ -40,13 +40,9 @@ namespace AutoMcD.PocketGear.Logic {
         private bool _isJustPlaced;
         private bool _lastAttachedState;
         private long _lastKnownTopGridId;
-        private bool _manualLock;
-        private MatrixD _manualLockBaseMatrix;
-        private MatrixD _manualLockTopMatrix;
         private HashSet<IMySlimBlock> _neighbors = new HashSet<IMySlimBlock>();
         private IMyMotorStator _pocketGearBase;
         private IMyLandingGear _pocketGearPad;
-        private int _resetManualLockAfterTicks;
         private PocketGearBaseSettings _settings;
 
         public bool CanPocketGearBeBuilt => _pocketGearBase?.Top != null && _pocketGearPad == null;
@@ -156,7 +152,6 @@ namespace AutoMcD.PocketGear.Logic {
                 }
 
                 _pocketGearBase.LimitReached -= OnLimitReached;
-                _pocketGearBase.CubeGrid.OnIsStaticChanged -= OnIsStaticChanged;
 
                 if (Mod.Static.DamageHandler != null) {
                     var myCubeGrid = _pocketGearBase.CubeGrid as MyCubeGrid;
@@ -201,14 +196,6 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void UpdateAfterSimulation() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(UpdateAfterSimulation)) : null) {
-                if (_manualLock) {
-                    if (_resetManualLockAfterTicks <= 0) {
-                        _manualLock = false;
-                        _pocketGearBase.RotorLock = false;
-                        _pocketGearBase.TargetVelocityRPM = DeployVelocity * (ShouldDeploy ? 1 : -1);
-                    }
-                }
-
                 if (_changePocketGearPadState) {
                     _changePocketGearPadStateAfterTicks--;
                     if (_changePocketGearPadStateAfterTicks <= 0) {
@@ -217,7 +204,7 @@ namespace AutoMcD.PocketGear.Logic {
                     }
                 }
 
-                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState && _resetManualLockAfterTicks <= 0 && !_manualLock) {
+                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState) {
                     NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
                 }
             }
@@ -225,18 +212,7 @@ namespace AutoMcD.PocketGear.Logic {
 
         public override void UpdateBeforeSimulation() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(UpdateBeforeSimulation)) : null) {
-                if (_manualLock) {
-                    _resetManualLockAfterTicks--;
-                    _pocketGearBase.CubeGrid.WorldMatrix = _manualLockBaseMatrix;
-                    var topGrid = _pocketGearBase.TopGrid;
-                    if (topGrid != null) {
-                        topGrid.WorldMatrix = _manualLockTopMatrix;
-                        topGrid.Physics?.ClearSpeed();
-                        _pocketGearBase.Physics?.ClearSpeed();
-                    }
-                }
-
-                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState && _resetManualLockAfterTicks <= 0 && !_manualLock) {
+                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState) {
                     NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
                 }
             }
@@ -268,7 +244,6 @@ namespace AutoMcD.PocketGear.Logic {
                 Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
 
                 _pocketGearBase.LimitReached += OnLimitReached;
-                _pocketGearBase.CubeGrid.OnIsStaticChanged += OnIsStaticChanged;
 
                 if (Mod.Static.DamageHandler != null) {
                     // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
@@ -286,20 +261,6 @@ namespace AutoMcD.PocketGear.Logic {
                         EnableProtection();
                     }
                 }
-            }
-        }
-
-        public void ManualRotorLock() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(ManualRotorLock)) : null) {
-                _manualLock = true;
-                _manualLockBaseMatrix = _pocketGearBase.CubeGrid.WorldMatrix;
-                _manualLockTopMatrix = _pocketGearBase.TopGrid?.WorldMatrix ?? MatrixD.Zero;
-                _resetManualLockAfterTicks = 25;
-                _pocketGearBase.RotorLock = true;
-                _pocketGearBase.TargetVelocityRPM = 0;
-                _pocketGearBase.TopGrid?.Physics?.ClearSpeed();
-                _pocketGearBase.CubeGrid?.Physics?.ClearSpeed();
-                NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
             }
         }
 
@@ -494,12 +455,6 @@ namespace AutoMcD.PocketGear.Logic {
                 } else if (!_lastAttachedState && _pocketGearBase.TopGrid != null) {
                     OnPocketGearPartAttached();
                 }
-            }
-        }
-
-        private void OnIsStaticChanged(IMyCubeGrid cubeGrid, bool isStatic) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnIsStaticChanged)) : null) {
-                ManualRotorLock();
             }
         }
 
