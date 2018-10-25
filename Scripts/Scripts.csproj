@@ -110,13 +110,14 @@
     <Compile Include="Net\ServerHandler.cs" />
     <Compile Include="Settings\ModSettings.cs" />
     <Compile Include="Settings\PocketGearBaseSettings.cs" />
+    <Compile Include="TerminalControls\Base.cs" />
+    <Compile Include="TerminalControls\Controls.cs" />
     <Compile Include="TerminalControls\DeployRetractSwitch.cs" />
     <Compile Include="TerminalControls\DeployVelocitySlider.cs" />
+    <Compile Include="TerminalControls\IControls.cs" />
     <Compile Include="TerminalControls\LockRetractBehaviorCombobox.cs" />
+    <Compile Include="TerminalControls\Pad.cs" />
     <Compile Include="TerminalControls\PlacePocketGearPadButton.cs" />
-    <Compile Include="TerminalControls\PocketGearBaseControls.cs" />
-    <Compile Include="TerminalControls\PocketGearPadControls.cs" />
-    <Compile Include="TerminalControls\TerminalControlUtils.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -136,6 +137,10 @@
     <ProjectReference Include="..\Utils\Profiler\Profiler.csproj">
       <Project>{30c726df-f15b-4df0-b579-dfc84c74d6e2}</Project>
       <Name>Profiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\TerminalControls\TerminalControls.csproj">
+      <Project>{beae5f29-1b17-4f13-8262-6ee88b8cc41b}</Project>
+      <Name>TerminalControls</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

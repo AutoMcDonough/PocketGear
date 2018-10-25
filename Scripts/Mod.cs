@@ -7,6 +7,7 @@ using AutoMcD.PocketGear.Logic;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Net.Messages;
 using AutoMcD.PocketGear.Settings;
+using AutoMcD.PocketGear.TerminalControls;
 using Sandbox.Definitions;
 using Sandbox.Game;
 using Sandbox.ModAPI;
@@ -26,10 +27,10 @@ namespace AutoMcD.PocketGear {
         public const string NAME = "PocketGears";
 
         // important: set profile to false before publishing this mod.
-        public const bool PROFILE = false;
+        public const bool PROFILE = true;
 
         // important: change to info or none before publishing this mod.
-        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Info | LogEventLevel.Warning | LogEventLevel.Error;
+        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Info | LogEventLevel.Warning | LogEventLevel.Error | LogEventLevel.Debug;
         private const string LOG_FILE_TEMPLATE = "{0}.log";
         private const ushort NETWORK_ID = 51510;
         private const string PROFILER_LOG_FILE = "profiler.log";
@@ -42,6 +43,11 @@ namespace AutoMcD.PocketGear {
         public Mod() {
             Static = this;
         }
+
+        /// <summary>
+        ///     Terminal Controls, Actions and Properties
+        /// </summary>
+        public Controls Controls { get; private set; }
 
         /// <summary>
         ///     Handles impact damage for PocketGears.
@@ -82,9 +88,21 @@ namespace AutoMcD.PocketGear {
             }
         }
 
+        /// <summary>
+        ///     Initialize terminal controls and damage handler.
+        /// </summary>
+        public override void BeforeStart() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(BeforeStart)) : null) {
+                InitializeTerminalControls();
+                if (Network == null || Network.IsServer) {
+                    InitializeDamageHandler();
+                }
+            }
+        }
+
         public override void HandleInput() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(HandleInput)) : null) {
-                if (MyAPIGateway.Multiplayer.MultiplayerActive && MyAPIGateway.Utilities.IsDedicated || MyAPIGateway.Gui.ChatEntryVisible || MyAPIGateway.Gui.IsCursorVisible) {
+                if (Network != null && Network.IsDedicated || MyAPIGateway.Gui.ChatEntryVisible || MyAPIGateway.Gui.IsCursorVisible) {
                     return;
                 }
 
@@ -131,9 +149,6 @@ namespace AutoMcD.PocketGear {
                         if (Network.IsServer) {
                             LoadSettings();
                             _networkHandler = new ServerHandler(Log, Network);
-
-                            InitializeDamageHandler();
-                            if (Network.IsDedicated) { }
                         } else {
                             _networkHandler = new ClientHandler(Log, Network);
                             Network.SendToServer(new SettingsRequestMessage());
@@ -171,6 +186,12 @@ namespace AutoMcD.PocketGear {
             if (DamageHandler != null) {
                 Log?.Info("Stopping damage handler");
                 DamageHandler = null;
+            }
+
+            if (Controls != null) {
+                Log?.Info("Cleaned up terminal controls");
+                Controls.Close();
+                Controls = null;
             }
 
             if (Network != null) {
@@ -211,9 +232,7 @@ namespace AutoMcD.PocketGear {
             if (settings != null) {
                 Settings = settings;
 
-                if (Settings.UseImpactDamageHandler) {
-                    InitializeDamageHandler();
-                }
+                InitializeDamageHandler();
             }
         }
 
@@ -256,6 +275,19 @@ namespace AutoMcD.PocketGear {
                     Network = new Network(NETWORK_ID);
                     Log.Info($"IsClient {Network.IsClient}, IsServer: {Network.IsServer}, IsDedicated: {Network.IsDedicated}");
                     Log.Info("Network initialized");
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Initialize terminal controls, actions and properties.
+        /// </summary>
+        private void InitializeTerminalControls() {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeTerminalControls)) : null) {
+                using (Log.BeginMethod(nameof(InitializeTerminalControls))) {
+                    Log.Info("Initialize Terminal Controls");
+                    Controls = new Controls();
+                    Log.Info("Terminal Controls initialized");
                 }
             }
         }

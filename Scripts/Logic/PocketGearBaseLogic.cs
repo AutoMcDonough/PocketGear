@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using AutoMcD.PocketGear.Net.Messages;
 using AutoMcD.PocketGear.Settings;
-using AutoMcD.PocketGear.TerminalControls;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Game.Entities;
 using Sandbox.Game.EntityComponents;
@@ -67,7 +66,7 @@ namespace AutoMcD.PocketGear.Logic {
             set {
                 if (value != _settings.LockRetractBehavior) {
                     _settings.LockRetractBehavior = value;
-                    PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
+                    Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(CurrentBehavior), value));
                 }
             }
@@ -189,10 +188,6 @@ namespace AutoMcD.PocketGear.Logic {
                     Entity.Storage = new MyModStorageComponent();
                 }
 
-                if (!PocketGearBaseControls.AreTerminalControlsInitialized) {
-                    PocketGearBaseControls.InitializeTerminalControls();
-                }
-
                 NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
             }
         }
@@ -269,8 +264,8 @@ namespace AutoMcD.PocketGear.Logic {
                     }
                 }
 
-                PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
-                PocketGearBaseControls.PlacePocketGearPadButton.UpdateVisual();
+                Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
+                Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
 
                 _pocketGearBase.LimitReached += OnLimitReached;
                 _pocketGearBase.CubeGrid.OnIsStaticChanged += OnIsStaticChanged;
@@ -317,7 +312,7 @@ namespace AutoMcD.PocketGear.Logic {
                         Mod.Static.DamageHandler.EnableProtection(pad.SlimBlock);
                     }
 
-                    PocketGearBaseControls.PlacePocketGearPadButton.UpdateVisual();
+                    Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
                 }
             }
         }
@@ -329,7 +324,7 @@ namespace AutoMcD.PocketGear.Logic {
                     Mod.Static.DamageHandler?.DisableProtection(slimBlock);
                     _pocketGearPad = null;
 
-                    PocketGearBaseControls.PlacePocketGearPadButton.UpdateVisual();
+                    Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
                 }
             }
         }
@@ -347,8 +342,8 @@ namespace AutoMcD.PocketGear.Logic {
                         EnableProtection();
                     }
 
-                    PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
-                    PocketGearBaseControls.PlacePocketGearPadButton.UpdateVisual();
+                    Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
+                    Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
                 }
             }
         }
@@ -365,8 +360,8 @@ namespace AutoMcD.PocketGear.Logic {
                     _lastAttachedState = false;
                     _pocketGearPad = null;
 
-                    PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
-                    PocketGearBaseControls.PlacePocketGearPadButton.UpdateVisual();
+                    Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
+                    Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
                 }
             }
         }
@@ -528,16 +523,16 @@ namespace AutoMcD.PocketGear.Logic {
                 switch (message.Name) {
                     case nameof(DeployVelocity):
                         _settings.DeployVelocity = message.GetValueAs<float>();
-                        PocketGearBaseControls.DeployVelocitySlider.UpdateVisual();
+                        Mod.Static.Controls.Base.DeployVelocity.UpdateVisual();
                         break;
                     case nameof(CurrentBehavior):
                         _settings.LockRetractBehavior = message.GetValueAs<LockRetractBehaviors>();
-                        PocketGearBaseControls.LockRetractBehaviorCombobox.UpdateVisual();
-                        PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
+                        Mod.Static.Controls.Base.LockRetractBehavior.UpdateVisual();
+                        Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
                         break;
                     case nameof(ShouldDeploy):
                         _settings.ShouldDeploy = message.GetValueAs<bool>();
-                        PocketGearBaseControls.DeployRetractSwitch.UpdateVisual();
+                        Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
                         break;
                 }
             }
