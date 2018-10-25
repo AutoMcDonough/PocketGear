@@ -100,7 +100,7 @@
     <Compile Include="Logic\PocketGearBase.cs" />
     <Compile Include="Logic\PocketGearPad.cs" />
     <Compile Include="Logic\PocketGearPart.cs" />
-    <Compile Include="Logic\LockRetractBehaviors.cs" />
+    <Compile Include="LockRetractBehaviors.cs" />
     <Compile Include="Net\ClientHandler.cs" />
     <Compile Include="Net\Messages\PropertySyncMessage.cs" />
     <Compile Include="Net\Messages\SettingsRequestMessage.cs" />
