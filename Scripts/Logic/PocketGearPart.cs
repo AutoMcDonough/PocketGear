@@ -24,7 +24,7 @@ namespace AutoMcD.PocketGear.Logic {
         public static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_PART, POCKETGEAR_PART_LARGE, POCKETGEAR_PART_LARGE_SMALL, POCKETGEAR_PART_SMALL };
         private IMyMotorRotor _pocketGearPart;
 
-        protected ILogger Log { get; set; }
+        private ILogger Log { get; set; }
 
         public override void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPart), nameof(Close)) : null) {

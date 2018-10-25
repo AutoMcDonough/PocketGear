@@ -85,7 +85,7 @@ namespace AutoMcD.PocketGear.Logic {
 
         public bool IsDeploying => _pocketGearBase.TargetVelocityRPM > 0 || ShouldDeploy;
 
-        protected ILogger Log { get; set; }
+        private ILogger Log { get; set; }
 
         public bool ShouldDeploy {
             get { return _settings.ShouldDeploy; }

@@ -20,7 +20,7 @@ namespace AutoMcD.PocketGear.Logic {
 
         private IMyLandingGear _pocketGearPad;
 
-        protected ILogger Log { get; set; }
+        private ILogger Log { get; set; }
 
         public static void Lock(IMyLandingGear landingGear) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearPad), nameof(Lock)) : null) {
