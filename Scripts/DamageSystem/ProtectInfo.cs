@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sisk.Utils.Profiler;
 using VRage.Game.ModAPI;
@@ -83,7 +82,7 @@ namespace AutoMcD.PocketGear.DamageSystem {
             using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(OnBlockAdded)) : null) {
                 if (!_protectedBlocks.Contains(block)) {
                     //var subTypeId = block.BlockDefinition.Id.SubtypeId.String;
-                    //if (PocketGearBaseLogic.PocketGearIds.Contains(subTypeId)) {
+                    //if (PocketGearBase.PocketGearIds.Contains(subTypeId)) {
                     //    foreach (var slimBlock in GetNearbyBlocks(slimBlock.FatBlock.GetPosition(), CubeGrid)) {
                     //        if (!_protectedBlocks.Contains(slimBlock)) {
                     //            _protectedBlocks.Add(slimBlock);
@@ -104,7 +103,7 @@ namespace AutoMcD.PocketGear.DamageSystem {
             using (Mod.PROFILE ? Profiler.Measure(nameof(ProtectInfo), nameof(OnBlockRemoved)) : null) {
                 if (_protectedBlocks.Contains(block)) {
                     //var subTypeId = block.BlockDefinition.Id.SubtypeId.String;
-                    //if (PocketGearBaseLogic.PocketGearIds.Contains(subTypeId)) {
+                    //if (PocketGearBase.PocketGearIds.Contains(subTypeId)) {
                     //    foreach (var slimBlock in GetNearbyBlocks(slimBlock.FatBlock.GetPosition(), CubeGrid)) {
                     //        if (_protectedBlocks.Contains(slimBlock)) {
                     //            _protectedBlocks.Remove(slimBlock);

@@ -97,10 +97,10 @@
     <Compile Include="DamageSystem\AttackerInfo.cs" />
     <Compile Include="DamageSystem\DamageHandler.cs" />
     <Compile Include="Localization\ModText.cs" />
-    <Compile Include="Logic\PocketGearBaseLogic.cs" />
-    <Compile Include="Logic\PocketGearPadLogic.cs" />
-    <Compile Include="Logic\PocketGearPartLogic.cs" />
-    <Compile Include="Logic\LockRetractBehaviors.cs" />
+    <Compile Include="Logic\PocketGearBase.cs" />
+    <Compile Include="Logic\PocketGearPad.cs" />
+    <Compile Include="Logic\PocketGearPart.cs" />
+    <Compile Include="LockRetractBehaviors.cs" />
     <Compile Include="Net\ClientHandler.cs" />
     <Compile Include="Net\Messages\PropertySyncMessage.cs" />
     <Compile Include="Net\Messages\SettingsRequestMessage.cs" />

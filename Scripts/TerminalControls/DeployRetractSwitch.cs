@@ -47,12 +47,12 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static bool Getter(IMyTerminalBlock block) {
-            var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
             return logic != null && logic.IsDeploying;
         }
 
         private static void Setter(IMyTerminalBlock block, bool value) {
-            var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
             logic?.SwitchDeployState(value);
         }
     }

@@ -33,7 +33,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static long Getter(IMyTerminalBlock block) {
-            var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
             if (logic != null) {
                 return (long) logic.CurrentBehavior;
             }
@@ -42,7 +42,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static void Setter(IMyTerminalBlock block, long value) {
-            var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
             if (logic != null) {
                 logic.CurrentBehavior = (LockRetractBehaviors) value;
             }

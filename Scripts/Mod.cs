@@ -29,8 +29,7 @@ namespace AutoMcD.PocketGear {
         // important: set profile to false before publishing this mod.
         public const bool PROFILE = true;
 
-        // important: change to info or none before publishing this mod.
-        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Info | LogEventLevel.Warning | LogEventLevel.Error | LogEventLevel.Debug;
+        private const LogEventLevel DEFAULT_LOG_EVENT_LEVEL = LogEventLevel.Info | LogEventLevel.Warning | LogEventLevel.Error;
         private const string LOG_FILE_TEMPLATE = "{0}.log";
         private const ushort NETWORK_ID = 51510;
         private const string PROFILER_LOG_FILE = "profiler.log";
@@ -53,6 +52,11 @@ namespace AutoMcD.PocketGear {
         ///     Handles impact damage for PocketGears.
         /// </summary>
         public DamageHandler DamageHandler { get; private set; }
+
+        /// <summary>
+        ///     Indicates if mod is a dev version.
+        /// </summary>
+        private bool IsDevVersion => ModContext.ModName.EndsWith("_DEV");
 
         /// <summary>
         ///     Logger used for logging.
@@ -100,6 +104,9 @@ namespace AutoMcD.PocketGear {
             }
         }
 
+        /// <summary>
+        ///     Handle input to switch lock of pocket gear pads on 'p' press.
+        /// </summary>
         public override void HandleInput() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(HandleInput)) : null) {
                 if (Network != null && Network.IsDedicated || MyAPIGateway.Gui.ChatEntryVisible || MyAPIGateway.Gui.IsCursorVisible) {
@@ -117,7 +124,7 @@ namespace AutoMcD.PocketGear {
                     var pocketGearPads = new List<IMyLandingGear>();
                     foreach (var grid in grids) {
                         var blocks = new List<IMySlimBlock>();
-                        grid.GetBlocks(blocks, x => PocketGearPadLogic.PocketGearIds.Contains(x.BlockDefinition.Id.SubtypeId.String));
+                        grid.GetBlocks(blocks, x => PocketGearPad.PocketGearIds.Contains(x.BlockDefinition.Id.SubtypeId.String));
                         pocketGearPads.AddRange(blocks.Select(x => x.FatBlock).Cast<IMyLandingGear>().Where(x => x.IsWorking));
                     }
 
@@ -127,7 +134,7 @@ namespace AutoMcD.PocketGear {
                             continue;
                         }
 
-                        PocketGearPadLogic.SwitchLock(landingGear);
+                        PocketGearPad.SwitchLock(landingGear);
                     }
                 }
             }
@@ -163,16 +170,12 @@ namespace AutoMcD.PocketGear {
         /// <summary>
         ///     Save mod settings and fire OnSave event.
         /// </summary>
-        // bug?: SaveData is called after the game save. You can use GetObjectBuilder.
         public override void SaveData() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(SaveData)) : null) {
-                using (Log.BeginMethod(nameof(SaveData))) {
-                    SaveSettings();
-                    Log.Flush();
-                    if (PROFILE) {
-                        _profilerLog.Flush();
-                        WriteProfileResults();
-                    }
+                Log.Flush();
+                if (PROFILE) {
+                    _profilerLog.Flush();
+                    WriteProfileResults();
                 }
             }
         }
@@ -251,7 +254,7 @@ namespace AutoMcD.PocketGear {
         private void InitializeLogging() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeLogging)) : null) {
                 Log = Logger.ForScope<Mod>();
-                Log.Register(new LocalStorageHandler(LogFile, LogFormatter, DEFAULT_LOG_EVENT_LEVEL, PROFILE ? -1 : 500));
+                Log.Register(new LocalStorageHandler(LogFile, LogFormatter, IsDevVersion ? LogEventLevel.All : DEFAULT_LOG_EVENT_LEVEL, PROFILE ? 0 : 500));
 
                 if (PROFILE) {
                     _profilerLog = Logger.ForScope<Mod>();
@@ -321,6 +324,7 @@ namespace AutoMcD.PocketGear {
                         }
                     } else {
                         settings = new ModSettings();
+                        SaveSettings();
                     }
 
                     Settings = settings;

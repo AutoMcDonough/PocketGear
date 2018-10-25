@@ -34,6 +34,10 @@ namespace AutoMcD.PocketGear.TerminalControls {
             controls.AddRange(_additionalControls);
         }
 
+        private static bool IsPocketGearBase(IMyTerminalBlock block) {
+            return block != null && PocketGearBase.PocketGearIds.Contains(block.BlockDefinition.SubtypeId);
+        }
+
         private void CreateActions() {
             _additionalActions.AddRange(DeployRetractSwitch.Actions);
             _additionalActions.AddRange(DeployVelocitySlider.Actions);
@@ -45,10 +49,6 @@ namespace AutoMcD.PocketGear.TerminalControls {
             _additionalControls.Add(DeployVelocitySlider.Control);
             _additionalControls.Add(LockRetractBehaviorCombobox.Control);
             _additionalControls.Add(PlacePocketGearPadButton.Control);
-        }
-
-        private static bool IsPocketGearBase(IMyTerminalBlock block) {
-            return block != null && PocketGearBaseLogic.PocketGearIds.Contains(block.BlockDefinition.SubtypeId);
         }
 
         private void ModifyVanillaControls() {
@@ -63,8 +63,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
                             var getter = slider.Getter;
                             var setter = slider.Setter;
 
-                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBaseLogic.FORCED_LOWER_LIMIT_DEG : getter.Invoke(block);
-                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBaseLogic.FORCED_LOWER_LIMIT_DEG : value);
+                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBase.FORCED_LOWER_LIMIT_DEG : getter.Invoke(block);
+                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBase.FORCED_LOWER_LIMIT_DEG : value);
                         }
 
                         break;
@@ -75,8 +75,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
                             var getter = slider.Getter;
                             var setter = slider.Setter;
 
-                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBaseLogic.FORCED_UPPER_LIMIT_DEG : getter.Invoke(block);
-                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBaseLogic.FORCED_UPPER_LIMIT_DEG : value);
+                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBase.FORCED_UPPER_LIMIT_DEG : getter.Invoke(block);
+                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBase.FORCED_UPPER_LIMIT_DEG : value);
                         }
 
                         break;
