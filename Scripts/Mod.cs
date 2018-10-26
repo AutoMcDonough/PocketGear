@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMcD.PocketGear.DamageSystem;
 using AutoMcD.PocketGear.Localization;
-using AutoMcD.PocketGear.Logic;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Net.Messages;
 using AutoMcD.PocketGear.Settings;
@@ -124,17 +123,16 @@ namespace AutoMcD.PocketGear {
                     var pocketGearPads = new List<IMyLandingGear>();
                     foreach (var grid in grids) {
                         var blocks = new List<IMySlimBlock>();
-                        grid.GetBlocks(blocks, x => PocketGearPad.PocketGearIds.Contains(x.BlockDefinition.Id.SubtypeId.String));
+                        grid.GetBlocks(blocks, x => Defs.Pad.Ids.Contains(x.BlockDefinition.Id.SubtypeId.String));
                         pocketGearPads.AddRange(blocks.Select(x => x.FatBlock).Cast<IMyLandingGear>().Where(x => x.IsWorking));
                     }
 
                     var isAnyLocked = pocketGearPads.Any(x => x.IsLocked);
                     foreach (var landingGear in pocketGearPads) {
-                        if (landingGear.IsLocked == !isAnyLocked) {
-                            continue;
-                        }
+                        if (landingGear.IsLocked == !isAnyLocked) { }
 
-                        PocketGearPad.SwitchLock(landingGear);
+                        //PocketGearPad.SwitchLock(landingGear);
+                        // todo: implement switch lock.
                     }
                 }
             }

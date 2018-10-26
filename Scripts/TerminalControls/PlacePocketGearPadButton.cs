@@ -20,9 +20,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
 
         private static void Action(IMyTerminalBlock block) {
             var stator = block as IMyMotorStator;
-            var top = stator?.Top;
-            var logic = top?.GameLogic?.GetAs<PocketGearPart>();
-            logic?.PlacePocketGearPad();
+            var logic = stator?.GameLogic?.GetAs<Logic.PocketGearBase>();
+            logic?.PlacePad();
         }
 
         private static IEnumerable<IMyTerminalAction> CreateActions() {
@@ -44,10 +43,10 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static bool Enabled(IMyTerminalBlock block) {
-            var logic = block.GameLogic?.GetAs<PocketGearBase>();
+            var logic = block.GameLogic?.GetAs<Logic.PocketGearBase>();
             var enabled = false;
             if (logic != null) {
-                enabled = logic.CanPocketGearBeBuilt;
+                enabled = logic.CanBuiltPad;
             }
 
             return enabled;

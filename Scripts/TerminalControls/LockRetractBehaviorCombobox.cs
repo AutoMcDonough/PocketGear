@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMcD.PocketGear.Data;
 using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
@@ -33,7 +34,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static long Getter(IMyTerminalBlock block) {
-            var logic = block.GameLogic?.GetAs<PocketGearBase>();
+            var logic = block.GameLogic?.GetAs<Logic.PocketGearBase>();
             if (logic != null) {
                 return (long) logic.CurrentBehavior;
             }
@@ -42,7 +43,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static void Setter(IMyTerminalBlock block, long value) {
-            var logic = block.GameLogic?.GetAs<PocketGearBase>();
+            var logic = block.GameLogic?.GetAs<Logic.PocketGearBase>();
             if (logic != null) {
                 logic.CurrentBehavior = (LockRetractBehaviors) value;
             }
