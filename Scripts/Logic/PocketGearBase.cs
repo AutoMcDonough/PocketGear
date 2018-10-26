@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoMcD.PocketGear.Data;
 using AutoMcD.PocketGear.Extensions;
 using AutoMcD.PocketGear.Net.Messages;
@@ -31,9 +32,15 @@ namespace AutoMcD.PocketGear.Logic {
         public const float FORCED_UPPER_LIMIT_DEG = 360.0f;
         private const float FORCED_LOWER_LIMIT_RAD = (float) (Math.PI * FORCED_LOWER_LIMIT_DEG / 180.0);
         private const float FORCED_UPPER_LIMIT_RAD = (float) (Math.PI * FORCED_UPPER_LIMIT_DEG / 180.0);
+        private const float TOGGLE_PAD_THRESHOLD = TOGGLE_PAD_THRESHOLD_PERCENT * (FORCED_UPPER_LIMIT_RAD - FORCED_LOWER_LIMIT_RAD) / 100 + FORCED_LOWER_LIMIT_RAD;
+        private const int TOGGLE_PAD_THRESHOLD_PERCENT = 30;
 
         private bool _lastAttachedState;
+
+        private bool _searchedForPad;
         private PocketGearBaseSettings _settings;
+
+        private bool _togglePadWhenThresholdReached;
         private IMyCubeGrid _topGrid;
 
         /// <summary>
@@ -117,8 +124,6 @@ namespace AutoMcD.PocketGear.Logic {
         /// <inheritdoc />
         public override void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Close)) : null) {
-                Stator.LimitReached -= OnLimitReached;
-
                 var cubeGrid = _topGrid as MyCubeGrid;
                 if (cubeGrid != null) {
                     cubeGrid.OnHierarchyUpdated -= OnHierarchyUpdated;
@@ -147,11 +152,6 @@ namespace AutoMcD.PocketGear.Logic {
                         return;
                     }
 
-                    // bug: ImyRotorStator.UpperLimitDeg requires an radian.
-                    Stator.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
-                    Stator.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
-                    Stator.LimitReached += OnLimitReached;
-
                     IsJustPlaced = Stator.CubeGrid?.Physics != null;
 
                     try {
@@ -177,6 +177,10 @@ namespace AutoMcD.PocketGear.Logic {
                     if (cubeGrid != null) {
                         cubeGrid.OnHierarchyUpdated += OnHierarchyUpdated;
                     }
+
+                    if (IsJustPlaced) {
+                        Deploy();
+                    }
                 }
             }
         }
@@ -201,10 +205,50 @@ namespace AutoMcD.PocketGear.Logic {
         }
 
         /// <summary>
+        ///     Used to set rotor limits, because Init is too early.
+        /// </summary>
+        public override void OnAddedToScene() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnAddedToScene)) : null) {
+                Stator.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
+                Stator.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
+            }
+        }
+
+        /// <inheritdoc />
+        public override void UpdateAfterSimulation() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(UpdateAfterSimulation)) : null) {
+                if (_togglePadWhenThresholdReached) {
+                    var angle = Stator.Angle;
+                    if (ShouldDeploy && angle > TOGGLE_PAD_THRESHOLD) {
+                        if (Pad != null) {
+                            Pad.Enabled = true;
+                            _togglePadWhenThresholdReached = false;
+                        }
+                    } else if (!ShouldDeploy && angle < TOGGLE_PAD_THRESHOLD) {
+                        if (Pad != null) {
+                            Pad.Enabled = false;
+                            _togglePadWhenThresholdReached = false;
+                        }
+                    }
+                }
+
+                if (!_togglePadWhenThresholdReached) {
+                    NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
+                }
+            }
+        }
+
+        /// <summary>
         ///     Deploy pocket gear.
         /// </summary>
         public void Deploy() {
-            // todo: implement logic.
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Deploy)) : null) {
+                ShouldDeploy = true;
+                Stator.TargetVelocityRPM = DeployVelocity;
+
+                _togglePadWhenThresholdReached = true;
+                NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
+            }
         }
 
         /// <summary>
@@ -218,7 +262,21 @@ namespace AutoMcD.PocketGear.Logic {
         ///     Retract pocket gear.
         /// </summary>
         public void Retract() {
-            // todo: implement logic.
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Retract)) : null) {
+                if (CurrentBehavior == LockRetractBehaviors.PreventRetract && Pad != null && Pad.IsLocked) {
+                    return;
+                }
+
+                if (CurrentBehavior == LockRetractBehaviors.UnlockOnRetract && Pad != null && Pad.IsLocked) {
+                    Pad.Unlock();
+                }
+
+                ShouldDeploy = false;
+                Stator.TargetVelocityRPM = DeployVelocity * -1;
+
+                _togglePadWhenThresholdReached = true;
+                NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
+            }
         }
 
         /// <summary>
@@ -233,6 +291,18 @@ namespace AutoMcD.PocketGear.Logic {
                         // used to get attached pocket gear pad.
                         _topGrid.OnBlockAdded += OnTopGridBlockAdded;
                         _topGrid.OnBlockRemoved += OnTopGridBlockRemoved;
+
+                        if (!IsJustPlaced && !_searchedForPad) {
+                            _searchedForPad = true;
+
+                            var blocks = new List<IMySlimBlock>();
+                            _topGrid.GetBlocks(blocks);
+
+                            var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
+                            if (pad != null) {
+                                Pad = (IMyLandingGear) pad;
+                            }
+                        }
                     }
 
                     MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(@base.Top));
@@ -254,35 +324,16 @@ namespace AutoMcD.PocketGear.Logic {
         /// <param name="cubeGrid">The cube grid on which the hierarchy updated.</param>
         private void OnHierarchyUpdated(MyCubeGrid cubeGrid) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnHierarchyUpdated)) : null) {
-                using (Log.BeginMethod(nameof(OnHierarchyUpdated))) {
-                    if (cubeGrid.MarkedForClose) {
-                        return;
-                    }
-
-                    if (!_lastAttachedState && Stator.Top != null) {
-                        _lastAttachedState = true;
-                        OnAttachedEntityChanged(Stator);
-                    } else if (_lastAttachedState && Stator.Top == null) {
-                        _lastAttachedState = false;
-                        OnAttachedEntityChanged(Stator);
-                    }
+                if (cubeGrid.MarkedForClose) {
+                    return;
                 }
-            }
-        }
 
-        /// <summary>
-        ///     Executed when upper or lower limit is reached.
-        /// </summary>
-        /// <param name="upperLimit">
-        ///     Indicates which limit is reached. <see langword="true" /> means upper limit,
-        ///     <see langword="false" /> lower limit.
-        /// </param>
-        private void OnLimitReached(bool upperLimit) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnLimitReached)) : null) {
-                if (!upperLimit) {
-                    if (Pad != null) {
-                        Pad.Enabled = false;
-                    }
+                if (!_lastAttachedState && Stator.Top != null) {
+                    _lastAttachedState = true;
+                    OnAttachedEntityChanged(Stator);
+                } else if (_lastAttachedState && Stator.Top == null) {
+                    _lastAttachedState = false;
+                    OnAttachedEntityChanged(Stator);
                 }
             }
         }
@@ -315,9 +366,7 @@ namespace AutoMcD.PocketGear.Logic {
         private void OnTopGridBlockRemoved(IMySlimBlock block) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnTopGridBlockRemoved)) : null) {
                 if (block.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.Id.SubtypeId.String)) {
-                    if (block == Pad.SlimBlock) {
-                        Pad = null;
-                    }
+                    Pad = null;
                 }
             }
         }
