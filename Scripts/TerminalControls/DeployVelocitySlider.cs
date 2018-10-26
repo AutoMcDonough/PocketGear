@@ -53,7 +53,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static float Getter(IMyTerminalBlock block) {
-            var logic = block.GameLogic?.GetAs<Logic.PocketGearBase>();
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
             if (logic != null) {
                 return logic.DeployVelocity;
             }
@@ -70,7 +70,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static void Setter(IMyTerminalBlock block, float value) {
-            var logic = block.GameLogic?.GetAs<Logic.PocketGearBase>();
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
             if (logic != null) {
                 logic.DeployVelocity = value;
             }

@@ -63,8 +63,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
                             var getter = slider.Getter;
                             var setter = slider.Setter;
 
-                            slider.Getter = block => IsPocketGearBase(block) ? Logic.PocketGearBase.FORCED_LOWER_LIMIT_DEG : getter.Invoke(block);
-                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? Logic.PocketGearBase.FORCED_LOWER_LIMIT_DEG : value);
+                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBase.FORCED_LOWER_LIMIT_DEG : getter.Invoke(block);
+                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBase.FORCED_LOWER_LIMIT_DEG : value);
                         }
 
                         break;
@@ -75,8 +75,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
                             var getter = slider.Getter;
                             var setter = slider.Setter;
 
-                            slider.Getter = block => IsPocketGearBase(block) ? Logic.PocketGearBase.FORCED_UPPER_LIMIT_DEG : getter.Invoke(block);
-                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? Logic.PocketGearBase.FORCED_UPPER_LIMIT_DEG : value);
+                            slider.Getter = block => IsPocketGearBase(block) ? PocketGearBase.FORCED_UPPER_LIMIT_DEG : getter.Invoke(block);
+                            slider.Setter = (block, value) => setter.Invoke(block, IsPocketGearBase(block) ? PocketGearBase.FORCED_UPPER_LIMIT_DEG : value);
                         }
 
                         break;

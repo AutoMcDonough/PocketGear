@@ -20,7 +20,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
 
         private static void Action(IMyTerminalBlock block) {
             var stator = block as IMyMotorStator;
-            var logic = stator?.GameLogic?.GetAs<Logic.PocketGearBase>();
+            var logic = stator?.GameLogic?.GetAs<PocketGearBase>();
             logic?.PlacePad();
         }
 
@@ -43,7 +43,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static bool Enabled(IMyTerminalBlock block) {
-            var logic = block.GameLogic?.GetAs<Logic.PocketGearBase>();
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
             var enabled = false;
             if (logic != null) {
                 enabled = logic.CanBuiltPad;
