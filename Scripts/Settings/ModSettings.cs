@@ -10,6 +10,7 @@ namespace AutoMcD.PocketGear.Settings {
         public const int VERSION = 1;
         private const float IMPACT_TOLERANCE_MULTIPLIER = 1;
         private const bool USE_IMPACT_DAMAGE_HANDLER = true;
+        private const int PROTECTION_RADIUS = 2;
 
         [ProtoMember(3)]
         [DefaultValue(IMPACT_TOLERANCE_MULTIPLIER)]
@@ -24,5 +25,10 @@ namespace AutoMcD.PocketGear.Settings {
         [ProtoMember(1)]
         [XmlElement(Order = 1)]
         public int Version { get; set; } = VERSION;
+
+        [ProtoMember(4)]
+        [DefaultValue(PROTECTION_RADIUS)]
+        [XmlElement(Order = 4)]
+        public int ProtectionRadius { get; set; } = PROTECTION_RADIUS;
     }
 }

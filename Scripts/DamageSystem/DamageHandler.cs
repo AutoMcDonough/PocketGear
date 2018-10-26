@@ -14,7 +14,13 @@ namespace AutoMcD.PocketGear.DamageSystem {
         private const double MIN_IMPACT_TOLERANCE = 5;
 
         private readonly Dictionary<long, ProtectInfo> _protectedInfos = new Dictionary<long, ProtectInfo>();
-        private ILogger Log { get; set; }
+
+        public DamageHandler() {
+            Log = Mod.Static.Log.ForScope<DamageHandler>();
+            MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(100, HandleDamage);
+        }
+
+        private ILogger Log { get; }
 
         public void DisableProtection(IMySlimBlock slimBlock) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(DisableProtection)) : null) {
@@ -62,13 +68,6 @@ namespace AutoMcD.PocketGear.DamageSystem {
                         cubeGrid.OnClose += OnClose;
                     }
                 }
-            }
-        }
-
-        public void Init() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(Init)) : null) {
-                Log = Mod.Static.Log.ForScope<DamageHandler>();
-                MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(100, HandleDamage);
             }
         }
 

@@ -17,6 +17,7 @@ using Sisk.Utils.Net;
 using Sisk.Utils.Profiler;
 using SpaceEngineers.Game.ModAPI;
 using VRage;
+using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.ModAPI;
 
@@ -97,9 +98,6 @@ namespace AutoMcD.PocketGear {
         public override void BeforeStart() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(BeforeStart)) : null) {
                 InitializeTerminalControls();
-                if (Network == null || Network.IsServer) {
-                    InitializeDamageHandler();
-                }
             }
         }
 
@@ -134,6 +132,17 @@ namespace AutoMcD.PocketGear {
                         //PocketGearPad.SwitchLock(landingGear);
                         // todo: implement switch lock.
                     }
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public override void Init(MyObjectBuilder_SessionComponent sessionComponent) {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(Init)) : null) {
+                base.Init(sessionComponent);
+
+                if (Network == null || Network.IsServer) {
+                    InitializeDamageHandler();
                 }
             }
         }
@@ -241,7 +250,6 @@ namespace AutoMcD.PocketGear {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeDamageHandler)) : null) {
                 if (Settings.UseImpactDamageHandler) {
                     DamageHandler = new DamageHandler();
-                    DamageHandler.Init();
                 }
             }
         }

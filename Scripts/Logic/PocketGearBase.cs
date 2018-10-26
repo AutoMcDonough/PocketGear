@@ -36,12 +36,12 @@ namespace AutoMcD.PocketGear.Logic {
         private const int TOGGLE_PAD_THRESHOLD_PERCENT = 30;
 
         private bool _lastAttachedState;
-
+        private HashSet<IMySlimBlock> _neighbors = new HashSet<IMySlimBlock>();
         private bool _searchedForPad;
         private PocketGearBaseSettings _settings;
-
         private bool _togglePadWhenThresholdReached;
         private IMyCubeGrid _topGrid;
+        private long _topGridId;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PocketGearBase" /> game logic component.
@@ -94,6 +94,11 @@ namespace AutoMcD.PocketGear.Logic {
         public bool IsJustPlaced { get; private set; }
 
         /// <summary>
+        ///     Indicates if protection is enabled.
+        /// </summary>
+        private bool IsProtected { get; set; }
+
+        /// <summary>
         ///     Logger used for logging.
         /// </summary>
         private ILogger Log { get; }
@@ -121,6 +126,27 @@ namespace AutoMcD.PocketGear.Logic {
         /// </summary>
         private IMyMotorStator Stator { get; set; }
 
+        /// <summary>
+        ///     Get neighbor blocks in given radius.
+        /// </summary>
+        /// <param name="slimBlock">The block used to find his neighbors.</param>
+        /// <param name="radius">The radius used to search for neighbors.</param>
+        /// <param name="slimBlocks">Found neighbors are stored here.</param>
+        private static void GetNeighbors(IMySlimBlock slimBlock, int radius, ref HashSet<IMySlimBlock> slimBlocks) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(GetNeighbors)) : null) {
+                foreach (var neighbor in slimBlock.Neighbours) {
+                    if (slimBlocks.Contains(neighbor)) {
+                        continue;
+                    }
+
+                    slimBlocks.Add(neighbor);
+                    if (radius > 1) {
+                        GetNeighbors(neighbor, radius - 1, ref slimBlocks);
+                    }
+                }
+            }
+        }
+
         /// <inheritdoc />
         public override void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Close)) : null) {
@@ -132,6 +158,13 @@ namespace AutoMcD.PocketGear.Logic {
                 if (_topGrid != null) {
                     _topGrid.OnBlockAdded -= OnTopGridBlockAdded;
                     _topGrid.OnBlockRemoved -= OnTopGridBlockRemoved;
+                }
+
+                if (Mod.Static.DamageHandler != null) {
+                    Stator.CubeGrid.OnBlockAdded -= OnBlockAdded;
+                    Stator.CubeGrid.OnBlockRemoved -= OnBlockRemoved;
+
+                    DisableProtection();
                 }
             }
         }
@@ -211,6 +244,13 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnAddedToScene)) : null) {
                 Stator.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
                 Stator.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
+
+                if (Mod.Static.DamageHandler != null) {
+                    Stator.CubeGrid.OnBlockAdded += OnBlockAdded;
+                    Stator.CubeGrid.OnBlockRemoved += OnBlockRemoved;
+
+                    GetNeighbors(Stator.SlimBlock, Mod.Static.Settings.ProtectionRadius, ref _neighbors);
+                }
             }
         }
 
@@ -223,11 +263,13 @@ namespace AutoMcD.PocketGear.Logic {
                         if (Pad != null) {
                             Pad.Enabled = true;
                             _togglePadWhenThresholdReached = false;
+                            EnableProtection();
                         }
                     } else if (!ShouldDeploy && angle < TOGGLE_PAD_THRESHOLD) {
                         if (Pad != null) {
                             Pad.Enabled = false;
                             _togglePadWhenThresholdReached = false;
+                            DisableProtection();
                         }
                     }
                 }
@@ -280,6 +322,41 @@ namespace AutoMcD.PocketGear.Logic {
         }
 
         /// <summary>
+        ///     Disable protection for protected blocks.
+        /// </summary>
+        private void DisableProtection() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(DisableProtection)) : null) {
+                if (Mod.Static.DamageHandler == null) {
+                    return;
+                }
+
+                IsProtected = false;
+                Mod.Static.DamageHandler.DisableProtection(Stator.CubeGrid.EntityId);
+                Mod.Static.DamageHandler.DisableProtection(_topGridId);
+            }
+        }
+
+        /// <summary>
+        ///     Enable protection for blocks nearby a pocket gear.
+        /// </summary>
+        private void EnableProtection() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(EnableProtection)) : null) {
+                if (Mod.Static.DamageHandler == null || Pad == null || Stator.Top == null || Stator.Angle < TOGGLE_PAD_THRESHOLD) {
+                    return;
+                }
+
+                IsProtected = true;
+                Mod.Static.DamageHandler.EnableProtection(Stator.SlimBlock);
+                foreach (var slimBlock in _neighbors) {
+                    Mod.Static.DamageHandler.EnableProtection(slimBlock);
+                }
+
+                Mod.Static.DamageHandler.EnableProtection(Stator.Top.SlimBlock);
+                Mod.Static.DamageHandler.EnableProtection(Pad.SlimBlock);
+            }
+        }
+
+        /// <summary>
         ///     Called if <see cref="IMyMotorStator.Top" /> changed.
         /// </summary>
         /// <param name="base">The base on which the top is changed.</param>
@@ -288,7 +365,7 @@ namespace AutoMcD.PocketGear.Logic {
                 if (@base?.Top != null) {
                     if (Stator.TopGrid != null) {
                         _topGrid = Stator.TopGrid;
-                        // used to get attached pocket gear pad.
+                        _topGridId = _topGrid.EntityId;
                         _topGrid.OnBlockAdded += OnTopGridBlockAdded;
                         _topGrid.OnBlockRemoved += OnTopGridBlockRemoved;
 
@@ -303,6 +380,10 @@ namespace AutoMcD.PocketGear.Logic {
                                 Pad = (IMyLandingGear) pad;
                             }
                         }
+
+                        if (Mod.Static.DamageHandler != null) {
+                            EnableProtection();
+                        }
                     }
 
                     MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(@base.Top));
@@ -312,6 +393,50 @@ namespace AutoMcD.PocketGear.Logic {
                         _topGrid.OnBlockRemoved -= OnTopGridBlockRemoved;
                         _topGrid = null;
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a new block is placed on same grid as this pocket gear. Used to enable protection.
+        /// </summary>
+        /// <param name="slimBlock">The blocks that is added.</param>
+        private void OnBlockAdded(IMySlimBlock slimBlock) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnBlockAdded)) : null) {
+                if (Mod.Static.DamageHandler == null) {
+                    return;
+                }
+
+                var position = slimBlock.Position;
+                var distance = Vector3I.DistanceManhattan(position, Stator.Position);
+                if (distance <= Mod.Static.Settings.ProtectionRadius) {
+                    _neighbors.Add(slimBlock);
+                    if (IsProtected) {
+                        Mod.Static.DamageHandler.EnableProtection(slimBlock);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a block is removed from same grid as this pocket gear. Used to disable protection.
+        /// </summary>
+        /// <param name="slimBlock"></param>
+        private void OnBlockRemoved(IMySlimBlock slimBlock) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnBlockRemoved)) : null) {
+                if (Mod.Static.DamageHandler == null) {
+                    return;
+                }
+
+                if (!_neighbors.Contains(slimBlock)) {
+                    return;
+                }
+
+                var position = slimBlock.Position;
+                var distance = Vector3I.DistanceManhattan(position, Stator.Position);
+                if (distance <= Mod.Static.Settings.ProtectionRadius) {
+                    _neighbors.Remove(slimBlock);
+                    Mod.Static.DamageHandler.DisableProtection(slimBlock);
                 }
             }
         }
@@ -355,6 +480,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnTopGridBlockAdded)) : null) {
                 if (block.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.Id.SubtypeId.String)) {
                     Pad = block.FatBlock as IMyLandingGear;
+                    EnableProtection();
                 }
             }
         }
@@ -367,6 +493,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnTopGridBlockRemoved)) : null) {
                 if (block.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.Id.SubtypeId.String)) {
                     Pad = null;
+                    DisableProtection();
                 }
             }
         }
