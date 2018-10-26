@@ -105,10 +105,10 @@ namespace AutoMcD.PocketGear.DamageSystem {
 
         private void HandleProtectedBlockDamage(ProtectInfo protectInfo, AttackerInfo attacker, ref MyDamageInformation damage) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(DamageHandler), nameof(HandleProtectedBlockDamage)) : null) {
-                var toleranceMultiplicator = Mod.Static.Settings.ImpactToleranceMultiplier;
+                var toleranceMultiplier = Mod.Static.Settings.ImpactToleranceMultiplier;
 
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (toleranceMultiplicator == 0) {
+                if (toleranceMultiplier == 0) {
                     damage.Amount = 0;
                     damage.IsDeformation = false;
                     return;
@@ -121,7 +121,7 @@ namespace AutoMcD.PocketGear.DamageSystem {
                 var attackerLinearVelocity = attacker.LinearVelocity;
 
                 var impactVelocity = (attackerLinearVelocity - linearVelocity).Length();
-                var tolerance = Math.Min(Math.Max(impactTolerance, MIN_IMPACT_TOLERANCE), MAX_IMPACT_TOLERANCE) * toleranceMultiplicator;
+                var tolerance = Math.Min(Math.Max(impactTolerance, MIN_IMPACT_TOLERANCE), MAX_IMPACT_TOLERANCE) * toleranceMultiplier;
 
                 if (impactVelocity <= tolerance * 2.5) {
                     if (impactVelocity <= tolerance) {
