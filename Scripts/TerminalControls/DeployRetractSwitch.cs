@@ -53,7 +53,12 @@ namespace AutoMcD.PocketGear.TerminalControls {
 
         private static void Setter(IMyTerminalBlock block, bool value) {
             var logic = block.GameLogic?.GetAs<PocketGearBase>();
-            logic?.SwitchDeployState(value);
+
+            if (value) {
+                logic?.Deploy();
+            } else {
+                logic?.Retract();
+            }
         }
     }
 }

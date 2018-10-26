@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMcD.PocketGear.DamageSystem;
 using AutoMcD.PocketGear.Localization;
-using AutoMcD.PocketGear.Logic;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Net.Messages;
 using AutoMcD.PocketGear.Settings;
@@ -18,6 +17,7 @@ using Sisk.Utils.Net;
 using Sisk.Utils.Profiler;
 using SpaceEngineers.Game.ModAPI;
 using VRage;
+using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.ModAPI;
 
@@ -98,9 +98,6 @@ namespace AutoMcD.PocketGear {
         public override void BeforeStart() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(BeforeStart)) : null) {
                 InitializeTerminalControls();
-                if (Network == null || Network.IsServer) {
-                    InitializeDamageHandler();
-                }
             }
         }
 
@@ -124,18 +121,28 @@ namespace AutoMcD.PocketGear {
                     var pocketGearPads = new List<IMyLandingGear>();
                     foreach (var grid in grids) {
                         var blocks = new List<IMySlimBlock>();
-                        grid.GetBlocks(blocks, x => PocketGearPad.PocketGearIds.Contains(x.BlockDefinition.Id.SubtypeId.String));
+                        grid.GetBlocks(blocks, x => Defs.Pad.Ids.Contains(x.BlockDefinition.Id.SubtypeId.String));
                         pocketGearPads.AddRange(blocks.Select(x => x.FatBlock).Cast<IMyLandingGear>().Where(x => x.IsWorking));
                     }
 
                     var isAnyLocked = pocketGearPads.Any(x => x.IsLocked);
                     foreach (var landingGear in pocketGearPads) {
-                        if (landingGear.IsLocked == !isAnyLocked) {
-                            continue;
-                        }
+                        if (landingGear.IsLocked == !isAnyLocked) { }
 
-                        PocketGearPad.SwitchLock(landingGear);
+                        //PocketGearPad.SwitchLock(landingGear);
+                        // todo: implement switch lock.
                     }
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public override void Init(MyObjectBuilder_SessionComponent sessionComponent) {
+            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(Init)) : null) {
+                base.Init(sessionComponent);
+
+                if (Network == null || Network.IsServer) {
+                    InitializeDamageHandler();
                 }
             }
         }
@@ -243,7 +250,6 @@ namespace AutoMcD.PocketGear {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeDamageHandler)) : null) {
                 if (Settings.UseImpactDamageHandler) {
                     DamageHandler = new DamageHandler();
-                    DamageHandler.Init();
                 }
             }
         }

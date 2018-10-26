@@ -96,11 +96,15 @@
   <ItemGroup>
     <Compile Include="DamageSystem\AttackerInfo.cs" />
     <Compile Include="DamageSystem\DamageHandler.cs" />
+    <Compile Include="Data\PlacePadResult.cs" />
+    <Compile Include="Defs.cs" />
+    <Compile Include="Extensions\BlockExtensions.cs" />
+    <Compile Include="Extensions\EntityExtensions.cs" />
+    <Compile Include="Extensions\GridExtensions.cs" />
     <Compile Include="Localization\ModText.cs" />
     <Compile Include="Logic\PocketGearBase.cs" />
-    <Compile Include="Logic\PocketGearPad.cs" />
-    <Compile Include="Logic\PocketGearPart.cs" />
-    <Compile Include="LockRetractBehaviors.cs" />
+    <Compile Include="Data\PlacePadData.cs" />
+    <Compile Include="Data\LockRetractBehaviors.cs" />
     <Compile Include="Net\ClientHandler.cs" />
     <Compile Include="Net\Messages\PropertySyncMessage.cs" />
     <Compile Include="Net\Messages\SettingsRequestMessage.cs" />
@@ -143,5 +147,6 @@
       <Name>TerminalControls</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

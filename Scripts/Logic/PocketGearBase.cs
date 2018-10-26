@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoMcD.PocketGear.Data;
+using AutoMcD.PocketGear.Extensions;
 using AutoMcD.PocketGear.Net.Messages;
 using AutoMcD.PocketGear.Settings;
+using ParallelTasks;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Game.Entities;
 using Sandbox.Game.EntityComponents;
@@ -9,58 +13,51 @@ using Sandbox.ModAPI;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Profiler;
 using SpaceEngineers.Game.ModAPI;
+using VRage;
+using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
 using VRageMath;
 
-// ReSharper disable UsePatternMatching
 // ReSharper disable ArrangeAccessorOwnerBody
+// ReSharper disable UsePatternMatching
+// ReSharper disable UseNegatedPatternMatching
 
 namespace AutoMcD.PocketGear.Logic {
-    // bug: IMyMotorStator.AttachedEntityChanged throws "Cannot bind to the target method because its signature or security transparency is not compatible with that of the delegate type.". Once this is solved i should use this to desable damage protection in with this.
-    [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL)]
+    [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, Defs.Base.NORMAL, Defs.Base.LARGE_NORMAL, Defs.Base.LARGE_SMALL, Defs.Base.SMALL)]
     public class PocketGearBase : MyGameLogicComponent {
-        public const float FORCED_LOWER_LIMIT_DEG = 333.5f;
+        public const float FORCED_LOWER_LIMIT_DEG = 334.0f;
         public const float FORCED_UPPER_LIMIT_DEG = 360.0f;
         private const float FORCED_LOWER_LIMIT_RAD = (float) (Math.PI * FORCED_LOWER_LIMIT_DEG / 180.0);
         private const float FORCED_UPPER_LIMIT_RAD = (float) (Math.PI * FORCED_UPPER_LIMIT_DEG / 180.0);
+        private const float TOGGLE_PAD_THRESHOLD = TOGGLE_PAD_THRESHOLD_PERCENT * (FORCED_UPPER_LIMIT_RAD - FORCED_LOWER_LIMIT_RAD) / 100 + FORCED_LOWER_LIMIT_RAD;
+        private const int TOGGLE_PAD_THRESHOLD_PERCENT = 30;
 
-        private const string POCKETGEAR_BASE = "MA_PocketGear_Base";
-        private const string POCKETGEAR_BASE_LARGE = "MA_PocketGear_L_Base";
-        private const string POCKETGEAR_BASE_LARGE_SMALL = "MA_PocketGear_L_Base_sm";
-        private const string POCKETGEAR_BASE_SMALL = "MA_PocketGear_Base_sm";
-        private const int PROTECTION_RADIUS = 2;
-
-        public static readonly HashSet<string> PocketGearIds = new HashSet<string> { POCKETGEAR_BASE, POCKETGEAR_BASE_LARGE, POCKETGEAR_BASE_LARGE_SMALL, POCKETGEAR_BASE_SMALL };
-
-        private bool _changePocketGearPadState;
-        private int _changePocketGearPadStateAfterTicks;
-        private bool _isJustPlaced;
         private bool _lastAttachedState;
-        private long _lastKnownTopGridId;
-        private bool _manualLock;
-        private MatrixD _manualLockBaseMatrix;
-        private MatrixD _manualLockTopMatrix;
         private HashSet<IMySlimBlock> _neighbors = new HashSet<IMySlimBlock>();
-        private IMyMotorStator _pocketGearBase;
-        private IMyLandingGear _pocketGearPad;
-        private int _resetManualLockAfterTicks;
+        private bool _searchedForPad;
         private PocketGearBaseSettings _settings;
+        private bool _togglePadWhenThresholdReached;
+        private IMyCubeGrid _topGrid;
+        private long _topGridId;
 
-        public bool CanPocketGearBeBuilt => _pocketGearBase?.Top != null && _pocketGearPad == null;
-
-        public bool CanRetract {
-            get {
-                if (_pocketGearPad == null) {
-                    _pocketGearPad = GetPocketGearPad(_pocketGearBase);
-                }
-
-                return _pocketGearPad != null && _pocketGearBase.IsWorking && _pocketGearPad != null && (!_pocketGearPad.IsLocked || CurrentBehavior != LockRetractBehaviors.PreventRetract);
-            }
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="PocketGearBase" /> game logic component.
+        /// </summary>
+        public PocketGearBase() {
+            Log = Mod.Static.Log.ForScope<PocketGearBase>();
         }
 
+        /// <summary>
+        ///     Indicates if a new pocket gear pad can be built.
+        /// </summary>
+        public bool CanBuiltPad => Stator?.Top != null && Pad == null;
+
+        /// <summary>
+        ///     Current lock/retract behavior.
+        /// </summary>
         public LockRetractBehaviors CurrentBehavior {
             get { return _settings.LockRetractBehavior; }
             set {
@@ -72,6 +69,9 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
+        /// <summary>
+        ///     Indicates the deploy velocity.
+        /// </summary>
         public float DeployVelocity {
             get { return _settings.DeployVelocity; }
             set {
@@ -83,10 +83,34 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        public bool IsDeploying => _pocketGearBase.TargetVelocityRPM > 0 || ShouldDeploy;
+        /// <summary>
+        ///     Indicates if pocket gear is deploying.
+        /// </summary>
+        public bool IsDeploying => Stator.TargetVelocityRPM > 0 || ShouldDeploy;
 
-        protected ILogger Log { get; set; }
+        /// <summary>
+        ///     Indicates if the block which holds this game logic is just placed.
+        /// </summary>
+        public bool IsJustPlaced { get; private set; }
 
+        /// <summary>
+        ///     Indicates if protection is enabled.
+        /// </summary>
+        private bool IsProtected { get; set; }
+
+        /// <summary>
+        ///     Logger used for logging.
+        /// </summary>
+        private ILogger Log { get; }
+
+        /// <summary>
+        ///     The attached PocketGear Pad.
+        /// </summary>
+        private IMyLandingGear Pad { get; set; }
+
+        /// <summary>
+        ///     Indicates if pocket gear should deploy.
+        /// </summary>
         public bool ShouldDeploy {
             get { return _settings.ShouldDeploy; }
             set {
@@ -97,477 +121,492 @@ namespace AutoMcD.PocketGear.Logic {
             }
         }
 
-        private static void GetNeighbours(IMySlimBlock slimBlock, int radius, ref HashSet<IMySlimBlock> slimBlocks) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(GetNeighbours)) : null) {
-                foreach (var neighbour in slimBlock.Neighbours) {
-                    if (slimBlocks.Contains(neighbour)) {
+        /// <summary>
+        ///     The entity which holds this game logic component.
+        /// </summary>
+        private IMyMotorStator Stator { get; set; }
+
+        /// <summary>
+        ///     Get neighbor blocks in given radius.
+        /// </summary>
+        /// <param name="slimBlock">The block used to find his neighbors.</param>
+        /// <param name="radius">The radius used to search for neighbors.</param>
+        /// <param name="slimBlocks">Found neighbors are stored here.</param>
+        private static void GetNeighbors(IMySlimBlock slimBlock, int radius, ref HashSet<IMySlimBlock> slimBlocks) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(GetNeighbors)) : null) {
+                foreach (var neighbor in slimBlock.Neighbours) {
+                    if (slimBlocks.Contains(neighbor)) {
                         continue;
                     }
 
-                    slimBlocks.Add(neighbour);
+                    slimBlocks.Add(neighbor);
                     if (radius > 1) {
-                        GetNeighbours(neighbour, radius - 1, ref slimBlocks);
+                        GetNeighbors(neighbor, radius - 1, ref slimBlocks);
                     }
                 }
             }
         }
 
-        private static IMyLandingGear GetPocketGearPad(IMyMechanicalConnectionBlock stator) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(GetPocketGearPad)) : null) {
-                var rotor = stator?.Top;
-                if (rotor == null) {
-                    return null;
-                }
-
-                var cubeGrid = rotor.CubeGrid;
-                var gridSize = cubeGrid.GridSize;
-                var position = rotor.GetPosition();
-                var forward = rotor.WorldMatrix.Forward;
-                var left = rotor.WorldMatrix.Left;
-                Vector3D origin;
-                switch (rotor.BlockDefinition.SubtypeId) {
-                    case PocketGearPart.POCKETGEAR_PART:
-                        origin = position + left * gridSize * 2 + forward * gridSize;
-                        break;
-                    case PocketGearPart.POCKETGEAR_PART_LARGE:
-                        origin = position + left * (gridSize * 5) + forward * gridSize;
-                        break;
-                    case PocketGearPart.POCKETGEAR_PART_SMALL:
-                        origin = position + left + forward * gridSize;
-                        break;
-                    case PocketGearPart.POCKETGEAR_PART_LARGE_SMALL:
-                        origin = position + left * (gridSize * 5) + forward * gridSize;
-                        break;
-                    default:
-                        throw new Exception($"Unknown PocketGearPart SubtypeId: {rotor.BlockDefinition.SubtypeId}");
-                }
-
-                var rotorPosition = cubeGrid.WorldToGridInteger(origin);
-                var slimBlock = cubeGrid.GetCubeBlock(rotorPosition);
-                var landingGear = slimBlock?.FatBlock as IMyLandingGear;
-                return landingGear;
-            }
-        }
-
+        /// <inheritdoc />
         public override void Close() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Close)) : null) {
-                if (Mod.Static.Network != null) {
-                    Mod.Static.Network.Unregister<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
+                var cubeGrid = _topGrid as MyCubeGrid;
+                if (cubeGrid != null) {
+                    cubeGrid.OnHierarchyUpdated -= OnHierarchyUpdated;
                 }
 
-                _pocketGearBase.LimitReached -= OnLimitReached;
-                _pocketGearBase.CubeGrid.OnIsStaticChanged -= OnIsStaticChanged;
+                if (_topGrid != null) {
+                    _topGrid.OnBlockAdded -= OnTopGridBlockAdded;
+                    _topGrid.OnBlockRemoved -= OnTopGridBlockRemoved;
+                }
 
                 if (Mod.Static.DamageHandler != null) {
-                    var myCubeGrid = _pocketGearBase.CubeGrid as MyCubeGrid;
-                    if (myCubeGrid != null) {
-                        myCubeGrid.OnHierarchyUpdated -= OnHierarchyUpdated;
-                    }
-
-                    _pocketGearBase.CubeGrid.OnBlockAdded -= OnBlockAdded;
-                    _pocketGearBase.CubeGrid.OnBlockRemoved -= OnBlockRemoved;
+                    Stator.CubeGrid.OnBlockAdded -= OnBlockAdded;
+                    Stator.CubeGrid.OnBlockRemoved -= OnBlockRemoved;
 
                     DisableProtection();
                 }
             }
         }
 
+        /// <inheritdoc />
         public override void Init(MyObjectBuilder_EntityBase objectBuilder) {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Init)) : null) {
-                Log = Mod.Static.Log.ForScope<PocketGearBase>();
+                using (Log.BeginMethod(nameof(Init))) {
+                    base.Init(objectBuilder);
 
-                _pocketGearBase = Entity as IMyMotorStator;
-                _isJustPlaced = _pocketGearBase?.CubeGrid?.Physics != null;
-                _settings = Load(Entity, new Guid(PocketGearBaseSettings.GUID));
+                    Stator = Entity as IMyMotorStator;
+                    if (Stator == null) {
+                        Log.Error($"Entity is not of type {typeof(IMyMotorStator)}");
+                        return;
+                    }
 
-                if (Mod.Static.Network != null) {
-                    Mod.Static.Network.Register<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
+                    if (Stator.IsProjected()) {
+                        return;
+                    }
+
+                    IsJustPlaced = Stator.CubeGrid?.Physics != null;
+
+                    try {
+                        _settings = Stator.Load<PocketGearBaseSettings>(new Guid(PocketGearBaseSettings.GUID));
+                    } catch (Exception exception) {
+                        Log.Error(exception);
+                        _settings = new PocketGearBaseSettings();
+                    }
+
+                    if (Entity.Storage == null) {
+                        Entity.Storage = new MyModStorageComponent();
+                    }
+
+                    if (Mod.Static.Network != null) {
+                        Mod.Static.Network.Register<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
+                    }
+
+                    // bug: IMyMotorStator.AttachedEntityChanged throws "Cannot bind to the target method because its signature or security transparency is not compatible with that of the delegate type.".
+                    //Stator.AttachedEntityChanged += OnAttachedEntityChanged;
+
+                    // hack: until IMyMotorStator.AttachedEntityChanged event is fixed.
+                    var cubeGrid = Stator.CubeGrid as MyCubeGrid;
+                    if (cubeGrid != null) {
+                        cubeGrid.OnHierarchyUpdated += OnHierarchyUpdated;
+                    }
+
+                    if (IsJustPlaced) {
+                        Deploy();
+                    }
                 }
-
-                if (Entity.Storage == null) {
-                    Entity.Storage = new MyModStorageComponent();
-                }
-
-                NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
             }
         }
 
+        /// <summary>
+        ///     Tells the component container serializer whether this component should be saved.
+        ///     I use it to call the <see cref="IMyEntity.Save" /> extension method.
+        /// </summary>
+        /// <returns></returns>
         public override bool IsSerialized() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Save)) : null) {
-                Save(_pocketGearBase, new Guid(PocketGearBaseSettings.GUID), _settings);
-                return base.IsSerialized();
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(IsSerialized)) : null) {
+                using (Log.BeginMethod(nameof(IsSerialized))) {
+                    try {
+                        Stator.Save(new Guid(PocketGearBaseSettings.GUID), _settings);
+                    } catch (Exception exception) {
+                        Log.Error(exception);
+                    }
+
+                    return base.IsSerialized();
+                }
             }
         }
 
+        /// <summary>
+        ///     Used to set rotor limits, because Init is too early.
+        /// </summary>
+        public override void OnAddedToScene() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnAddedToScene)) : null) {
+                Stator.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
+                Stator.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
+
+                if (Mod.Static.DamageHandler != null) {
+                    Stator.CubeGrid.OnBlockAdded += OnBlockAdded;
+                    Stator.CubeGrid.OnBlockRemoved += OnBlockRemoved;
+
+                    GetNeighbors(Stator.SlimBlock, Mod.Static.Settings.ProtectionRadius, ref _neighbors);
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public override void UpdateAfterSimulation() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(UpdateAfterSimulation)) : null) {
-                if (_manualLock) {
-                    if (_resetManualLockAfterTicks <= 0) {
-                        _manualLock = false;
-                        _pocketGearBase.RotorLock = false;
-                        _pocketGearBase.TargetVelocityRPM = DeployVelocity * (ShouldDeploy ? 1 : -1);
+                if (_togglePadWhenThresholdReached) {
+                    var angle = Stator.Angle;
+                    if (ShouldDeploy && angle > TOGGLE_PAD_THRESHOLD) {
+                        if (Pad != null) {
+                            Pad.Enabled = true;
+                            _togglePadWhenThresholdReached = false;
+                            EnableProtection();
+                        }
+                    } else if (!ShouldDeploy && angle < TOGGLE_PAD_THRESHOLD) {
+                        if (Pad != null) {
+                            Pad.Enabled = false;
+                            _togglePadWhenThresholdReached = false;
+                            DisableProtection();
+                        }
                     }
                 }
 
-                if (_changePocketGearPadState) {
-                    _changePocketGearPadStateAfterTicks--;
-                    if (_changePocketGearPadStateAfterTicks <= 0) {
-                        ChangePocketGearPadState(true);
-                        _changePocketGearPadState = false;
-                    }
-                }
-
-                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState && _resetManualLockAfterTicks <= 0 && !_manualLock) {
+                if (!_togglePadWhenThresholdReached) {
                     NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
                 }
             }
         }
 
-        public override void UpdateBeforeSimulation() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(UpdateBeforeSimulation)) : null) {
-                if (_manualLock) {
-                    _resetManualLockAfterTicks--;
-                    _pocketGearBase.CubeGrid.WorldMatrix = _manualLockBaseMatrix;
-                    var topGrid = _pocketGearBase.TopGrid;
-                    if (topGrid != null) {
-                        topGrid.WorldMatrix = _manualLockTopMatrix;
-                        topGrid.Physics?.ClearSpeed();
-                        _pocketGearBase.Physics?.ClearSpeed();
-                    }
-                }
+        /// <summary>
+        ///     Deploy pocket gear.
+        /// </summary>
+        public void Deploy() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Deploy)) : null) {
+                ShouldDeploy = true;
+                Stator.TargetVelocityRPM = DeployVelocity;
 
-                if (_changePocketGearPadStateAfterTicks <= 0 && !_changePocketGearPadState && _resetManualLockAfterTicks <= 0 && !_manualLock) {
-                    NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
-                }
-            }
-        }
-
-        public override void UpdateOnceBeforeFrame() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(UpdateOnceBeforeFrame)) : null) {
-                if (_pocketGearBase.CubeGrid?.Physics == null) {
-                    return;
-                }
-
-                if (_isJustPlaced) {
-                    SwitchDeployState(true);
-                }
-
-                // bug: ImyRotorStator.UpperLimitDeg requirs an radian.
-                _pocketGearBase.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
-                _pocketGearBase.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
-
-                if (_pocketGearBase.TopGrid != null) {
-                    _lastAttachedState = true;
-                    _lastKnownTopGridId = _pocketGearBase.TopGrid.EntityId;
-                    if (!_isJustPlaced) {
-                        _pocketGearPad = GetPocketGearPad(_pocketGearBase);
-                    }
-                }
-
-                Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
-                Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
-
-                _pocketGearBase.LimitReached += OnLimitReached;
-                _pocketGearBase.CubeGrid.OnIsStaticChanged += OnIsStaticChanged;
-
-                if (Mod.Static.DamageHandler != null) {
-                    // hack: use this to check if top is detached until the IMyMotorStator.AttachedEntityChanged bug is fixed.
-                    var myCubeGrid = _pocketGearBase.CubeGrid as MyCubeGrid;
-                    if (myCubeGrid != null) {
-                        myCubeGrid.OnHierarchyUpdated += OnHierarchyUpdated;
-                    }
-
-                    _pocketGearBase.CubeGrid.OnBlockAdded += OnBlockAdded;
-                    _pocketGearBase.CubeGrid.OnBlockRemoved += OnBlockRemoved;
-
-                    GetNeighbours(_pocketGearBase.SlimBlock, PROTECTION_RADIUS, ref _neighbors);
-
-                    if (IsDeploying) {
-                        EnableProtection();
-                    }
-                }
-            }
-        }
-
-        public void ManualRotorLock() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(ManualRotorLock)) : null) {
-                _manualLock = true;
-                _manualLockBaseMatrix = _pocketGearBase.CubeGrid.WorldMatrix;
-                _manualLockTopMatrix = _pocketGearBase.TopGrid?.WorldMatrix ?? MatrixD.Zero;
-                _resetManualLockAfterTicks = 25;
-                _pocketGearBase.RotorLock = true;
-                _pocketGearBase.TargetVelocityRPM = 0;
-                _pocketGearBase.TopGrid?.Physics?.ClearSpeed();
-                _pocketGearBase.CubeGrid?.Physics?.ClearSpeed();
+                _togglePadWhenThresholdReached = true;
                 NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
             }
         }
 
-        public void OnPocketGearPadAdded(IMyLandingGear pad) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnPocketGearPadAdded)) : null) {
-                using (Log.BeginMethod(nameof(OnPocketGearPadAdded))) {
-                    Log.Debug("PocketGear Pad added.");
-                    _pocketGearPad = pad;
-                    if (IsDeploying && Mod.Static.DamageHandler != null) {
-                        Mod.Static.DamageHandler.EnableProtection(pad.SlimBlock);
-                    }
-
-                    Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
-                }
-            }
+        /// <summary>
+        ///     Place a pocket gear pad. This is will start in an separate thread.
+        /// </summary>
+        public void PlacePad() {
+            MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(Stator.Top));
         }
 
-        public void OnPocketGearPadRemoved(IMySlimBlock slimBlock) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnPocketGearPadRemoved)) : null) {
-                using (Log.BeginMethod(nameof(OnPocketGearPadRemoved))) {
-                    Log.Debug("PocketGear Pad removed.");
-                    Mod.Static.DamageHandler?.DisableProtection(slimBlock);
-                    _pocketGearPad = null;
-
-                    Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
-                }
-            }
-        }
-
-        public void OnPocketGearPartAttached() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnPocketGearPartAttached)) : null) {
-                using (Log.BeginMethod(nameof(OnPocketGearPartAttached))) {
-                    Log.Debug("PocketGear Part attached.");
-
-                    _lastAttachedState = true;
-                    _pocketGearPad = GetPocketGearPad(_pocketGearBase);
-                    _lastKnownTopGridId = _pocketGearBase.TopGrid.EntityId;
-
-                    if (IsDeploying && Mod.Static.DamageHandler != null) {
-                        EnableProtection();
-                    }
-
-                    Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
-                    Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
-                }
-            }
-        }
-
-        public void OnPocketGearPartDetached() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnPocketGearPartDetached)) : null) {
-                using (Log.BeginMethod(nameof(OnPocketGearPartDetached))) {
-                    Log.Debug("PocketGear Part detached.");
-
-                    if (Mod.Static.DamageHandler != null) {
-                        DisableProtection();
-                    }
-
-                    _lastAttachedState = false;
-                    _pocketGearPad = null;
-
-                    Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
-                    Mod.Static.Controls.Base.PlacePocketGearPad.UpdateVisual();
-                }
-            }
-        }
-
-        public void SwitchDeployState(bool deploy) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(SwitchDeployState)) : null) {
-                if (deploy) {
-                    ShouldDeploy = true;
-                    _pocketGearBase.TargetVelocityRPM = DeployVelocity;
-                    ChangePocketGearPadStateAfterTicks(150);
-                } else {
-                    Retract();
-                    _changePocketGearPadState = false;
-                }
-            }
-        }
-
-        private void ChangePocketGearPadState(bool deployed) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(ChangePocketGearPadState)) : null) {
-                if (_pocketGearPad != null) {
-                    _pocketGearPad.Enabled = deployed;
-                }
-            }
-        }
-
-        private void ChangePocketGearPadStateAfterTicks(int ticks) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(ChangePocketGearPadStateAfterTicks)) : null) {
-                _changePocketGearPadState = true;
-                _changePocketGearPadStateAfterTicks = ticks;
-                NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
-            }
-        }
-
-        private void DisableProtection() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(DisableProtection)) : null) {
-                Mod.Static.DamageHandler.DisableProtection(_pocketGearBase.CubeGrid.EntityId);
-                Mod.Static.DamageHandler.DisableProtection(_lastKnownTopGridId);
-            }
-        }
-
-        private void EnableProtection() {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(EnableProtection)) : null) {
-                if (Mod.Static.DamageHandler != null) {
-                    Mod.Static.DamageHandler.EnableProtection(_pocketGearBase.SlimBlock);
-                    foreach (var slimBlock in _neighbors) {
-                        Mod.Static.DamageHandler.EnableProtection(slimBlock);
-                    }
-
-                    Mod.Static.DamageHandler.EnableProtection(_pocketGearBase.Top?.SlimBlock);
-                    Mod.Static.DamageHandler.EnableProtection(_pocketGearPad?.SlimBlock);
-                }
-            }
-        }
-
-        private PocketGearBaseSettings Load(IMyEntity entity, Guid guid) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(ChangePocketGearPadStateAfterTicks)) : null) {
-                using (Log.BeginMethod(nameof(Load))) {
-                    var storage = entity.Storage;
-                    PocketGearBaseSettings settings;
-                    if (storage != null && storage.ContainsKey(guid)) {
-                        try {
-                            var str = storage[guid];
-                            var data = Convert.FromBase64String(str);
-
-                            settings = MyAPIGateway.Utilities.SerializeFromBinary<PocketGearBaseSettings>(data);
-                            if (settings != null) {
-                                return settings;
-                            }
-                        } catch (Exception exception) {
-                            Log.Error(exception);
-                            Log.Error(exception.StackTrace);
-                        }
-                    }
-
-                    Log.Debug($"No saved setting for '{entity}' found. Using default settings");
-                    settings = new PocketGearBaseSettings();
-                    if (!(Math.Abs(Math.Abs(_pocketGearBase.TargetVelocityRPM)) < 0.01)) {
-                        settings.DeployVelocity = Math.Abs(_pocketGearBase.TargetVelocityRPM);
-                    }
-
-                    return settings;
-                }
-            }
-        }
-
-        private void OnBlockAdded(IMySlimBlock slimBlock) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnBlockAdded)) : null) {
-                using (Log.BeginMethod(nameof(OnBlockAdded))) {
-                    if (Mod.Static.DamageHandler == null) {
-                        return;
-                    }
-
-                    var position = slimBlock.Position;
-                    var distance = Vector3I.DistanceManhattan(position, _pocketGearBase.Position);
-                    if (distance <= PROTECTION_RADIUS) {
-                        _neighbors.Add(slimBlock);
-                        if (IsDeploying) {
-                            Mod.Static.DamageHandler.EnableProtection(slimBlock);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void OnBlockRemoved(IMySlimBlock slimBlock) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnBlockRemoved)) : null) {
-                using (Log.BeginMethod(nameof(OnBlockRemoved))) {
-                    if (Mod.Static.DamageHandler == null) {
-                        return;
-                    }
-
-                    if (!_neighbors.Contains(slimBlock)) {
-                        return;
-                    }
-
-                    var position = slimBlock.Position;
-                    var distance = Vector3I.DistanceManhattan(position, _pocketGearBase.Position);
-                    if (distance <= PROTECTION_RADIUS) {
-                        _neighbors.Remove(slimBlock);
-                        Mod.Static.DamageHandler.DisableProtection(slimBlock);
-                    }
-                }
-            }
-        }
-
-        private void OnHierarchyUpdated(MyCubeGrid cubeGrid) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnHierarchyUpdated)) : null) {
-                if (_lastAttachedState && _pocketGearBase.TopGrid == null) {
-                    OnPocketGearPartDetached();
-                } else if (!_lastAttachedState && _pocketGearBase.TopGrid != null) {
-                    OnPocketGearPartAttached();
-                }
-            }
-        }
-
-        private void OnIsStaticChanged(IMyCubeGrid cubeGrid, bool isStatic) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnIsStaticChanged)) : null) {
-                ManualRotorLock();
-            }
-        }
-
-        private void OnLimitReached(bool upperLimit) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnLimitReached)) : null) {
-                ChangePocketGearPadState(upperLimit);
-                if (upperLimit) {
-                    EnableProtection();
-                } else {
-                    DisableProtection();
-                }
-            }
-        }
-
-        private void OnPropertySyncMessage(ulong sender, PropertySyncMessage message) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnPropertySyncMessage)) : null) {
-                if (message == null) {
-                    return;
-                }
-
-                switch (message.Name) {
-                    case nameof(DeployVelocity):
-                        _settings.DeployVelocity = message.GetValueAs<float>();
-                        Mod.Static.Controls.Base.DeployVelocity.UpdateVisual();
-                        break;
-                    case nameof(CurrentBehavior):
-                        _settings.LockRetractBehavior = message.GetValueAs<LockRetractBehaviors>();
-                        Mod.Static.Controls.Base.LockRetractBehavior.UpdateVisual();
-                        Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
-                        break;
-                    case nameof(ShouldDeploy):
-                        _settings.ShouldDeploy = message.GetValueAs<bool>();
-                        Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
-                        break;
-                }
-            }
-        }
-
-        private void Retract() {
+        /// <summary>
+        ///     Retract pocket gear.
+        /// </summary>
+        public void Retract() {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Retract)) : null) {
-                if (!CanRetract) {
+                if (CurrentBehavior == LockRetractBehaviors.PreventRetract && Pad != null && Pad.IsLocked) {
                     return;
+                }
+
+                if (CurrentBehavior == LockRetractBehaviors.UnlockOnRetract && Pad != null && Pad.IsLocked) {
+                    Pad.Unlock();
                 }
 
                 ShouldDeploy = false;
-                if (CurrentBehavior == LockRetractBehaviors.UnlockOnRetract) {
-                    PocketGearPad.Unlock(_pocketGearPad);
-                }
+                Stator.TargetVelocityRPM = DeployVelocity * -1;
 
-                _pocketGearBase.TargetVelocityRPM = DeployVelocity * -1;
+                _togglePadWhenThresholdReached = true;
+                NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
             }
         }
 
-        private void Save(IMyEntity entity, Guid guid, PocketGearBaseSettings settings) {
-            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(Save)) : null) {
-                using (Log.BeginMethod(nameof(Save))) {
-                    try {
-                        if (entity.Storage == null) {
-                            entity.Storage = new MyModStorageComponent();
+        /// <summary>
+        ///     Disable protection for protected blocks.
+        /// </summary>
+        private void DisableProtection() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(DisableProtection)) : null) {
+                if (Mod.Static.DamageHandler == null) {
+                    return;
+                }
+
+                IsProtected = false;
+                Mod.Static.DamageHandler.DisableProtection(Stator.CubeGrid.EntityId);
+                Mod.Static.DamageHandler.DisableProtection(_topGridId);
+            }
+        }
+
+        /// <summary>
+        ///     Enable protection for blocks nearby a pocket gear.
+        /// </summary>
+        private void EnableProtection() {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(EnableProtection)) : null) {
+                if (Mod.Static.DamageHandler == null || Pad == null || Stator.Top == null || Stator.Angle < TOGGLE_PAD_THRESHOLD) {
+                    return;
+                }
+
+                IsProtected = true;
+                Mod.Static.DamageHandler.EnableProtection(Stator.SlimBlock);
+                foreach (var slimBlock in _neighbors) {
+                    Mod.Static.DamageHandler.EnableProtection(slimBlock);
+                }
+
+                Mod.Static.DamageHandler.EnableProtection(Stator.Top.SlimBlock);
+                Mod.Static.DamageHandler.EnableProtection(Pad.SlimBlock);
+            }
+        }
+
+        /// <summary>
+        ///     Called if <see cref="IMyMotorStator.Top" /> changed.
+        /// </summary>
+        /// <param name="base">The base on which the top is changed.</param>
+        private void OnAttachedEntityChanged(IMyMotorBase @base) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnAttachedEntityChanged)) : null) {
+                if (@base?.Top != null) {
+                    if (Stator.TopGrid != null) {
+                        _topGrid = Stator.TopGrid;
+                        _topGridId = _topGrid.EntityId;
+                        _topGrid.OnBlockAdded += OnTopGridBlockAdded;
+                        _topGrid.OnBlockRemoved += OnTopGridBlockRemoved;
+
+                        if (!IsJustPlaced && !_searchedForPad) {
+                            _searchedForPad = true;
+
+                            var blocks = new List<IMySlimBlock>();
+                            _topGrid.GetBlocks(blocks);
+
+                            var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
+                            if (pad != null) {
+                                Pad = (IMyLandingGear) pad;
+                            }
                         }
 
-                        var storage = entity.Storage;
-                        var data = MyAPIGateway.Utilities.SerializeToBinary(settings);
-                        var str = Convert.ToBase64String(data);
-                        storage[guid] = str;
+                        if (Mod.Static.DamageHandler != null) {
+                            EnableProtection();
+                        }
+                    }
+
+                    MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(@base.Top));
+                } else {
+                    if (_topGrid != null) {
+                        _topGrid.OnBlockAdded -= OnTopGridBlockAdded;
+                        _topGrid.OnBlockRemoved -= OnTopGridBlockRemoved;
+                        _topGrid = null;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a new block is placed on same grid as this pocket gear. Used to enable protection.
+        /// </summary>
+        /// <param name="slimBlock">The blocks that is added.</param>
+        private void OnBlockAdded(IMySlimBlock slimBlock) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnBlockAdded)) : null) {
+                if (Mod.Static.DamageHandler == null) {
+                    return;
+                }
+
+                var position = slimBlock.Position;
+                var distance = Vector3I.DistanceManhattan(position, Stator.Position);
+                if (distance <= Mod.Static.Settings.ProtectionRadius) {
+                    _neighbors.Add(slimBlock);
+                    if (IsProtected) {
+                        Mod.Static.DamageHandler.EnableProtection(slimBlock);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a block is removed from same grid as this pocket gear. Used to disable protection.
+        /// </summary>
+        /// <param name="slimBlock"></param>
+        private void OnBlockRemoved(IMySlimBlock slimBlock) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnBlockRemoved)) : null) {
+                if (Mod.Static.DamageHandler == null) {
+                    return;
+                }
+
+                if (!_neighbors.Contains(slimBlock)) {
+                    return;
+                }
+
+                var position = slimBlock.Position;
+                var distance = Vector3I.DistanceManhattan(position, Stator.Position);
+                if (distance <= Mod.Static.Settings.ProtectionRadius) {
+                    _neighbors.Remove(slimBlock);
+                    Mod.Static.DamageHandler.DisableProtection(slimBlock);
+                }
+            }
+        }
+
+        // hack: until IMyMotorStator.AttachedEntityChanged event is fixed.
+        /// <summary>
+        ///     Used to check if <see cref="IMyMotorStator.Top" /> is changed, because of a the
+        ///     <see cref="IMyMotorStator.AttachedEntityChanged" /> event bug.
+        /// </summary>
+        /// <param name="cubeGrid">The cube grid on which the hierarchy updated.</param>
+        private void OnHierarchyUpdated(MyCubeGrid cubeGrid) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnHierarchyUpdated)) : null) {
+                if (cubeGrid.MarkedForClose) {
+                    return;
+                }
+
+                if (!_lastAttachedState && Stator.Top != null) {
+                    _lastAttachedState = true;
+                    OnAttachedEntityChanged(Stator);
+                } else if (_lastAttachedState && Stator.Top == null) {
+                    _lastAttachedState = false;
+                    OnAttachedEntityChanged(Stator);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a <see cref="PropertySyncMessage" /> received.
+        /// </summary>
+        /// <param name="sender">The sender of the message.</param>
+        /// <param name="message">The <see cref="PropertySyncMessage" /> message received.</param>
+        private void OnPropertySyncMessage(ulong sender, PropertySyncMessage message) {
+            // todo: implement logic.
+        }
+
+        /// <summary>
+        ///     Called when a new block is added to the top grid. Used to get the attached pocket gear pad.
+        /// </summary>
+        /// <param name="block">The block that is added.</param>
+        private void OnTopGridBlockAdded(IMySlimBlock block) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnTopGridBlockAdded)) : null) {
+                if (block.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.Id.SubtypeId.String)) {
+                    Pad = block.FatBlock as IMyLandingGear;
+                    EnableProtection();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a block is removed from the top grid. Used to detect when attached pocket gear pad is removed.
+        /// </summary>
+        /// <param name="block">The block that is removed.</param>
+        private void OnTopGridBlockRemoved(IMySlimBlock block) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnTopGridBlockRemoved)) : null) {
+                if (block.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.Id.SubtypeId.String)) {
+                    Pad = null;
+                    DisableProtection();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Place a pocket gear pad. This is called in an separate thread.
+        /// </summary>
+        /// <param name="workData">The work data used in this method.</param>
+        private void PlacePad(WorkData workData) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(PlacePad)) : null) {
+                using (Log.BeginMethod(nameof(PlacePad))) {
+                    var data = workData as PlacePadData;
+
+                    var rotor = data?.Head as IMyMotorRotor;
+                    if (rotor == null) {
+                        return;
+                    }
+
+                    var cubeGrid = rotor.CubeGrid;
+                    var gridSize = cubeGrid.GridSize;
+                    var matrix = rotor.WorldMatrix;
+                    var left = matrix.Left;
+                    var forward = matrix.Forward;
+                    var up = matrix.Up;
+
+                    var position = rotor.GetPosition();
+
+                    Vector3D origin;
+                    string padId;
+                    switch (rotor.BlockDefinition.SubtypeId) {
+                        case Defs.Part.NORMAL:
+                            padId = Defs.Pad.NORMAL;
+                            origin = position + left * gridSize * 2 + forward * gridSize;
+                            break;
+                        case Defs.Part.LARGE_NORMAL:
+                            padId = Defs.Pad.LARGE_NORMAL;
+                            origin = position + left * (gridSize * 5) + forward * gridSize;
+                            break;
+                        case Defs.Part.SMALL:
+                            padId = Defs.Pad.SMALL;
+                            origin = position + left + forward * gridSize;
+                            break;
+                        case Defs.Part.LARGE_SMALL:
+                            padId = Defs.Pad.LARGE_SMALL;
+                            origin = position + left * (gridSize * 5) + forward * gridSize;
+                            break;
+                        default:
+                            data.Result = PlacePadResult.Failure;
+                            Log.Error(new Exception($"Unknown PocketGearPart SubtypeId: {rotor.BlockDefinition.SubtypeId}"));
+                            return;
+                    }
+
+                    var padPosition = cubeGrid.WorldToGridInteger(origin);
+                    if (cubeGrid.CubeExists(padPosition)) {
+                        Log.Debug($"There is already a block on this position: {padPosition}.");
+                        data.Result = PlacePadResult.Failure;
+                        return;
+                    }
+
+                    var canPlaceCube = cubeGrid.CanAddCube(padPosition);
+                    if (!canPlaceCube) {
+                        Log.Debug($"Unable to place block on this position: {padPosition}.");
+                        data.Result = PlacePadResult.Failure;
+                        return;
+                    }
+
+                    try {
+                        var instantBuild = MyAPIGateway.Session.CreativeMode || MyAPIGateway.Session.HasCreativeRights && MyAPIGateway.Session.EnableCopyPaste;
+                        var buildPercent = instantBuild ? 1 : 0.00001525902f;
+
+                        var padBuilder = new MyObjectBuilder_LandingGear {
+                            SubtypeName = padId,
+                            Owner = Stator.OwnerId,
+                            BuiltBy = Stator.OwnerId,
+                            AutoLock = false,
+                            BuildPercent = buildPercent,
+                            IntegrityPercent = buildPercent
+                        };
+
+                        var cubeGridBuilder = new MyObjectBuilder_CubeGrid {
+                            CreatePhysics = true,
+                            GridSizeEnum = rotor.CubeGrid.GridSizeEnum,
+                            PositionAndOrientation = new MyPositionAndOrientation(origin, forward, up)
+                        };
+
+                        cubeGridBuilder.CubeBlocks.Add(padBuilder);
+
+                        var gridsToMerge = new List<MyObjectBuilder_CubeGrid> { cubeGridBuilder };
+
+                        MyAPIGateway.Utilities.InvokeOnGameThread(() => (cubeGrid as MyCubeGrid)?.PasteBlocksToGrid(gridsToMerge, 0, false, false));
+                        data.Result = PlacePadResult.Success;
                     } catch (Exception exception) {
+                        data.Result = PlacePadResult.Failure;
                         Log.Error(exception);
-                        Log.Error(exception.StackTrace);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Get called after <see cref="PlacePad" /> task is completed.
+        /// </summary>
+        /// <param name="workData">The work data used in this method.</param>
+        private void PlacePadCompleted(WorkData workData) {
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(PlacePadCompleted)) : null) {
+                using (Log.BeginMethod(nameof(PlacePadCompleted))) {
+                    var data = workData as PlacePadData;
+                    if (data == null) {
+                        return;
+                    }
+
+                    if (data.Result == PlacePadResult.Success) {
+                        Log.Debug("PocketGar Pad placed.");
                     }
                 }
             }

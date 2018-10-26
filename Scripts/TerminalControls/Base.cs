@@ -35,7 +35,7 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         private static bool IsPocketGearBase(IMyTerminalBlock block) {
-            return block != null && PocketGearBase.PocketGearIds.Contains(block.BlockDefinition.SubtypeId);
+            return block != null && Defs.Base.Ids.Contains(block.BlockDefinition.SubtypeId);
         }
 
         private void CreateActions() {
