@@ -379,6 +379,7 @@ namespace AutoMcD.PocketGear.Logic {
                             var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
                             if (pad != null) {
                                 Pad = (IMyLandingGear) pad;
+                                Mod.Static.Controls.PlacePocketGearPad.UpdateVisual();
                             }
                         }
 
@@ -501,6 +502,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnTopGridBlockAdded)) : null) {
                 if (block.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.Id.SubtypeId.String)) {
                     Pad = block.FatBlock as IMyLandingGear;
+                    Mod.Static.Controls.PlacePocketGearPad.UpdateVisual();
                     EnableProtection();
                 }
             }
@@ -514,6 +516,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnTopGridBlockRemoved)) : null) {
                 if (block.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.Id.SubtypeId.String)) {
                     Pad = null;
+                    Mod.Static.Controls.PlacePocketGearPad.UpdateVisual();
                     DisableProtection();
                 }
             }
