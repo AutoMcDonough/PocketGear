@@ -10,7 +10,7 @@ using VRage.Utils;
 
 namespace AutoMcD.PocketGear.TerminalControls {
     public static class DeployVelocitySlider {
-        private const string ID = nameof(ModText.DeployVelocity);
+        private const string ID = nameof(ModText.BlockPropertyTitle_DeployVelocity);
 
         private static IEnumerable<IMyTerminalAction> _actions;
         private static IMyTerminalControlSlider _control;
@@ -34,8 +34,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
 
         private static IMyTerminalControlSlider CreateControl() {
             var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlSlider, IMyMotorAdvancedStator>(ID);
-            control.Title = MyStringId.GetOrCompute(ModText.DeployVelocity.GetString());
-            control.Tooltip = MyStringId.GetOrCompute(ModText.Tooltip_DeployVelocity.GetString());
+            control.Title = MyStringId.GetOrCompute(ModText.BlockPropertyTitle_DeployVelocity.GetString());
+            control.Tooltip = MyStringId.GetOrCompute(ModText.BlockPropertyTooltip_DeployVelocity.GetString());
             control.Writer = Writer;
             control.Getter = Getter;
             control.Setter = Setter;

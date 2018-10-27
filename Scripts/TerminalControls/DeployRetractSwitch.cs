@@ -9,7 +9,7 @@ using VRage.Utils;
 
 namespace AutoMcD.PocketGear.TerminalControls {
     public static class DeployRetractSwitch {
-        private const string ID = nameof(ModText.SwitchDeployState);
+        private const string ID = nameof(ModText.BlockPropertyTitle_SwitchDeployState);
         private static IEnumerable<IMyTerminalAction> _actions;
         private static IMyTerminalControlOnOffSwitch _control;
         private static IMyTerminalControlProperty<bool> _property;
@@ -32,10 +32,10 @@ namespace AutoMcD.PocketGear.TerminalControls {
 
         private static IMyTerminalControlOnOffSwitch CreateControl() {
             var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlOnOffSwitch, IMyMotorAdvancedStator>(ID);
-            control.Title = MyStringId.GetOrCompute(ModText.SwitchDeployState.GetString());
-            control.Tooltip = MyStringId.GetOrCompute(ModText.Tooltip_SwitchDeployState.GetString());
-            control.OnText = MyStringId.GetOrCompute(ModText.Deploy.GetString());
-            control.OffText = MyStringId.GetOrCompute(ModText.Retract.GetString());
+            control.Title = MyStringId.GetOrCompute(ModText.BlockPropertyTitle_SwitchDeployState.GetString());
+            control.Tooltip = MyStringId.GetOrCompute(ModText.BlockPropertyTooltip_SwitchDeployState.GetString());
+            control.OnText = MyStringId.GetOrCompute(ModText.BlockPropertyTitle_SwitchDeployState_Deploy.GetString());
+            control.OffText = MyStringId.GetOrCompute(ModText.BlockPropertyTitle_SwitchDeployState_Retract.GetString());
             control.Getter = Getter;
             control.Setter = Setter;
             control.SupportsMultipleBlocks = true;

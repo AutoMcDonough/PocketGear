@@ -362,18 +362,18 @@ namespace AutoMcD.PocketGear {
                                 { nameof(ModText.Description_PocketGear_MagLock), "MagLocks are capable of magnetically locking to any surface over a long distance.\r\n\r\n" +
                                                                                   "MagLocks can be locked and unlocked by pressing [{CONTROL:LANDING_GEAR}] when inside a cockpit. They will show up yellow when in range of a surface that they can lock onto." },
 
-                                { nameof(ModText.DeployVelocity), "Deploy Velocity" },
-                                { nameof(ModText.Tooltip_DeployVelocity), "The speed at which the PocketGear is retracted / extended." },
-                                { nameof(ModText.LockRetractBehavior), "Lock Retract Behavior" },
-                                { nameof(ModText.Tooltip_LockRetractBehavior), "Whether it should prevent retracting if locked or if it should unlock on retract." },
-                                { nameof(ModText.PreventRetract), "Prevent Retracting" },
-                                { nameof(ModText.UnlockOnRetract), "Unlock on retract" },
-                                { nameof(ModText.PlaceLandingPad), "Place Pad" },
-                                { nameof(ModText.Tooltip_PlaceLandingPad), "Place a new PocketGear Pad." },
-                                { nameof(ModText.SwitchDeployState), "Switch Deploy State" },
-                                { nameof(ModText.Tooltip_SwitchDeployState), "Switch between deploy and retract." },
-                                { nameof(ModText.Deploy), "Deploy" },
-                                { nameof(ModText.Retract), "Retract" }
+                                { nameof(ModText.BlockPropertyTitle_DeployVelocity), "Deploy Velocity" },
+                                { nameof(ModText.BlockPropertyTooltip_DeployVelocity), "The speed at which the PocketGear is retracted / extended." },
+                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior), "Lock Retract Behavior" },
+                                { nameof(ModText.BlockPropertyTooltip_LockRetractBehavior), "Whether it should prevent retracting if locked or if it should unlock on retract." },
+                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior_PreventRetract), "Prevent Retracting" },
+                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior_UnlockOnRetract), "Unlock on retract" },
+                                { nameof(ModText.BlockActionTitle_PlaceLandingPad), "Place Pad" },
+                                { nameof(ModText.BlockActionTooltip_PlaceLandingPad), "Place a new PocketGear Pad." },
+                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState), "Switch Deploy State" },
+                                { nameof(ModText.BlockPropertyTooltip_SwitchDeployState), "Switch between deploy and retract." },
+                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState_Deploy), "Deploy" },
+                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState_Retract), "Retract" }
                             });
                             break;
                         case MyLanguagesEnum.German:
@@ -393,18 +393,18 @@ namespace AutoMcD.PocketGear {
                                 { nameof(ModText.Description_PocketGear_MagLock), "MagLocks können über eine größere Distanz auf jeder Oberfläche magnetisch befestigt werden.\r\n\r\n" +
                                                                                   "MagLocks, können durch Drücken von [{CONTROL:LANDING_GEAR}] in einem Cockpit gesperrt und entsperrt werden. Sie werden gelb angezeigt, wenn sie sich in der Nähe einer Oberfläche befinden, auf der sie sich verriegeln können." },
 
-                                { nameof(ModText.DeployVelocity), "Ausfahrgeschwindigkeit" },
-                                { nameof(ModText.Tooltip_DeployVelocity), "Die Geschwindigkeit, mit der das PocketGear ein- / ausgefahren wird." },
-                                { nameof(ModText.LockRetractBehavior), "Sperr/Einfahr Verhalten" },
-                                { nameof(ModText.Tooltip_LockRetractBehavior), "Ob es das Zurückziehen verhindern soll, wenn es gesperrt ist oder ob es beim Zurückziehen entsperrt werden soll." },
-                                { nameof(ModText.PreventRetract), "Einfahren Verhindern" },
-                                { nameof(ModText.UnlockOnRetract), "Entsperren beim Einfahren" },
-                                { nameof(ModText.PlaceLandingPad), "Plaziere Pad" },
-                                { nameof(ModText.Tooltip_PlaceLandingPad), "Plaziere ein neues PocketGear Pad" },
-                                { nameof(ModText.SwitchDeployState), "Wechsel des Ausfahrstatus" },
-                                { nameof(ModText.Tooltip_SwitchDeployState), "Wechsel zwischen aus-/ einfahren." },
-                                { nameof(ModText.Deploy), "Ausfahren" },
-                                { nameof(ModText.Retract), "Einfahren" }
+                                { nameof(ModText.BlockPropertyTitle_DeployVelocity), "Ausfahrgeschwindigkeit" },
+                                { nameof(ModText.BlockPropertyTooltip_DeployVelocity), "Die Geschwindigkeit, mit der das PocketGear ein- / ausgefahren wird." },
+                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior), "Sperr/Einfahr Verhalten" },
+                                { nameof(ModText.BlockPropertyTooltip_LockRetractBehavior), "Ob es das Zurückziehen verhindern soll, wenn es gesperrt ist oder ob es beim Zurückziehen entsperrt werden soll." },
+                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior_PreventRetract), "Einfahren Verhindern" },
+                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior_UnlockOnRetract), "Entsperren beim Einfahren" },
+                                { nameof(ModText.BlockActionTitle_PlaceLandingPad), "Plaziere Pad" },
+                                { nameof(ModText.BlockActionTooltip_PlaceLandingPad), "Plaziere ein neues PocketGear Pad" },
+                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState), "Wechsel des Ausfahrstatus" },
+                                { nameof(ModText.BlockPropertyTooltip_SwitchDeployState), "Wechsel zwischen aus-/ einfahren." },
+                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState_Deploy), "Ausfahren" },
+                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState_Retract), "Einfahren" }
                             });
                             break;
                     }

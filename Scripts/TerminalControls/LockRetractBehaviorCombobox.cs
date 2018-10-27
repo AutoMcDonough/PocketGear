@@ -13,7 +13,7 @@ using VRage.Utils;
 
 namespace AutoMcD.PocketGear.TerminalControls {
     public static class LockRetractBehaviorCombobox {
-        private const string ID = nameof(ModText.LockRetractBehavior);
+        private const string ID = nameof(ModText.BlockPropertyTitle_LockRetractBehavior);
 
         private static IMyTerminalControlCombobox _control;
         public static IMyTerminalControlCombobox Control => _control ?? (_control = CreateControl());
@@ -24,8 +24,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
 
         private static IMyTerminalControlCombobox CreateControl() {
             var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlCombobox, IMyMotorAdvancedStator>(ID);
-            control.Title = MyStringId.GetOrCompute(ModText.LockRetractBehavior.GetString());
-            control.Tooltip = MyStringId.GetOrCompute(ModText.Tooltip_LockRetractBehavior.GetString());
+            control.Title = MyStringId.GetOrCompute(ModText.BlockPropertyTitle_LockRetractBehavior.GetString());
+            control.Tooltip = MyStringId.GetOrCompute(ModText.BlockPropertyTooltip_LockRetractBehavior.GetString());
             control.ComboBoxContent = Content;
             control.Getter = Getter;
             control.Setter = Setter;
