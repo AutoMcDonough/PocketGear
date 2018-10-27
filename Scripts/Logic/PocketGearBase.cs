@@ -470,7 +470,27 @@ namespace AutoMcD.PocketGear.Logic {
         /// <param name="sender">The sender of the message.</param>
         /// <param name="message">The <see cref="PropertySyncMessage" /> message received.</param>
         private void OnPropertySyncMessage(ulong sender, PropertySyncMessage message) {
-            // todo: implement logic.
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnPropertySyncMessage)) : null) {
+                switch (message.Name) {
+                    case nameof(DeployVelocity):
+                        _settings.DeployVelocity = message.GetValueAs<float>();
+                        Mod.Static.Controls.DeployVelocity.UpdateVisual();
+                        break;
+                    case nameof(CurrentBehavior):
+                        _settings.LockRetractBehavior = message.GetValueAs<LockRetractBehaviors>();
+
+                        Mod.Static.Controls.LockRetractBehavior.UpdateVisual();
+                        Mod.Static.Controls.DeployRetract.UpdateVisual();
+                        break;
+                    case nameof(ShouldDeploy):
+                        _settings.ShouldDeploy = message.GetValueAs<bool>();
+                        Mod.Static.Controls.DeployRetract.UpdateVisual();
+                        break;
+                    default:
+                        Log.Error($"Unexpected property name. '{message.Name}'");
+                        break;
+                }
+            }
         }
 
         /// <summary>
