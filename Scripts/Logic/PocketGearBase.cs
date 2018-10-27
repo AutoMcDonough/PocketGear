@@ -78,6 +78,7 @@ namespace AutoMcD.PocketGear.Logic {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value != _settings.DeployVelocity) {
                     _settings.DeployVelocity = value;
+                    Stator.TargetVelocityRPM = ShouldDeploy ? value : value * -1;
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(DeployVelocity), value));
                 }
             }
