@@ -569,7 +569,6 @@ namespace AutoMcD.PocketGear.Logic {
                             SubtypeName = padId,
                             Owner = Stator.OwnerId,
                             BuiltBy = Stator.OwnerId,
-                            AutoLock = false,
                             BuildPercent = buildPercent,
                             IntegrityPercent = buildPercent
                         };

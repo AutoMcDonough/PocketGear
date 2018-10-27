@@ -120,7 +120,6 @@
     <Compile Include="TerminalControls\DeployVelocitySlider.cs" />
     <Compile Include="TerminalControls\IControls.cs" />
     <Compile Include="TerminalControls\LockRetractBehaviorCombobox.cs" />
-    <Compile Include="TerminalControls\Pad.cs" />
     <Compile Include="TerminalControls\PlacePocketGearPadButton.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

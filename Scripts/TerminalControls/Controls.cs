@@ -8,14 +8,12 @@ namespace AutoMcD.PocketGear.TerminalControls {
     public class Controls {
         public Controls() {
             Base = new Base();
-            Pad = new Pad();
 
             MyAPIGateway.TerminalControls.CustomControlGetter += OnCustomControlGetter;
             MyAPIGateway.TerminalControls.CustomActionGetter += OnCustomActionGetter;
         }
 
         public Base Base { get; }
-        public Pad Pad { get; }
 
         public void Close() {
             MyAPIGateway.TerminalControls.CustomControlGetter -= OnCustomControlGetter;
@@ -27,10 +25,6 @@ namespace AutoMcD.PocketGear.TerminalControls {
                 if (block.BlockDefinition.TypeId == typeof(MyObjectBuilder_MotorAdvancedStator) && Defs.Base.Ids.Contains(block.BlockDefinition.SubtypeId)) {
                     Base.OnCustomActionGetter(block, actions);
                 }
-
-                if (block.BlockDefinition.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.SubtypeId)) {
-                    Pad.OnCustomActionGetter(block, actions);
-                }
             }
         }
 
@@ -38,10 +32,6 @@ namespace AutoMcD.PocketGear.TerminalControls {
             using (Mod.PROFILE ? Profiler.Measure(nameof(Controls), nameof(OnCustomControlGetter)) : null) {
                 if (block.BlockDefinition.TypeId == typeof(MyObjectBuilder_MotorAdvancedStator) && Defs.Base.Ids.Contains(block.BlockDefinition.SubtypeId)) {
                     Base.OnCustomControlGetter(block, controls);
-                }
-
-                if (block.BlockDefinition.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.SubtypeId)) {
-                    Pad.OnCustomControlGetter(block, controls);
                 }
             }
         }
