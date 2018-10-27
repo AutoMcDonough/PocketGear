@@ -49,7 +49,6 @@
     <None Include="Data\Blocks\Pad.sbc" />
     <None Include="Data\EntityComponents.sbc" />
     <None Include="Data\MA_PocketGear_BlockCategories.sbc" />
-    <None Include="Data\MA_PocketGear_Cubeblocks.sbc" />
     <None Include="Models\MA_PocketGear_Base.mwm" />
     <None Include="Models\MA_PocketGear_Base_Constr1.mwm" />
     <None Include="Models\MA_PocketGear_Base_Constr2.mwm" />

@@ -15,6 +15,11 @@ namespace AutoMcD.PocketGear.Localization {
         public static readonly MyStringId DisplayName_PocketGear_Pad = MyStringId.GetOrCompute(nameof(DisplayName_PocketGear_Pad));
         public static readonly MyStringId DisplayName_PocketGear_Part = MyStringId.GetOrCompute(nameof(DisplayName_PocketGear_Part));
 
+        public static readonly MyStringId Description_PocketGear_Base = MyStringId.GetOrCompute(nameof(Description_PocketGear_Base));
+        public static readonly MyStringId Description_PocketGear_Part = MyStringId.GetOrCompute(nameof(Description_PocketGear_Part));
+        public static readonly MyStringId Description_PocketGear_Pad = MyStringId.GetOrCompute(nameof(Description_PocketGear_Pad));
+        public static readonly MyStringId Description_PocketGear_MagLock = MyStringId.GetOrCompute(nameof(Description_PocketGear_MagLock));
+
         public static readonly MyStringId LockRetractBehavior = MyStringId.GetOrCompute(nameof(LockRetractBehavior));
 
         public static readonly MyStringId PlaceLandingPad = MyStringId.GetOrCompute(nameof(PlaceLandingPad));
