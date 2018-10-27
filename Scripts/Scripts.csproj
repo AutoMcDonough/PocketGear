@@ -114,13 +114,11 @@
     <Compile Include="Net\ServerHandler.cs" />
     <Compile Include="Settings\ModSettings.cs" />
     <Compile Include="Settings\PocketGearBaseSettings.cs" />
-    <Compile Include="TerminalControls\Base.cs" />
     <Compile Include="TerminalControls\Controls.cs" />
     <Compile Include="TerminalControls\DeployRetractSwitch.cs" />
     <Compile Include="TerminalControls\DeployVelocitySlider.cs" />
     <Compile Include="TerminalControls\IControls.cs" />
     <Compile Include="TerminalControls\LockRetractBehaviorCombobox.cs" />
-    <Compile Include="TerminalControls\Pad.cs" />
     <Compile Include="TerminalControls\PlacePocketGearPadButton.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

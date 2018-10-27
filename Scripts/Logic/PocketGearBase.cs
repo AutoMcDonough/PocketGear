@@ -63,7 +63,7 @@ namespace AutoMcD.PocketGear.Logic {
             set {
                 if (value != _settings.LockRetractBehavior) {
                     _settings.LockRetractBehavior = value;
-                    Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
+                    Mod.Static.Controls.DeployRetract.UpdateVisual();
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(CurrentBehavior), value));
                 }
             }
@@ -78,6 +78,7 @@ namespace AutoMcD.PocketGear.Logic {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value != _settings.DeployVelocity) {
                     _settings.DeployVelocity = value;
+                    Stator.TargetVelocityRPM = ShouldDeploy ? value : value * -1;
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(DeployVelocity), value));
                 }
             }
@@ -378,6 +379,7 @@ namespace AutoMcD.PocketGear.Logic {
                             var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
                             if (pad != null) {
                                 Pad = (IMyLandingGear) pad;
+                                Mod.Static.Controls.PlacePocketGearPad.UpdateVisual();
                             }
                         }
 
@@ -469,7 +471,27 @@ namespace AutoMcD.PocketGear.Logic {
         /// <param name="sender">The sender of the message.</param>
         /// <param name="message">The <see cref="PropertySyncMessage" /> message received.</param>
         private void OnPropertySyncMessage(ulong sender, PropertySyncMessage message) {
-            // todo: implement logic.
+            using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnPropertySyncMessage)) : null) {
+                switch (message.Name) {
+                    case nameof(DeployVelocity):
+                        _settings.DeployVelocity = message.GetValueAs<float>();
+                        Mod.Static.Controls.DeployVelocity.UpdateVisual();
+                        break;
+                    case nameof(CurrentBehavior):
+                        _settings.LockRetractBehavior = message.GetValueAs<LockRetractBehaviors>();
+
+                        Mod.Static.Controls.LockRetractBehavior.UpdateVisual();
+                        Mod.Static.Controls.DeployRetract.UpdateVisual();
+                        break;
+                    case nameof(ShouldDeploy):
+                        _settings.ShouldDeploy = message.GetValueAs<bool>();
+                        Mod.Static.Controls.DeployRetract.UpdateVisual();
+                        break;
+                    default:
+                        Log.Error($"Unexpected property name. '{message.Name}'");
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -480,6 +502,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnTopGridBlockAdded)) : null) {
                 if (block.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.Id.SubtypeId.String)) {
                     Pad = block.FatBlock as IMyLandingGear;
+                    Mod.Static.Controls.PlacePocketGearPad.UpdateVisual();
                     EnableProtection();
                 }
             }
@@ -493,6 +516,7 @@ namespace AutoMcD.PocketGear.Logic {
             using (Mod.PROFILE ? Profiler.Measure(nameof(PocketGearBase), nameof(OnTopGridBlockRemoved)) : null) {
                 if (block.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear) && Defs.Pad.Ids.Contains(block.BlockDefinition.Id.SubtypeId.String)) {
                     Pad = null;
+                    Mod.Static.Controls.PlacePocketGearPad.UpdateVisual();
                     DisableProtection();
                 }
             }
@@ -568,7 +592,6 @@ namespace AutoMcD.PocketGear.Logic {
                             SubtypeName = padId,
                             Owner = Stator.OwnerId,
                             BuiltBy = Stator.OwnerId,
-                            AutoLock = false,
                             BuildPercent = buildPercent,
                             IntegrityPercent = buildPercent
                         };
