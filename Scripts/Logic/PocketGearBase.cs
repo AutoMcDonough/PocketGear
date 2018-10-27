@@ -63,7 +63,7 @@ namespace AutoMcD.PocketGear.Logic {
             set {
                 if (value != _settings.LockRetractBehavior) {
                     _settings.LockRetractBehavior = value;
-                    Mod.Static.Controls.Base.DeployRetract.UpdateVisual();
+                    Mod.Static.Controls.DeployRetract.UpdateVisual();
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(CurrentBehavior), value));
                 }
             }

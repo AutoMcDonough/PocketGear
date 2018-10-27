@@ -114,7 +114,6 @@
     <Compile Include="Net\ServerHandler.cs" />
     <Compile Include="Settings\ModSettings.cs" />
     <Compile Include="Settings\PocketGearBaseSettings.cs" />
-    <Compile Include="TerminalControls\Base.cs" />
     <Compile Include="TerminalControls\Controls.cs" />
     <Compile Include="TerminalControls\DeployRetractSwitch.cs" />
     <Compile Include="TerminalControls\DeployVelocitySlider.cs" />
