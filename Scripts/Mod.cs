@@ -19,7 +19,6 @@ using SpaceEngineers.Game.ModAPI;
 using VRage;
 using VRage.Game;
 using VRage.Game.Components;
-using VRage.Game.ModAPI;
 
 namespace AutoMcD.PocketGear {
     [MySessionComponentDescriptor(MyUpdateOrder.NoUpdate)]
@@ -116,21 +115,17 @@ namespace AutoMcD.PocketGear {
 
                 var controller = (IMyShipController) MyAPIGateway.Session.ControlledObject;
                 if (MyAPIGateway.Input.IsNewGameControlPressed(MyControlsSpace.LANDING_GEAR)) {
-                    var cubegrid = controller.CubeGrid;
-                    var grids = MyAPIGateway.GridGroups.GetGroup(cubegrid, GridLinkTypeEnum.Mechanical);
-                    var pocketGearPads = new List<IMyLandingGear>();
-                    foreach (var grid in grids) {
-                        var blocks = new List<IMySlimBlock>();
-                        grid.GetBlocks(blocks, x => Defs.Pad.Ids.Contains(x.BlockDefinition.Id.SubtypeId.String));
-                        pocketGearPads.AddRange(blocks.Select(x => x.FatBlock).Cast<IMyLandingGear>().Where(x => x.IsWorking));
-                    }
+                    var cubeGrid = controller.CubeGrid;
+                    var gts = MyAPIGateway.TerminalActionsHelper.GetTerminalSystemForGrid(cubeGrid);
+                    var pads = new List<IMyLandingGear>();
+                    gts.GetBlocksOfType(pads, x => Defs.Pad.Ids.Contains(x.BlockDefinition.SubtypeId));
 
-                    var isAnyLocked = pocketGearPads.Any(x => x.IsLocked);
-                    foreach (var landingGear in pocketGearPads) {
-                        if (landingGear.IsLocked == !isAnyLocked) { }
-
-                        //PocketGearPad.SwitchLock(landingGear);
-                        // todo: implement switch lock.
+                    foreach (var pad in pads) {
+                        if (!controller.HandBrake) {
+                            pad.Unlock();
+                        } else {
+                            pad.Lock();
+                        }
                     }
                 }
             }
