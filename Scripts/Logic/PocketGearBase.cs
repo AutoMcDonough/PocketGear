@@ -51,6 +51,11 @@ namespace AutoMcD.PocketGear.Logic {
         }
 
         /// <summary>
+        ///     Indicates if terminal controls are initialized.
+        /// </summary>
+        private bool AreTerminalControlsInitialized { get; set; }
+
+        /// <summary>
         ///     Indicates if a new pocket gear pad can be built.
         /// </summary>
         public bool CanBuiltPad => Stator?.Top != null && Pad == null;
@@ -214,6 +219,11 @@ namespace AutoMcD.PocketGear.Logic {
 
                     if (IsJustPlaced) {
                         Deploy();
+                    }
+
+                    if (!AreTerminalControlsInitialized) {
+                        AreTerminalControlsInitialized = true;
+                        Mod.Static.Controls.InitializePocketGearControls();
                     }
                 }
             }

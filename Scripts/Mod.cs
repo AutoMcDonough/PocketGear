@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMcD.PocketGear.DamageSystem;
@@ -93,15 +93,6 @@ namespace AutoMcD.PocketGear {
         }
 
         /// <summary>
-        ///     Initialize terminal controls and damage handler.
-        /// </summary>
-        public override void BeforeStart() {
-            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(BeforeStart)) : null) {
-                InitializeTerminalControls();
-            }
-        }
-
-        /// <summary>
         ///     Handle input to switch lock of pocket gear pads on 'p' press.
         /// </summary>
         public override void HandleInput() {
@@ -168,6 +159,8 @@ namespace AutoMcD.PocketGear {
                     LoadSettings();
                 }
             }
+
+            Controls = new Controls();
         }
 
         /// <summary>
@@ -283,20 +276,7 @@ namespace AutoMcD.PocketGear {
                 }
             }
         }
-
-        /// <summary>
-        ///     Initialize terminal controls, actions and properties.
-        /// </summary>
-        private void InitializeTerminalControls() {
-            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(InitializeTerminalControls)) : null) {
-                using (Log.BeginMethod(nameof(InitializeTerminalControls))) {
-                    Log.Info("Initialize Terminal Controls");
-                    Controls = new Controls();
-                    Log.Info("Terminal Controls initialized");
-                }
-            }
-        }
-
+        
         /// <summary>
         ///     Save mod settings.
         /// </summary>

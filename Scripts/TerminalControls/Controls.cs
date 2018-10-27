@@ -9,15 +9,6 @@ namespace AutoMcD.PocketGear.TerminalControls {
     public class Controls {
         private static readonly HashSet<string> HiddenActions = new HashSet<string> { "Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement", "RotorLock", "Reverse", "IncreaseVelocity", "DecreaseVelocity", "ResetVelocity" };
         private static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
-
-        public Controls() {
-            ModifyVanillaControls();
-            ModifyVanillaActions();
-            CreateActions();
-            CreateControls();
-            RegisterProperties();
-        }
-
         public IMyTerminalControlOnOffSwitch DeployRetract => DeployRetractSwitch.Control;
         public IMyTerminalControlSlider DeployVelocity => DeployVelocitySlider.Control;
         public IMyTerminalControlCombobox LockRetractBehavior => LockRetractBehaviorCombobox.Control;
@@ -97,5 +88,13 @@ namespace AutoMcD.PocketGear.TerminalControls {
         }
 
         public void Close() { }
+
+        public void InitializePocketGearControls() {
+            ModifyVanillaControls();
+            ModifyVanillaActions();
+            CreateActions();
+            CreateControls();
+            RegisterProperties();
+        }
     }
 }
