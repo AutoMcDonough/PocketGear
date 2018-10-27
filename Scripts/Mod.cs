@@ -19,6 +19,7 @@ using SpaceEngineers.Game.ModAPI;
 using VRage;
 using VRage.Game;
 using VRage.Game.Components;
+using VRage.Utils;
 
 namespace AutoMcD.PocketGear {
     [MySessionComponentDescriptor(MyUpdateOrder.NoUpdate)]
@@ -353,6 +354,14 @@ namespace AutoMcD.PocketGear {
                                 { nameof(ModText.DisplayName_PocketGear_Pad), "PocketGear Pad" },
                                 { nameof(ModText.DisplayName_PocketGear_Large_Pad), "PocketGear Large Pad" },
                                 { nameof(ModText.DisplayName_PocketGear_MagLock), "PocketGear MagLock" },
+
+                                { nameof(ModText.Description_PocketGear_Base), "PocketGears are retractable landing gears and capable of magnetically locking to any surface." },
+                                { nameof(ModText.Description_PocketGear_Part), "This is a part of a PocketGear which will retract into the PocketGear Base." },
+                                { nameof(ModText.Description_PocketGear_Pad), "PocketGear Pads capable of magnetically locking to any surface.\r\n\r\n" +
+                                                                              "PocketGear Pads can be locked and unlocked by pressing [{CONTROL:LANDING_GEAR}] when inside a cockpit. They will show up yellow when in range of a surface that they can lock onto." },
+                                { nameof(ModText.Description_PocketGear_MagLock), "MagLocks are capable of magnetically locking to any surface over a long distance.\r\n\r\n" +
+                                                                                  "MagLocks can be locked and unlocked by pressing [{CONTROL:LANDING_GEAR}] when inside a cockpit. They will show up yellow when in range of a surface that they can lock onto." },
+
                                 { nameof(ModText.DeployVelocity), "Deploy Velocity" },
                                 { nameof(ModText.Tooltip_DeployVelocity), "The speed at which the PocketGear is retracted / extended." },
                                 { nameof(ModText.LockRetractBehavior), "Lock Retract Behavior" },
@@ -376,6 +385,14 @@ namespace AutoMcD.PocketGear {
                                 { nameof(ModText.DisplayName_PocketGear_Pad), "PocketGear Pad" },
                                 { nameof(ModText.DisplayName_PocketGear_Large_Pad), "PocketGear Pad, Groß" },
                                 { nameof(ModText.DisplayName_PocketGear_MagLock), "PocketGear MagLock" },
+
+                                { nameof(ModText.Description_PocketGear_Base), "PocketGears sind einfahrbare Fahrwerke und können auf jeder Oberfläche magnetisch befestigt werden." },
+                                { nameof(ModText.Description_PocketGear_Part), "Dies ist ein Teil eines PocketGears, der in die PocketGear Basis eingezogen wird." },
+                                { nameof(ModText.Description_PocketGear_Pad), "PocketGear Pads können auf jeder Oberfläche magnetisch befestigt werden.\r\n\r\n" +
+                                                                              "PocketGear Pads können durch Drücken von [{CONTROL:LANDING_GEAR}] in einem Cockpit gesperrt und entsperrt werden. Sie werden gelb angezeigt, wenn sie sich in der Nähe einer Oberfläche befinden, auf der sie sich verriegeln können." },
+                                { nameof(ModText.Description_PocketGear_MagLock), "MagLocks können über eine größere Distanz auf jeder Oberfläche magnetisch befestigt werden.\r\n\r\n" +
+                                                                                  "MagLocks, können durch Drücken von [{CONTROL:LANDING_GEAR}] in einem Cockpit gesperrt und entsperrt werden. Sie werden gelb angezeigt, wenn sie sich in der Nähe einer Oberfläche befinden, auf der sie sich verriegeln können." },
+
                                 { nameof(ModText.DeployVelocity), "Ausfahrgeschwindigkeit" },
                                 { nameof(ModText.Tooltip_DeployVelocity), "Die Geschwindigkeit, mit der das PocketGear ein- / ausgefahren wird." },
                                 { nameof(ModText.LockRetractBehavior), "Sperr/Einfahr Verhalten" },
@@ -417,8 +434,11 @@ namespace AutoMcD.PocketGear {
                         if (definition is MyCubeBlockDefinition) {
                             if (definition.DisplayNameText.StartsWith("DisplayName_")) {
                                 Log.Debug($"|-> {definition.Id}");
-                                definition.DisplayNameString = Texts.GetString(definition.DisplayNameText);
-                                definition.DisplayNameEnum = null;
+                                definition.DisplayNameEnum = MyStringId.GetOrCompute(Texts.GetString(definition.DisplayNameText));
+                            }
+
+                            if (definition.DescriptionText.StartsWith("Description_")) {
+                                definition.DescriptionEnum = MyStringId.GetOrCompute(Texts.GetString(definition.DescriptionText));
                             }
                         }
                     }

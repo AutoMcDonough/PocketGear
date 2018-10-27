@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CubeBlocks>
+
+    <!--Large-->
+    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+      <Id>
+        <TypeId>LandingGear</TypeId>
+        <SubtypeId>MA_PocketGear_Pad_M</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
+      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Description>Description_PocketGear_Pad</Description>
+      <CubeSize>Large</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="1" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_Pad.mwm</Model>
+      <LockSound>ShipLandGearOn</LockSound>
+      <UnlockSound>ShipLandGearOff</UnlockSound>
+      <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
+      <Components>
+        <Component Subtype="Construction" Count="10" />
+        <Component Subtype="LargeTube" Count="4" />
+        <Component Subtype="Motor" Count="6" />
+        <Component Subtype="SteelPlate" Count="50" />
+        <Component Subtype="MetalGrid" Count="20" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockVariants>
+        <BlockVariant>
+          <TypeId>LandingGear</TypeId>
+          <SubtypeId>MA_PocketGear_L_Pad_M</SubtypeId>
+        </BlockVariant>
+      </BlockVariants>
+      <BlockPairName>MA_PocketGear_Pad_M</BlockPairName>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+      <DamagedSound>ParticleHeavyMech</DamagedSound>
+      <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
+      <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
+      <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
+      <DestroySound>PoofExplosionCat3</DestroySound>
+      <IsAirTight>false</IsAirTight>
+    </Definition>
+
+    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+      <Id>
+        <TypeId>LandingGear</TypeId>
+        <SubtypeId>MA_PocketGear_L_Pad_M</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Large_Pad</DisplayName>
+      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Description>Description_PocketGear_Pad</Description>
+      <GuiVisible>false</GuiVisible>
+      <CubeSize>Large</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="3" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_L_Pad.mwm</Model>
+      <LockSound>ShipLandGearOn</LockSound>
+      <UnlockSound>ShipLandGearOff</UnlockSound>
+      <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
+      <Components>
+        <Component Subtype="Construction" Count="20" />
+        <Component Subtype="LargeTube" Count="8" />
+        <Component Subtype="Motor" Count="12" />
+        <Component Subtype="SteelPlate" Count="100" />
+        <Component Subtype="MetalGrid" Count="40" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_L_Pad_M</BlockPairName>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+      <DamagedSound>ParticleHeavyMech</DamagedSound>
+      <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
+      <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
+      <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
+      <DestroySound>PoofExplosionCat3</DestroySound>
+      <IsAirTight>false</IsAirTight>
+    </Definition>
+
+    <!--Small-->
+    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+      <Id>
+        <TypeId>LandingGear</TypeId>
+        <SubtypeId>MA_PocketGear_Pad_sm_M</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
+      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Description>Description_PocketGear_Pad</Description>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="1" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_Pad_sm.mwm</Model>
+      <LockSound>ShipLandGearOn</LockSound>
+      <UnlockSound>ShipLandGearOff</UnlockSound>
+      <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
+      <Components>
+        <Component Subtype="Construction" Count="5" />
+        <Component Subtype="Motor" Count="1" />
+        <Component Subtype="SteelPlate" Count="1" />
+        <Component Subtype="MetalGrid" Count="4" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockVariants>
+        <BlockVariant>
+          <TypeId>LandingGear</TypeId>
+          <SubtypeId>MA_PocketGear_L_Pad_sm_M</SubtypeId>
+        </BlockVariant>
+      </BlockVariants>
+      <BlockPairName>MA_PocketGear_Pad_M</BlockPairName>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>15</BuildTimeSeconds>
+      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+      <DamagedSound>ParticleHeavyMech</DamagedSound>
+      <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
+      <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
+      <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
+      <DestroySound>PoofExplosionCat3</DestroySound>
+      <IsAirTight>false</IsAirTight>
+    </Definition>
+
+    <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
+      <Id>
+        <TypeId>LandingGear</TypeId>
+        <SubtypeId>MA_PocketGear_L_Pad_sm_M</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_PocketGear_Large_Pad</DisplayName>
+      <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
+      <Description>Description_PocketGear_Pad</Description>
+      <GuiVisible>false</GuiVisible>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="3" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear_L_Pad_sm.mwm</Model>
+      <LockSound>ShipLandGearOn</LockSound>
+      <UnlockSound>ShipLandGearOff</UnlockSound>
+      <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
+      <Components>
+        <Component Subtype="Construction" Count="10" />
+        <Component Subtype="Motor" Count="2" />
+        <Component Subtype="SteelPlate" Count="2" />
+        <Component Subtype="MetalGrid" Count="8" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_L_Pad_M</BlockPairName>
+      <MirroringX>Z</MirroringX>
+      <MirroringY>None</MirroringY>
+      <MirroringZ>X</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>30</BuildTimeSeconds>
+      <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+      <DamagedSound>ParticleHeavyMech</DamagedSound>
+      <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
+      <MaxLockSeparatingVelocity>7</MaxLockSeparatingVelocity>
+      <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
+      <DestroySound>PoofExplosionCat3</DestroySound>
+      <IsAirTight>false</IsAirTight>
+    </Definition>
+
+  </CubeBlocks>
+</Definitions>
