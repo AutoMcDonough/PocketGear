@@ -16,7 +16,7 @@
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="1" y="3" z="1" />
       <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_Magnet.mwm</Model>
+      <Model>Models\MA_PocketGear\MA_PocketGear_Magnet.mwm</Model>
       <LockSound>ShipLandGearOn</LockSound>
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
@@ -36,9 +36,9 @@
         <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
       </MountPoints>
       <BuildProgressModels>
-        <Model BuildPercentUpperBound="0.33" File="Models\MA_PocketGear_Magnet_Constr1.mwm" />
-        <Model BuildPercentUpperBound="0.67" File="Models\MA_PocketGear_Magnet_Constr2.mwm" />
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Magnet_Constr3.mwm" />
+        <Model BuildPercentUpperBound="0.33" File="Models\MA_PocketGear\MA_PocketGear_Magnet_Constr1.mwm" />
+        <Model BuildPercentUpperBound="0.67" File="Models\MA_PocketGear\MA_PocketGear_Magnet_Constr2.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_Magnet_Constr3.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Magnet</BlockPairName>
       <MirroringX>None</MirroringX>
@@ -53,7 +53,6 @@
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
       <PCU>35</PCU>
-      <IsAirTight>true</IsAirTight>
     </Definition>
 
     <!--Small-->
@@ -69,7 +68,7 @@
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="1" y="3" z="1" />
       <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_Magnet_sm.mwm</Model>
+      <Model>Models\MA_PocketGear\MA_PocketGear_Magnet_sm.mwm</Model>
       <LockSound>ShipLandGearOn</LockSound>
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
@@ -88,9 +87,9 @@
         <MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00" />
       </MountPoints>
       <BuildProgressModels>
-        <Model BuildPercentUpperBound="0.33" File="Models\MA_PocketGear_Magnet_sm_Constr1.mwm" />
-        <Model BuildPercentUpperBound="0.67" File="Models\MA_PocketGear_Magnet_sm_Constr2.mwm" />
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Magnet_sm_Constr3.mwm" />
+        <Model BuildPercentUpperBound="0.33" File="Models\MA_PocketGear\MA_PocketGear_Magnet_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="0.67" File="Models\MA_PocketGear\MA_PocketGear_Magnet_sm_Constr2.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_Magnet_sm_Constr3.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_Magnet</BlockPairName>
       <MirroringX>None</MirroringX>
@@ -105,7 +104,6 @@
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
       <PCU>35</PCU>
-      <IsAirTight>true</IsAirTight>
     </Definition>
 
   </CubeBlocks>

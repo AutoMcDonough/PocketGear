@@ -18,23 +18,24 @@
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="1" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_Pad.mwm</Model>
+      <Model>Models\MA_PocketGear\MA_PocketGear_Pad.mwm</Model>
+      <UseModelIntersection>true</UseModelIntersection>
       <LockSound>ShipLandGearOn</LockSound>
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
         <Component Subtype="Construction" Count="10" />
-        <Component Subtype="LargeTube" Count="4" />
-        <Component Subtype="Motor" Count="6" />
-        <Component Subtype="SteelPlate" Count="50" />
-        <Component Subtype="MetalGrid" Count="20" />
+        <Component Subtype="LargeTube" Count="1" />
+        <Component Subtype="Motor" Count="2" />
+        <Component Subtype="SteelPlate" Count="5" />
+        <Component Subtype="MetalGrid" Count="10" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
       <MountPoints>
         <MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
       </MountPoints>
       <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_Pad_Constr1.mwm" />
       </BuildProgressModels>
       <BlockVariants>
         <BlockVariant>
@@ -55,7 +56,6 @@
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
       <PCU>35</PCU>
-      <IsAirTight>false</IsAirTight>
     </Definition>
 
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
@@ -72,23 +72,24 @@
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="3" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_L_Pad.mwm</Model>
+      <Model>Models\MA_PocketGear\MA_PocketGear_L_Pad.mwm</Model>
+      <UseModelIntersection>true</UseModelIntersection>
       <LockSound>ShipLandGearOn</LockSound>
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
         <Component Subtype="Construction" Count="20" />
-        <Component Subtype="LargeTube" Count="8" />
-        <Component Subtype="Motor" Count="12" />
-        <Component Subtype="SteelPlate" Count="100" />
-        <Component Subtype="MetalGrid" Count="40" />
+        <Component Subtype="LargeTube" Count="2" />
+        <Component Subtype="Motor" Count="4" />
+        <Component Subtype="SteelPlate" Count="10" />
+        <Component Subtype="MetalGrid" Count="20" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
       <MountPoints>
         <MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
       </MountPoints>
       <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_L_Pad_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
       <MirroringX>Z</MirroringX>
@@ -103,7 +104,6 @@
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
       <PCU>35</PCU>
-      <IsAirTight>false</IsAirTight>
     </Definition>
 
     <!--Small-->
@@ -121,22 +121,23 @@
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="1" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_Pad_sm.mwm</Model>
+      <Model>Models\MA_PocketGear\MA_PocketGear_Pad_sm.mwm</Model>
+      <UseModelIntersection>true</UseModelIntersection>
       <LockSound>ShipLandGearOn</LockSound>
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
-        <Component Subtype="Construction" Count="5" />
+        <Component Subtype="Construction" Count="2" />
         <Component Subtype="Motor" Count="1" />
-        <Component Subtype="SteelPlate" Count="1" />
-        <Component Subtype="MetalGrid" Count="4" />
+        <Component Subtype="SteelPlate" Count="2" />
+        <Component Subtype="MetalGrid" Count="2" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
       <MountPoints>
         <MountPoint Side="Back" StartX="0.20" StartY="0.25" EndX="0.80" EndY="0.75" />
       </MountPoints>
       <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_Pad_sm_Constr1.mwm" />
       </BuildProgressModels>
       <BlockVariants>
         <BlockVariant>
@@ -157,7 +158,6 @@
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
       <PCU>35</PCU>
-      <IsAirTight>false</IsAirTight>
     </Definition>
 
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
@@ -174,22 +174,23 @@
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="3" y="1" z="1" />
       <ModelOffset x="0" y="0" z="0" />
-      <Model>Models\MA_PocketGear_L_Pad_sm.mwm</Model>
+      <Model>Models\MA_PocketGear\MA_PocketGear_L_Pad_sm.mwm</Model>
+      <UseModelIntersection>true</UseModelIntersection>
       <LockSound>ShipLandGearOn</LockSound>
       <UnlockSound>ShipLandGearOff</UnlockSound>
       <FailedAttachSound>ShipLandGearNothing01</FailedAttachSound>
       <Components>
-        <Component Subtype="Construction" Count="10" />
+        <Component Subtype="Construction" Count="4" />
         <Component Subtype="Motor" Count="2" />
-        <Component Subtype="SteelPlate" Count="2" />
-        <Component Subtype="MetalGrid" Count="8" />
+        <Component Subtype="SteelPlate" Count="4" />
+        <Component Subtype="MetalGrid" Count="4" />
       </Components>
       <CriticalComponent Subtype="Motor" Index="0" />
       <MountPoints>
         <MountPoint Side="Back" StartX="0.90" StartY="0.01" EndX="2.10" EndY="0.99" />
       </MountPoints>
       <BuildProgressModels>
-        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
       </BuildProgressModels>
       <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
       <MirroringX>Z</MirroringX>
@@ -204,7 +205,6 @@
       <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
       <DestroySound>PoofExplosionCat3</DestroySound>
       <PCU>35</PCU>
-      <IsAirTight>false</IsAirTight>
     </Definition>
 
   </CubeBlocks>
