@@ -98,14 +98,13 @@
   <ItemGroup>
     <Compile Include="DamageSystem\AttackerInfo.cs" />
     <Compile Include="DamageSystem\DamageHandler.cs" />
-    <Compile Include="Data\PlacePadResult.cs" />
+    <Compile Include="Data\PlacePadData.cs" />
     <Compile Include="Defs.cs" />
     <Compile Include="Extensions\BlockExtensions.cs" />
     <Compile Include="Extensions\EntityExtensions.cs" />
     <Compile Include="Extensions\GridExtensions.cs" />
     <Compile Include="Localization\ModText.cs" />
     <Compile Include="Logic\PocketGearBase.cs" />
-    <Compile Include="Data\PlacePadData.cs" />
     <Compile Include="Data\LockRetractBehaviors.cs" />
     <Compile Include="Net\ClientHandler.cs" />
     <Compile Include="Net\Messages\PropertySyncMessage.cs" />
@@ -114,8 +113,9 @@
     <Compile Include="DamageSystem\ProtectInfo.cs" />
     <Compile Include="Net\NetworkHandlerBase.cs" />
     <Compile Include="Net\ServerHandler.cs" />
-    <Compile Include="Settings\ModSettings.cs" />
-    <Compile Include="Settings\PocketGearBaseSettings.cs" />
+    <Compile Include="Settings\V1\ModSettings.cs" />
+    <Compile Include="Settings\V1\PocketGearBaseSettings.cs" />
+    <Compile Include="Settings\V0\PocketGearBaseSettings.cs" />
     <Compile Include="TerminalControls\Controls.cs" />
     <Compile Include="TerminalControls\DeployRetractSwitch.cs" />
     <Compile Include="TerminalControls\DeployVelocitySlider.cs" />

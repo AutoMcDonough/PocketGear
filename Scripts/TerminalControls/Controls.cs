@@ -4,9 +4,18 @@ using Sandbox.ModAPI.Interfaces.Terminal;
 using Sisk.PocketGear.Logic;
 
 namespace Sisk.PocketGear.TerminalControls {
+    /// <summary>
+    ///     Class to modify terminal controls, actions and properties for blocks from this mod.
+    /// </summary>
     public class Controls {
-        private static readonly HashSet<string> HiddenActions = new HashSet<string> { "Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement", "RotorLock", "Reverse", "IncreaseVelocity", "DecreaseVelocity", "ResetVelocity" };
-        private static readonly HashSet<string> HiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
+        private readonly HashSet<string> _hiddenActions = new HashSet<string> { "Add Small Top Part", "IncreaseLowerLimit", "DecreaseLowerLimit", "ResetLowerLimit", "IncreaseUpperLimit", "DecreaseUpperLimit", "ResetUpperLimit", "IncreaseDisplacement", "DecreaseDisplacement", "ResetDisplacement", "RotorLock", "Reverse", "IncreaseVelocity", "DecreaseVelocity", "ResetVelocity" };
+        private readonly HashSet<string> _hiddenControls = new HashSet<string> { "Add Small Top Part", "LowerLimit", "UpperLimit", "Displacement", "RotorLock", "Reverse", "Velocity" };
+
+        /// <summary>
+        ///     Indicates if terminal controls are initialized.
+        /// </summary>
+        public bool AreTerminalControlsInitialized { get; private set; }
+
         public IMyTerminalControlOnOffSwitch DeployRetract => DeployRetractSwitch.Control;
         public IMyTerminalControlSlider DeployVelocity => DeployVelocitySlider.Control;
         public IMyTerminalControlCombobox LockRetractBehavior => LockRetractBehaviorCombobox.Control;
@@ -30,28 +39,55 @@ namespace Sisk.PocketGear.TerminalControls {
             MyAPIGateway.TerminalControls.AddControl<IMyMotorAdvancedStator>(PlacePocketGearPadButton.Control);
         }
 
+        /// <summary>
+        ///     Check if the given block is one of the pocket gear base blocks.
+        /// </summary>
+        /// <param name="block">The block that will be check if it's one of the pocket gear base blocks.</param>
+        /// <returns>Return true if given block is one of the pocket gear bases.</returns>
         private static bool IsPocketGearBase(IMyTerminalBlock block) {
             return block != null && Defs.Base.Ids.Contains(block.BlockDefinition.SubtypeId);
         }
 
-        private static void ModifyVanillaActions() {
+        private static void RegisterProperties() {
+            MyAPIGateway.TerminalControls.AddControl<IMyMotorAdvancedStator>(DeployRetractSwitch.Property);
+            MyAPIGateway.TerminalControls.AddControl<IMyMotorAdvancedStator>(DeployVelocitySlider.Property);
+        }
+
+        /// <summary>
+        ///     Initialize the controls.
+        /// </summary>
+        public void InitializeControls() {
+            ModifyVanillaControls();
+            ModifyVanillaActions();
+            CreateActions();
+            CreateControls();
+            RegisterProperties();
+        }
+
+        /// <summary>
+        ///     Modify vanilla terminal actions to hide some actions for solar stator blocks.
+        /// </summary>
+        private void ModifyVanillaActions() {
             List<IMyTerminalAction> actions;
             MyAPIGateway.TerminalControls.GetActions<IMyMotorAdvancedStator>(out actions);
 
             foreach (var action in actions) {
-                if (HiddenActions.Contains(action.Id)) {
+                if (_hiddenActions.Contains(action.Id)) {
                     var original = action.Enabled;
                     action.Enabled = block => !IsPocketGearBase(block) && original.Invoke(block);
                 }
             }
         }
 
-        private static void ModifyVanillaControls() {
+        /// <summary>
+        ///     Modify the vanilla controls to hide some controls for solar stator blocks.
+        /// </summary>
+        private void ModifyVanillaControls() {
             List<IMyTerminalControl> controls;
             MyAPIGateway.TerminalControls.GetControls<IMyMotorAdvancedStator>(out controls);
 
             foreach (var control in controls) {
-                if (HiddenControls.Contains(control.Id)) {
+                if (_hiddenControls.Contains(control.Id)) {
                     var visible = control.Visible;
                     var enabled = control.Enabled;
                     control.Visible = block => !IsPocketGearBase(block) && visible.Invoke(block);
@@ -78,21 +114,6 @@ namespace Sisk.PocketGear.TerminalControls {
                     }
                 }
             }
-        }
-
-        private static void RegisterProperties() {
-            MyAPIGateway.TerminalControls.AddControl<IMyMotorAdvancedStator>(DeployRetractSwitch.Property);
-            MyAPIGateway.TerminalControls.AddControl<IMyMotorAdvancedStator>(DeployVelocitySlider.Property);
-        }
-
-        public void Close() { }
-
-        public void InitializePocketGearControls() {
-            ModifyVanillaControls();
-            ModifyVanillaActions();
-            CreateActions();
-            CreateControls();
-            RegisterProperties();
         }
     }
 }

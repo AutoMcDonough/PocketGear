@@ -1,6 +1,6 @@
 ﻿using ProtoBuf;
 using Sandbox.ModAPI;
-using Sisk.PocketGear.Settings;
+using Sisk.PocketGear.Settings.V1;
 using Sisk.Utils.Net.Messages;
 
 // ReSharper disable ExplicitCallerInfoArgument

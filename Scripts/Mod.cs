@@ -7,7 +7,7 @@ using Sandbox.ModAPI;
 using Sisk.PocketGear.DamageSystem;
 using Sisk.PocketGear.Net;
 using Sisk.PocketGear.Net.Messages;
-using Sisk.PocketGear.Settings;
+using Sisk.PocketGear.Settings.V1;
 using Sisk.PocketGear.TerminalControls;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Logging.DefaultHandler;
@@ -31,12 +31,19 @@ namespace Sisk.PocketGear {
 
         public Mod() {
             Static = this;
+            Defs = new Defs();
+            Controls = new Controls();
         }
 
         /// <summary>
-        ///     Terminal Controls, Actions and Properties
+        ///     Helper for modifying vanilla terminal controls, actions and properties.
         /// </summary>
         public Controls Controls { get; private set; }
+
+        /// <summary>
+        ///     Holds Subtype ids for blocks in this mod.
+        /// </summary>
+        public Defs Defs { get; private set; }
 
         /// <summary>
         ///     Handles impact damage for PocketGears.
@@ -139,8 +146,6 @@ namespace Sisk.PocketGear {
             } else {
                 LoadSettings();
             }
-
-            Controls = new Controls();
         }
 
         /// <summary>
@@ -162,12 +167,6 @@ namespace Sisk.PocketGear {
                 DamageHandler = null;
             }
 
-            if (Controls != null) {
-                Log?.Info("Cleaned up terminal controls");
-                Controls.Close();
-                Controls = null;
-            }
-
             if (Network != null) {
                 _networkHandler.Close();
                 _networkHandler = null;
@@ -182,6 +181,14 @@ namespace Sisk.PocketGear {
                 Log.Flush();
                 Log.Close();
                 Log = null;
+            }
+
+            if (Controls != null) {
+                Controls = null;
+            }
+
+            if (Defs != null) {
+                Defs = null;
             }
 
             Static = null;
@@ -210,7 +217,11 @@ namespace Sisk.PocketGear {
         /// </summary>
         private void InitializeLogging() {
             Log = Logger.ForScope<Mod>();
-            Log.Register(new LocalStorageHandler(LogFile, LogFormatter, IsDevVersion ? LogEventLevel.All : DEFAULT_LOG_EVENT_LEVEL, 0));
+            if (MyAPIGateway.Multiplayer.IsServer) {
+                Log.Register(new WorldStorageHandler(LogFile, LogFormatter, IsDevVersion ? LogEventLevel.All : DEFAULT_LOG_EVENT_LEVEL, 0));
+            } else {
+                Log.Register(new GlobalStorageHandler(LogFile, LogFormatter, IsDevVersion ? LogEventLevel.All : DEFAULT_LOG_EVENT_LEVEL, 0));
+            }
 
             using (Log.BeginMethod(nameof(InitializeLogging))) {
                 Log.Info("Logging initialized");
