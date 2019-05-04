@@ -195,7 +195,7 @@ namespace AutoMcD.PocketGear {
             if (settings != null) {
                 Settings = settings;
 
-                //InitializeDamageHandler();
+                InitializeDamageHandler();
             }
         }
 
