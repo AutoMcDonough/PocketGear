@@ -133,10 +133,6 @@
       <Project>{2285e3a1-63a2-4632-aa74-caa8dac96c71}</Project>
       <Name>Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Utils\Profiler\Profiler.csproj">
-      <Project>{30c726df-f15b-4df0-b579-dfc84c74d6e2}</Project>
-      <Name>Profiler</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utils\TerminalControls\TerminalControls.csproj">
       <Project>{beae5f29-1b17-4f13-8262-6ee88b8cc41b}</Project>
       <Name>TerminalControls</Name>

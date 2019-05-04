@@ -6,6 +6,9 @@
 \Properties
 \packages
 
+\CommandHandler
+\Profiler
+
 .csproj
 .git
 .sln
