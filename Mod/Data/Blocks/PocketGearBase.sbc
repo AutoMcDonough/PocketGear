@@ -53,8 +53,8 @@
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>5E+09</MaxForceMagnitude>
-      <DangerousTorqueThreshold>5E+09</DangerousTorqueThreshold>
+      <MaxForceMagnitude>1.178549E+07</MaxForceMagnitude>
+      <DangerousTorqueThreshold>1.178549E+07</DangerousTorqueThreshold>
       <RotorPart>MA_PocketGear_Rotor</RotorPart>
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
@@ -114,8 +114,8 @@
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>1E+10</MaxForceMagnitude>
-      <DangerousTorqueThreshold>1E+10</DangerousTorqueThreshold>
+      <MaxForceMagnitude>3.36E+07</MaxForceMagnitude>
+      <DangerousTorqueThreshold>3.36E+07</DangerousTorqueThreshold>
       <RotorPart>MA_PocketGear_L_Rotor</RotorPart>
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
@@ -181,8 +181,8 @@
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>1E+09</MaxForceMagnitude>
-      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
+      <MaxForceMagnitude>87025</MaxForceMagnitude>
+      <DangerousTorqueThreshold>87025</DangerousTorqueThreshold>
       <RotorPart>MA_PocketGear_Rotor_sm</RotorPart>
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
@@ -242,8 +242,8 @@
       <PrimarySound>BlockRotor</PrimarySound>
       <ResourceSinkGroup>Utility</ResourceSinkGroup>
       <RequiredPowerInput>0.002</RequiredPowerInput>
-      <MaxForceMagnitude>1E+09</MaxForceMagnitude>
-      <DangerousTorqueThreshold>1E+09</DangerousTorqueThreshold>
+      <MaxForceMagnitude>448000</MaxForceMagnitude>
+      <DangerousTorqueThreshold>448000</DangerousTorqueThreshold>
       <RotorPart>MA_PocketGear_L_Rotor_sm</RotorPart>
       <RotorDisplacementMin>-0.1</RotorDisplacementMin>
       <RotorDisplacementMax>0.1</RotorDisplacementMax>
