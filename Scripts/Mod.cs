@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AutoMcD.PocketGear.DamageSystem;
-using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Net;
 using AutoMcD.PocketGear.Net.Messages;
 using AutoMcD.PocketGear.Settings;
 using AutoMcD.PocketGear.TerminalControls;
-using Sandbox.Definitions;
 using Sandbox.Game;
 using Sandbox.ModAPI;
-using Sisk.Utils.Localization;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Logging.DefaultHandler;
 using Sisk.Utils.Net;
@@ -19,7 +17,6 @@ using SpaceEngineers.Game.ModAPI;
 using VRage;
 using VRage.Game;
 using VRage.Game.Components;
-using VRage.Utils;
 
 namespace AutoMcD.PocketGear {
     [MySessionComponentDescriptor(MyUpdateOrder.NoUpdate)]
@@ -57,6 +54,11 @@ namespace AutoMcD.PocketGear {
         ///     Indicates if mod is a dev version.
         /// </summary>
         private bool IsDevVersion => ModContext.ModName.EndsWith("_DEV");
+
+        /// <summary>
+        ///     Language used to localize this mod.
+        /// </summary>
+        public MyLanguagesEnum? Language { get; private set; }
 
         /// <summary>
         ///     Logger used for logging.
@@ -140,8 +142,9 @@ namespace AutoMcD.PocketGear {
         public override void LoadData() {
             using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LoadData)) : null) {
                 InitializeLogging();
-                LoadTranslation();
-                LocalizeModDefinitions();
+                LoadLocalization();
+
+                MyAPIGateway.Gui.GuiControlRemoved += OnGuiControlRemoved;
 
                 if (MyAPIGateway.Multiplayer.MultiplayerActive) {
                     InitializeNetwork();
@@ -181,6 +184,7 @@ namespace AutoMcD.PocketGear {
         /// </summary>
         protected override void UnloadData() {
             Log?.EnterMethod(nameof(UnloadData));
+            MyAPIGateway.Gui.GuiControlRemoved -= OnGuiControlRemoved;
 
             if (DamageHandler != null) {
                 Log?.Info("Stopping damage handler");
@@ -276,7 +280,34 @@ namespace AutoMcD.PocketGear {
                 }
             }
         }
-        
+
+        /// <summary>
+        ///     Load localizations for this mod.
+        /// </summary>
+        private void LoadLocalization() {
+            using (Log.BeginMethod(nameof(LoadLocalization))) {
+                var path = Path.Combine(ModContext.ModPathData, "Localization");
+                var supportedLanguages = new HashSet<MyLanguagesEnum>();
+                MyTexts.LoadSupportedLanguages(path, supportedLanguages);
+
+                Log.Debug($"Localization path: {path}");
+                Log.Debug($"Supported Languages: {string.Join(", ", supportedLanguages)}");
+                var currentLanguage = supportedLanguages.Contains(MyAPIGateway.Session.Config.Language) ? MyAPIGateway.Session.Config.Language : MyLanguagesEnum.English;
+                if (Language != null && Language == currentLanguage) {
+                    return;
+                }
+
+                Language = currentLanguage;
+                var languageDescription = MyTexts.Languages.Where(x => x.Key == currentLanguage).Select(x => x.Value).FirstOrDefault();
+                if (languageDescription != null) {
+                    var cultureName = string.IsNullOrWhiteSpace(languageDescription.CultureName) ? null : languageDescription.CultureName;
+                    var subcultureName = string.IsNullOrWhiteSpace(languageDescription.SubcultureName) ? null : languageDescription.SubcultureName;
+
+                    MyTexts.LoadTexts(path, cultureName, subcultureName);
+                }
+            }
+        }
+
         /// <summary>
         ///     Save mod settings.
         /// </summary>
@@ -315,119 +346,13 @@ namespace AutoMcD.PocketGear {
         }
 
         /// <summary>
-        ///     Load translations for this mod.
+        ///     Event triggered on gui control removed.
+        ///     Used to detect if Option screen is closed and then to reload localization.
         /// </summary>
-        private void LoadTranslation() {
-            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LoadTranslation)) : null) {
-                using (Log.BeginMethod(nameof(LoadTranslation))) {
-                    var currentLanguage = MyAPIGateway.Session.Config.Language;
-                    var supportedLanguages = new HashSet<MyLanguagesEnum>();
-
-                    switch (currentLanguage) {
-                        case MyLanguagesEnum.English:
-                            Lang.Add(MyLanguagesEnum.English, new Dictionary<string, string> {
-                                { nameof(ModText.DisplayName_PocketGear_Base), "PocketGear Base" },
-                                { nameof(ModText.DisplayName_PocketGear_Large_Base), "PocketGear Large Base" },
-                                { nameof(ModText.DisplayName_PocketGear_Part), "PocketGear Part" },
-                                { nameof(ModText.DisplayName_PocketGear_Large_Part), "PocketGear Large Part" },
-                                { nameof(ModText.DisplayName_PocketGear_Pad), "PocketGear Pad" },
-                                { nameof(ModText.DisplayName_PocketGear_Large_Pad), "PocketGear Large Pad" },
-                                { nameof(ModText.DisplayName_PocketGear_MagLock), "PocketGear MagLock" },
-
-                                { nameof(ModText.Description_PocketGear_Base), "PocketGears are retractable landing gears and capable of magnetically locking to any surface." },
-                                { nameof(ModText.Description_PocketGear_Part), "This is a part of a PocketGear which will retract into the PocketGear Base." }, {
-                                    nameof(ModText.Description_PocketGear_Pad), "PocketGear Pads capable of magnetically locking to any surface.\r\n\r\n" +
-                                                                                "PocketGear Pads can be locked and unlocked by pressing [{CONTROL:LANDING_GEAR}] when inside a cockpit. They will show up yellow when in range of a surface that they can lock onto."
-                                }, {
-                                    nameof(ModText.Description_PocketGear_MagLock), "MagLocks are capable of magnetically locking to any surface over a long distance.\r\n\r\n" +
-                                                                                    "MagLocks can be locked and unlocked by pressing [{CONTROL:LANDING_GEAR}] when inside a cockpit. They will show up yellow when in range of a surface that they can lock onto."
-                                },
-
-                                { nameof(ModText.BlockPropertyTitle_DeployVelocity), "Deploy Velocity" },
-                                { nameof(ModText.BlockPropertyTooltip_DeployVelocity), "The speed at which the PocketGear is retracted / extended." },
-                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior), "Lock Retract Behavior" },
-                                { nameof(ModText.BlockPropertyTooltip_LockRetractBehavior), "Whether it should prevent retracting if locked or if it should unlock on retract." },
-                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior_PreventRetract), "Prevent Retracting" },
-                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior_UnlockOnRetract), "Unlock on retract" },
-                                { nameof(ModText.BlockActionTitle_PlaceLandingPad), "Place Pad" },
-                                { nameof(ModText.BlockActionTooltip_PlaceLandingPad), "Place a new PocketGear Pad." },
-                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState), "Switch Deploy State" },
-                                { nameof(ModText.BlockPropertyTooltip_SwitchDeployState), "Switch between deploy and retract." },
-                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState_Deploy), "Deploy" },
-                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState_Retract), "Retract" }
-                            });
-                            break;
-                        case MyLanguagesEnum.German:
-                            Lang.Add(MyLanguagesEnum.German, new Dictionary<string, string> {
-                                { nameof(ModText.DisplayName_PocketGear_Base), "PocketGear Basis" },
-                                { nameof(ModText.DisplayName_PocketGear_Large_Base), "PocketGear Basis, Groß" },
-                                { nameof(ModText.DisplayName_PocketGear_Part), "PocketGear Teil" },
-                                { nameof(ModText.DisplayName_PocketGear_Large_Part), "PocketGear Teil, Groß" },
-                                { nameof(ModText.DisplayName_PocketGear_Pad), "PocketGear Pad" },
-                                { nameof(ModText.DisplayName_PocketGear_Large_Pad), "PocketGear Pad, Groß" },
-                                { nameof(ModText.DisplayName_PocketGear_MagLock), "PocketGear MagLock" },
-
-                                { nameof(ModText.Description_PocketGear_Base), "PocketGears sind einfahrbare Fahrwerke und können auf jeder Oberfläche magnetisch befestigt werden." },
-                                { nameof(ModText.Description_PocketGear_Part), "Dies ist ein Teil eines PocketGears, der in die PocketGear Basis eingezogen wird." }, {
-                                    nameof(ModText.Description_PocketGear_Pad), "PocketGear Pads können auf jeder Oberfläche magnetisch befestigt werden.\r\n\r\n" +
-                                                                                "PocketGear Pads können durch Drücken von [{CONTROL:LANDING_GEAR}] in einem Cockpit gesperrt und entsperrt werden. Sie werden gelb angezeigt, wenn sie sich in der Nähe einer Oberfläche befinden, auf der sie sich verriegeln können."
-                                }, {
-                                    nameof(ModText.Description_PocketGear_MagLock), "MagLocks können über eine größere Distanz auf jeder Oberfläche magnetisch befestigt werden.\r\n\r\n" +
-                                                                                    "MagLocks, können durch Drücken von [{CONTROL:LANDING_GEAR}] in einem Cockpit gesperrt und entsperrt werden. Sie werden gelb angezeigt, wenn sie sich in der Nähe einer Oberfläche befinden, auf der sie sich verriegeln können."
-                                },
-
-                                { nameof(ModText.BlockPropertyTitle_DeployVelocity), "Ausfahrgeschwindigkeit" },
-                                { nameof(ModText.BlockPropertyTooltip_DeployVelocity), "Die Geschwindigkeit, mit der das PocketGear ein- / ausgefahren wird." },
-                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior), "Sperr/Einfahr Verhalten" },
-                                { nameof(ModText.BlockPropertyTooltip_LockRetractBehavior), "Ob es das Zurückziehen verhindern soll, wenn es gesperrt ist oder ob es beim Zurückziehen entsperrt werden soll." },
-                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior_PreventRetract), "Einfahren Verhindern" },
-                                { nameof(ModText.BlockPropertyTitle_LockRetractBehavior_UnlockOnRetract), "Entsperren beim Einfahren" },
-                                { nameof(ModText.BlockActionTitle_PlaceLandingPad), "Plaziere Pad" },
-                                { nameof(ModText.BlockActionTooltip_PlaceLandingPad), "Plaziere ein neues PocketGear Pad" },
-                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState), "Wechsel des Ausfahrstatus" },
-                                { nameof(ModText.BlockPropertyTooltip_SwitchDeployState), "Wechsel zwischen aus-/ einfahren." },
-                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState_Deploy), "Ausfahren" },
-                                { nameof(ModText.BlockPropertyTitle_SwitchDeployState_Retract), "Einfahren" }
-                            });
-                            break;
-                    }
-
-                    Texts.LoadSupportedLanguages(supportedLanguages);
-                    if (supportedLanguages.Contains(currentLanguage)) {
-                        Texts.LoadTexts(currentLanguage);
-                        Log.Info($"Loaded {currentLanguage} translations.");
-                    } else if (supportedLanguages.Contains(MyLanguagesEnum.English)) {
-                        Texts.LoadTexts();
-                        Log.Warning($"No {currentLanguage} translations found. Fall back to {MyLanguagesEnum.English} translations.");
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Localize all definitions add by this mod.
-        /// </summary>
-        private void LocalizeModDefinitions() {
-            using (PROFILE ? Profiler.Measure(nameof(Mod), nameof(LocalizeModDefinitions)) : null) {
-                using (Log.BeginMethod(nameof(LocalizeModDefinitions))) {
-                    Log.Info("Adding localizations");
-                    var definitions = MyDefinitionManager.Static.GetAllDefinitions().Where(x => x.Context.ModId == ModContext.ModId && x.Context.ModName == ModContext.ModName);
-
-                    foreach (var definition in definitions) {
-                        if (definition is MyCubeBlockDefinition) {
-                            if (definition.DisplayNameText.StartsWith("DisplayName_")) {
-                                Log.Debug($"|-> {definition.Id}");
-                                definition.DisplayNameEnum = MyStringId.GetOrCompute(Texts.GetString(definition.DisplayNameText));
-                            }
-
-                            if (definition.DescriptionText.StartsWith("Description_")) {
-                                definition.DescriptionEnum = MyStringId.GetOrCompute(Texts.GetString(definition.DescriptionText));
-                            }
-                        }
-                    }
-
-                    Log.Info("Localizations added");
-                }
+        /// <param name="obj"></param>
+        private void OnGuiControlRemoved(object obj) {
+            if (obj.ToString().EndsWith("ScreenOptionsSpace")) {
+                LoadLocalization();
             }
         }
 

@@ -4,9 +4,7 @@ using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
-using Sisk.Utils.Localization.Extensions;
 using Sisk.Utils.TerminalControls;
-using VRage.Utils;
 
 namespace AutoMcD.PocketGear.TerminalControls {
     public static class DeployVelocitySlider {
@@ -34,8 +32,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
 
         private static IMyTerminalControlSlider CreateControl() {
             var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlSlider, IMyMotorAdvancedStator>(ID);
-            control.Title = MyStringId.GetOrCompute(ModText.BlockPropertyTitle_DeployVelocity.GetString());
-            control.Tooltip = MyStringId.GetOrCompute(ModText.BlockPropertyTooltip_DeployVelocity.GetString());
+            control.Title = ModText.BlockPropertyTitle_DeployVelocity;
+            control.Tooltip = ModText.BlockPropertyTooltip_DeployVelocity;
             control.Writer = Writer;
             control.Getter = Getter;
             control.Setter = Setter;

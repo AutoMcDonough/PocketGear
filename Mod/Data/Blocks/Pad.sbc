@@ -9,7 +9,7 @@
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Pad_M</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
       <CubeSize>Large</CubeSize>
@@ -60,7 +60,7 @@
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_L_Pad_M</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Large_Pad</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Large_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
       <GuiVisible>false</GuiVisible>
@@ -107,7 +107,7 @@
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Pad_sm_M</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
       <CubeSize>Small</CubeSize>
@@ -157,7 +157,7 @@
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_L_Pad_sm_M</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Large_Pad</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Large_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
       <GuiVisible>false</GuiVisible>

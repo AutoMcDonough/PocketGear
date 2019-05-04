@@ -3,9 +3,7 @@ using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
-using Sisk.Utils.Localization.Extensions;
 using Sisk.Utils.TerminalControls;
-using VRage.Utils;
 
 namespace AutoMcD.PocketGear.TerminalControls {
     public static class DeployRetractSwitch {
@@ -32,10 +30,10 @@ namespace AutoMcD.PocketGear.TerminalControls {
 
         private static IMyTerminalControlOnOffSwitch CreateControl() {
             var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlOnOffSwitch, IMyMotorAdvancedStator>(ID);
-            control.Title = MyStringId.GetOrCompute(ModText.BlockPropertyTitle_SwitchDeployState.GetString());
-            control.Tooltip = MyStringId.GetOrCompute(ModText.BlockPropertyTooltip_SwitchDeployState.GetString());
-            control.OnText = MyStringId.GetOrCompute(ModText.BlockPropertyTitle_SwitchDeployState_Deploy.GetString());
-            control.OffText = MyStringId.GetOrCompute(ModText.BlockPropertyTitle_SwitchDeployState_Retract.GetString());
+            control.Title = ModText.BlockPropertyTitle_SwitchDeployState;
+            control.Tooltip = ModText.BlockPropertyTooltip_SwitchDeployState;
+            control.OnText = ModText.BlockPropertyTitle_SwitchDeployState_Deploy;
+            control.OffText = ModText.BlockPropertyTitle_SwitchDeployState_Retract;
             control.Getter = Getter;
             control.Setter = Setter;
             control.SupportsMultipleBlocks = true;

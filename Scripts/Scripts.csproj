@@ -125,10 +125,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Utils\Localization\Localization.csproj">
-      <Project>{2675bec6-9106-4ab8-a2dc-77cd569d9954}</Project>
-      <Name>Localization</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utils\Logging\Logging.csproj">
       <Project>{d8581c43-f65d-49eb-bfe3-75f185371512}</Project>
       <Name>Logging</Name>
