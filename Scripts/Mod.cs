@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMcD.PocketGear.DamageSystem;
@@ -231,7 +231,7 @@ namespace AutoMcD.PocketGear {
             if (settings != null) {
                 Settings = settings;
 
-                InitializeDamageHandler();
+                //InitializeDamageHandler();
             }
         }
 
@@ -306,7 +306,6 @@ namespace AutoMcD.PocketGear {
                         }
                     } else {
                         settings = new ModSettings();
-                        SaveSettings();
                     }
 
                     Settings = settings;
