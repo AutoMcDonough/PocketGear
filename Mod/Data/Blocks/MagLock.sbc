@@ -9,7 +9,7 @@
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Magnet</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_MagLock</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_MagLock</DisplayName>
       <Icon>Textures\MA_PocketGear_Magnet.dds</Icon>
       <Description>Description_PocketGear_MagLock</Description>
       <CubeSize>Large</CubeSize>
@@ -62,7 +62,7 @@
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Magnet_sm</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_MagLock</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_MagLock</DisplayName>
       <Icon>Textures\MA_PocketGear_Magnet.dds</Icon>
       <Description>Description_PocketGear_MagLock</Description>
       <CubeSize>Small</CubeSize>

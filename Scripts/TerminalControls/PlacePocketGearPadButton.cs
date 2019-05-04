@@ -3,13 +3,11 @@ using AutoMcD.PocketGear.Localization;
 using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
-using Sisk.Utils.Localization.Extensions;
 using Sisk.Utils.TerminalControls;
-using VRage.Utils;
 
 namespace AutoMcD.PocketGear.TerminalControls {
     public static class PlacePocketGearPadButton {
-        private const string ID = nameof(ModText.PlaceLandingPad);
+        private const string ID = nameof(ModText.BlockActionTitle_PlaceLandingPad);
 
         private static IEnumerable<IMyTerminalAction> _actions;
         private static IMyTerminalControlButton _control;
@@ -34,8 +32,8 @@ namespace AutoMcD.PocketGear.TerminalControls {
 
         private static IMyTerminalControlButton CreateControl() {
             var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlButton, IMyMotorAdvancedStator>(ID);
-            control.Title = MyStringId.GetOrCompute(ModText.PlaceLandingPad.GetString());
-            control.Tooltip = MyStringId.GetOrCompute(ModText.Tooltip_PlaceLandingPad.GetString());
+            control.Title = ModText.BlockActionTitle_PlaceLandingPad;
+            control.Tooltip = ModText.BlockActionTooltip_PlaceLandingPad;
             control.Action = Action;
             control.Enabled = Enabled;
             control.SupportsMultipleBlocks = true;

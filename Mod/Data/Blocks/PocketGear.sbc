@@ -10,7 +10,7 @@
         <TypeId>MotorAdvancedStator</TypeId>
         <SubtypeId>MA_PocketGear_Base</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Base</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Base</DisplayName>
       <Icon>Textures\MA_PocketGear_Base.dds</Icon>
       <Description>Description_PocketGear_Base</Description>
       <CubeSize>Large</CubeSize>
@@ -78,7 +78,7 @@
         <TypeId>MotorAdvancedRotor</TypeId>
         <SubtypeId>MA_PocketGear_Rotor</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Part</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Part</DisplayName>
       <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
       <Description>Description_PocketGear_Part</Description>
       <Public>false</Public>
@@ -120,7 +120,7 @@
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Pad</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
       <Public>false</Public>
@@ -175,7 +175,7 @@
         <TypeId>MotorAdvancedStator</TypeId>
         <SubtypeId>MA_PocketGear_Base_sm</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Base</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Base</DisplayName>
       <Icon>Textures\MA_PocketGear_Base.dds</Icon>
       <Description>Description_PocketGear_Base</Description>
       <CubeSize>Small</CubeSize>
@@ -243,7 +243,7 @@
         <TypeId>MotorAdvancedRotor</TypeId>
         <SubtypeId>MA_PocketGear_Rotor_sm</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Part</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Part</DisplayName>
       <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
       <Description>Description_PocketGear_Part</Description>
       <Public>false</Public>
@@ -286,7 +286,7 @@
         <TypeId>LandingGear</TypeId>
         <SubtypeId>MA_PocketGear_Pad_sm</SubtypeId>
       </Id>
-      <DisplayName>DisplayName_PocketGear_Pad</DisplayName>
+      <DisplayName>DisplayName_Block_PocketGear_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
       <Public>false</Public>

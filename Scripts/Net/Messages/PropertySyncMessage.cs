@@ -7,6 +7,7 @@ using Sisk.Utils.Net.Messages;
 namespace AutoMcD.PocketGear.Net.Messages {
     [ProtoContract]
     public class PropertySyncMessage : IEntityMessage {
+        public PropertySyncMessage() {}
         public PropertySyncMessage(long entityId, string name, object value) : this(entityId, name, MyAPIGateway.Utilities.SerializeToBinary(value)) { }
 
         public PropertySyncMessage(long entityId, string name, byte[] value) {

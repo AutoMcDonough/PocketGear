@@ -2,8 +2,6 @@
 using VRage.ModAPI;
 using VRageMath;
 
-// ReSharper disable UsePatternMatching
-
 namespace AutoMcD.PocketGear.DamageSystem {
     public struct AttackerInfo {
         public AttackerInfo(IMyEntity entity) {
