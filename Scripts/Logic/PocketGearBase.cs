@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMcD.PocketGear.Data;
-using AutoMcD.PocketGear.Extensions;
-using AutoMcD.PocketGear.Net.Messages;
-using AutoMcD.PocketGear.Settings;
 using ParallelTasks;
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Game.Entities;
 using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI;
+using Sisk.PocketGear.Data;
+using Sisk.PocketGear.Extensions;
+using Sisk.PocketGear.Net.Messages;
+using Sisk.PocketGear.Settings;
 using Sisk.Utils.Logging;
 using SpaceEngineers.Game.ModAPI;
 using VRage;
@@ -20,7 +20,7 @@ using VRage.ModAPI;
 using VRage.ObjectBuilders;
 using VRageMath;
 
-namespace AutoMcD.PocketGear.Logic {
+namespace Sisk.PocketGear.Logic {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, Defs.Base.NORMAL, Defs.Base.LARGE_NORMAL, Defs.Base.LARGE_SMALL, Defs.Base.SMALL)]
     public class PocketGearBase : MyGameLogicComponent {
         public const float FORCED_LOWER_LIMIT_DEG = 334.0f;

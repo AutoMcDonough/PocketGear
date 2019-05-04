@@ -1,7 +1,7 @@
 ﻿using Sandbox.Game.Entities;
 using VRage.Game.ModAPI;
 
-namespace AutoMcD.PocketGear.Extensions {
+namespace Sisk.PocketGear.Extensions {
     public static class GridExtensions {
         /// <summary>
         ///     Check if the given cube grid is projected or a preview.

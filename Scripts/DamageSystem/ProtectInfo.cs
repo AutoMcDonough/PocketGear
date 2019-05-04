@@ -6,7 +6,7 @@ using VRage.Game.ModAPI;
 using VRage.ModAPI;
 using VRageMath;
 
-namespace AutoMcD.PocketGear.DamageSystem {
+namespace Sisk.PocketGear.DamageSystem {
     public class ProtectInfo {
         private readonly HashSet<IMySlimBlock> _protectedBlocks = new HashSet<IMySlimBlock>();
 

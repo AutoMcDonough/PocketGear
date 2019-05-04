@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using AutoMcD.PocketGear.DamageSystem;
-using AutoMcD.PocketGear.Net;
-using AutoMcD.PocketGear.Net.Messages;
-using AutoMcD.PocketGear.Settings;
-using AutoMcD.PocketGear.TerminalControls;
 using Sandbox.Game;
 using Sandbox.ModAPI;
+using Sisk.PocketGear.DamageSystem;
+using Sisk.PocketGear.Net;
+using Sisk.PocketGear.Net.Messages;
+using Sisk.PocketGear.Settings;
+using Sisk.PocketGear.TerminalControls;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Logging.DefaultHandler;
 using Sisk.Utils.Net;
@@ -17,7 +17,7 @@ using VRage;
 using VRage.Game;
 using VRage.Game.Components;
 
-namespace AutoMcD.PocketGear {
+namespace Sisk.PocketGear {
     [MySessionComponentDescriptor(MyUpdateOrder.NoUpdate)]
     public class Mod : MySessionComponentBase {
         public const string NAME = "PocketGears";

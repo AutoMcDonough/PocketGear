@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMcD.PocketGear.Data;
-using AutoMcD.PocketGear.Localization;
-using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.PocketGear.Data;
+using Sisk.PocketGear.Localization;
+using Sisk.PocketGear.Logic;
 using VRage.ModAPI;
 using VRage.Utils;
 
-namespace AutoMcD.PocketGear.TerminalControls {
+namespace Sisk.PocketGear.TerminalControls {
     public static class LockRetractBehaviorCombobox {
         private const string ID = nameof(ModText.BlockPropertyTitle_LockRetractBehavior);
 

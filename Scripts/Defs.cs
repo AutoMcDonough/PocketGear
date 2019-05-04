@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AutoMcD.PocketGear {
+namespace Sisk.PocketGear {
     internal static class Defs {
         internal static class Base {
             internal const string LARGE_NORMAL = "MA_PocketGear_L_Base";

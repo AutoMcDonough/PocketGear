@@ -1,7 +1,7 @@
 ﻿using Sisk.Utils.Logging;
 using Sisk.Utils.Net;
 
-namespace AutoMcD.PocketGear.Net {
+namespace Sisk.PocketGear.Net {
     public abstract class NetworkHandlerBase {
         protected NetworkHandlerBase(ILogger log, Network network) {
             Log = log;

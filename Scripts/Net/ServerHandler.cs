@@ -1,9 +1,9 @@
 ﻿using System;
-using AutoMcD.PocketGear.Net.Messages;
+using Sisk.PocketGear.Net.Messages;
 using Sisk.Utils.Logging;
 using Sisk.Utils.Net;
 
-namespace AutoMcD.PocketGear.Net {
+namespace Sisk.PocketGear.Net {
     public class ServerHandler : NetworkHandlerBase {
         public ServerHandler(ILogger log, Network network) : base(log.ForScope<ClientHandler>(), network) {
             Network.Register<SettingsRequestMessage>(OnSettingsRequestMessage);

@@ -1,4 +1,4 @@
-﻿namespace AutoMcD.PocketGear.Data {
+﻿namespace Sisk.PocketGear.Data {
     public enum PlacePadResult {
         NotStarted,
         Failure,

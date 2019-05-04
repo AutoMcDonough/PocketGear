@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using AutoMcD.PocketGear.Localization;
-using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.PocketGear.Localization;
+using Sisk.PocketGear.Logic;
 using Sisk.Utils.TerminalControls;
 
-namespace AutoMcD.PocketGear.TerminalControls {
+namespace Sisk.PocketGear.TerminalControls {
     public static class DeployVelocitySlider {
         private const string ID = nameof(ModText.BlockPropertyTitle_DeployVelocity);
 

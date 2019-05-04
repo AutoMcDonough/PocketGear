@@ -4,7 +4,7 @@ using ProtoBuf;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
-namespace AutoMcD.PocketGear.Settings {
+namespace Sisk.PocketGear.Settings {
     [ProtoContract]
     public class ModSettings {
         public const int VERSION = 1;

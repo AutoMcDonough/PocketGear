@@ -1,11 +1,11 @@
-﻿using AutoMcD.PocketGear.Settings;
-using ProtoBuf;
+﻿using ProtoBuf;
 using Sandbox.ModAPI;
+using Sisk.PocketGear.Settings;
 using Sisk.Utils.Net.Messages;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
-namespace AutoMcD.PocketGear.Net.Messages {
+namespace Sisk.PocketGear.Net.Messages {
     [ProtoContract]
     public class SettingsResponseMessage : IMessage {
         [ProtoMember(2)]

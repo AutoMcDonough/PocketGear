@@ -1,6 +1,6 @@
 ﻿using VRage.Game.ModAPI;
 
-namespace AutoMcD.PocketGear.Extensions {
+namespace Sisk.PocketGear.Extensions {
     public static class BlockExtensions {
         /// <summary>
         ///     Checks if given slim block is projected or a preview.

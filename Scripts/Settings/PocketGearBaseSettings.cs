@@ -1,10 +1,10 @@
-﻿using System.ComponentModel;
-using AutoMcD.PocketGear.Data;
+using System.ComponentModel;
 using ProtoBuf;
+using Sisk.PocketGear.Data;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
-namespace AutoMcD.PocketGear.Settings {
+namespace Sisk.PocketGear.Settings {
     [ProtoContract]
     public class PocketGearBaseSettings {
         public const float DEFAULT_VELOCITY_RPM = 1f;
@@ -12,6 +12,7 @@ namespace AutoMcD.PocketGear.Settings {
 
         private const LockRetractBehaviors LOCK_RETRACT_BEHAVIOR = LockRetractBehaviors.PreventRetract;
         private const bool SHOULD_DEPLOY = false;
+        private const bool IS_HINGE_ATTACHED = false;
 
         [ProtoMember(1)]
         [DefaultValue(1)]

@@ -6,7 +6,7 @@ using VRage.Game;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
 
-namespace AutoMcD.PocketGear.DamageSystem {
+namespace Sisk.PocketGear.DamageSystem {
     public class DamageHandler {
         private const int ATTACK_TIMEOUT_IN_MS = 100;
         private const double MAX_IMPACT_TOLERANCE = 24.5;
