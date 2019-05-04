@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -50,8 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Blocks\MagLock.sbc" />
-    <None Include="Data\Blocks\PocketGear.sbc" />
-    <None Include="Data\Blocks\PocketGearLarge.sbc" />
+    <None Include="Data\Blocks\PocketGearPad.sbc" />
+    <None Include="Data\Blocks\PocketGearPart.sbc" />
+    <None Include="Data\Blocks\PocketGearBase.sbc" />
     <None Include="Data\Blocks\Pad.sbc" />
     <None Include="Data\EntityComponents.sbc" />
     <None Include="Data\MA_PocketGear_BlockCategories.sbc" />
