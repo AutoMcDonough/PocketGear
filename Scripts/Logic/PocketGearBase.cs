@@ -20,10 +20,6 @@ using VRage.ModAPI;
 using VRage.ObjectBuilders;
 using VRageMath;
 
-// ReSharper disable ArrangeAccessorOwnerBody
-// ReSharper disable UsePatternMatching
-// ReSharper disable UseNegatedPatternMatching
-
 namespace AutoMcD.PocketGear.Logic {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, Defs.Base.NORMAL, Defs.Base.LARGE_NORMAL, Defs.Base.LARGE_SMALL, Defs.Base.SMALL)]
     public class PocketGearBase : MyGameLogicComponent {
