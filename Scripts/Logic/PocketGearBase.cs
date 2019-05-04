@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ParallelTasks;
@@ -250,6 +250,8 @@ namespace Sisk.PocketGear.Logic {
                     }
 
                     Stator.AttachedEntityChanged += OnAttachedEntityChanged;
+                } else {
+                    _settings = new PocketGearBaseSettings();
                 }
 
                 if (Mod.Static.Network != null) {
