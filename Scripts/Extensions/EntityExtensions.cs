@@ -3,7 +3,7 @@ using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI;
 using VRage.ModAPI;
 
-namespace AutoMcD.PocketGear.Extensions {
+namespace Sisk.PocketGear.Extensions {
     public static class EntityExtensions {
         /// <summary>
         ///     Load setting for given entity.

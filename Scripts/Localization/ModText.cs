@@ -2,7 +2,7 @@
 
 // ReSharper disable InconsistentNaming
 
-namespace AutoMcD.PocketGear.Localization {
+namespace Sisk.PocketGear.Localization {
     public static class ModText {
         public static readonly MyStringId BlockActionTitle_PlaceLandingPad = MyStringId.GetOrCompute(nameof(BlockActionTitle_PlaceLandingPad));
         public static readonly MyStringId BlockActionTooltip_PlaceLandingPad = MyStringId.GetOrCompute(nameof(BlockActionTooltip_PlaceLandingPad));

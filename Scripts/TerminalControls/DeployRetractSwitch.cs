@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using AutoMcD.PocketGear.Localization;
-using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.PocketGear.Localization;
+using Sisk.PocketGear.Logic;
 using Sisk.Utils.TerminalControls;
 
-namespace AutoMcD.PocketGear.TerminalControls {
+namespace Sisk.PocketGear.TerminalControls {
     public static class DeployRetractSwitch {
         private const string ID = nameof(ModText.BlockPropertyTitle_SwitchDeployState);
         private static IEnumerable<IMyTerminalAction> _actions;
@@ -36,12 +36,28 @@ namespace AutoMcD.PocketGear.TerminalControls {
             control.OffText = ModText.BlockPropertyTitle_SwitchDeployState_Retract;
             control.Getter = Getter;
             control.Setter = Setter;
+            control.Enabled = Enabled;
+            control.Visible = Controls.IsPocketGearBase;
             control.SupportsMultipleBlocks = true;
             return control;
         }
 
         private static IMyTerminalControlProperty<bool> CreateProperty() {
             return Control.CreateProperty<IMyMotorAdvancedStator>();
+        }
+
+        private static bool Enabled(IMyTerminalBlock block) {
+            if (!Controls.IsPocketGearBase(block)) {
+                return false;
+            }
+
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
+            var enabled = false;
+            if (logic != null) {
+                enabled = logic.CanRetract;
+            }
+
+            return enabled;
         }
 
         private static bool Getter(IMyTerminalBlock block) {

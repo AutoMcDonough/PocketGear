@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using AutoMcD.PocketGear.Localization;
-using AutoMcD.PocketGear.Logic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.PocketGear.Localization;
+using Sisk.PocketGear.Logic;
 using Sisk.Utils.TerminalControls;
 
-namespace AutoMcD.PocketGear.TerminalControls {
+namespace Sisk.PocketGear.TerminalControls {
     public static class PlacePocketGearPadButton {
         private const string ID = nameof(ModText.BlockActionTitle_PlaceLandingPad);
 
@@ -36,11 +36,16 @@ namespace AutoMcD.PocketGear.TerminalControls {
             control.Tooltip = ModText.BlockActionTooltip_PlaceLandingPad;
             control.Action = Action;
             control.Enabled = Enabled;
+            control.Visible = Controls.IsPocketGearBase;
             control.SupportsMultipleBlocks = true;
             return control;
         }
 
         private static bool Enabled(IMyTerminalBlock block) {
+            if (!Controls.IsPocketGearBase(block)) {
+                return false;
+            }
+
             var logic = block.GameLogic?.GetAs<PocketGearBase>();
             var enabled = false;
             if (logic != null) {

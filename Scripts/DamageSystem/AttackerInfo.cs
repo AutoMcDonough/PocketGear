@@ -2,7 +2,7 @@
 using VRage.ModAPI;
 using VRageMath;
 
-namespace AutoMcD.PocketGear.DamageSystem {
+namespace Sisk.PocketGear.DamageSystem {
     public struct AttackerInfo {
         public AttackerInfo(IMyEntity entity) {
             LinearVelocity = GetLinearVelocity(entity);

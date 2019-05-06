@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CubeBlocks>
+
+    <!--Large-->
+    <Definition>
+      <Id>
+        <TypeId>MotorAdvancedRotor</TypeId>
+        <SubtypeId>MA_PocketGear_Rotor</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_Block_PocketGear_Part</DisplayName>
+      <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <Description>Description_PocketGear_Part</Description>
+      <Public>false</Public>
+      <GuiVisible>false</GuiVisible>
+      <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
+      <CubeSize>Large</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="5" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear\MA_PocketGear_Rotor.mwm</Model>
+      <UseModelIntersection>false</UseModelIntersection>
+      <Components>
+        <Component Subtype="Construction" Count="10" />
+        <Component Subtype="LargeTube" Count="12" />
+        <Component Subtype="Construction" Count="15" />
+        <Component Subtype="SmallTube" Count="20" />
+        <Component Subtype="Motor" Count="10" />
+        <Component Subtype="SteelPlate" Count="100" />
+        <Component Subtype="MetalGrid" Count="50" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_Rotor_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
+      <MirroringY>Z</MirroringY>
+      <MirroringZ>Y</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>5</BuildTimeSeconds>
+      <PCU>1</PCU>
+    </Definition>
+
+    <Definition>
+      <Id>
+        <TypeId>MotorAdvancedRotor</TypeId>
+        <SubtypeId>MA_PocketGear_L_Rotor</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_Block_PocketGear_Large_Part</DisplayName>
+      <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <Description>Description_PocketGear_Part</Description>
+      <Public>false</Public>
+      <GuiVisible>false</GuiVisible>
+      <BlockPairName>MA_PocketGear_L_Rotor</BlockPairName>
+      <CubeSize>Large</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="9" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear\MA_PocketGear_L_Rotor.mwm</Model>
+      <UseModelIntersection>false</UseModelIntersection>
+      <Components>
+        <Component Subtype="Construction" Count="20" />
+        <Component Subtype="LargeTube" Count="50" />
+        <Component Subtype="Construction" Count="60" />
+        <Component Subtype="SmallTube" Count="60" />
+        <Component Subtype="Motor" Count="12" />
+        <Component Subtype="SteelPlate" Count="500" />
+        <Component Subtype="MetalGrid" Count="150" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_L_Rotor_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
+      <MirroringY>Z</MirroringY>
+      <MirroringZ>Y</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>10</BuildTimeSeconds>
+      <PCU>1</PCU>
+    </Definition>
+
+    <!--Small-->
+    <Definition>
+      <Id>
+        <TypeId>MotorAdvancedRotor</TypeId>
+        <SubtypeId>MA_PocketGear_Rotor_sm</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_Block_PocketGear_Part</DisplayName>
+      <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <Description>Description_PocketGear_Part</Description>
+      <Public>false</Public>
+      <GuiVisible>false</GuiVisible>
+      <BlockPairName>MA_PocketGear_Rotor_sm</BlockPairName>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="5" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear\MA_PocketGear_Rotor_sm.mwm</Model>
+      <UseModelIntersection>false</UseModelIntersection>
+      <Components>
+        <Component Subtype="Construction" Count="1" />
+        <Component Subtype="LargeTube" Count="1" />
+        <Component Subtype="Construction" Count="1" />
+        <Component Subtype="SmallTube" Count="7" />
+        <Component Subtype="Motor" Count="4" />
+        <Component Subtype="SteelPlate" Count="5" />
+        <Component Subtype="MetalGrid" Count="5" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_Rotor_sm_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
+      <MirroringY>Z</MirroringY>
+      <MirroringZ>Y</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>2</BuildTimeSeconds>
+      <GeneralDamageMultiplier>0.01</GeneralDamageMultiplier>
+      <PCU>1</PCU>
+    </Definition>
+
+    <Definition>
+      <Id>
+        <TypeId>MotorAdvancedRotor</TypeId>
+        <SubtypeId>MA_PocketGear_L_Rotor_sm</SubtypeId>
+      </Id>
+      <DisplayName>DisplayName_Block_PocketGear_Large_Part</DisplayName>
+      <Icon>Textures\MA_PocketGear_Rotor.dds</Icon>
+      <Description>Description_PocketGear_Part</Description>
+      <Public>false</Public>
+      <GuiVisible>false</GuiVisible>
+      <BlockPairName>MA_PocketGear_L_Rotor_sm</BlockPairName>
+      <CubeSize>Small</CubeSize>
+      <BlockTopology>TriangleMesh</BlockTopology>
+      <Size x="9" y="1" z="1" />
+      <ModelOffset x="0" y="0" z="0" />
+      <Model>Models\MA_PocketGear\MA_PocketGear_L_Rotor_sm.mwm</Model>
+      <UseModelIntersection>true</UseModelIntersection>
+      <Components>
+        <Component Subtype="Construction" Count="2" />
+        <Component Subtype="LargeTube" Count="2" />
+        <Component Subtype="Construction" Count="2" />
+        <Component Subtype="SmallTube" Count="14" />
+        <Component Subtype="Motor" Count="8" />
+        <Component Subtype="SteelPlate" Count="8" />
+        <Component Subtype="MetalGrid" Count="10" />
+      </Components>
+      <CriticalComponent Subtype="Motor" Index="0" />
+      <MountPoints>
+        <MountPoint Side="Front" StartX="0.0" StartY="0.0" EndX="0.0" EndY="0.0" />
+      </MountPoints>
+      <BuildProgressModels>
+        <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_L_Rotor_sm_Constr1.mwm" />
+      </BuildProgressModels>
+      <BlockPairName>MA_PocketGear_Rotor</BlockPairName>
+      <MirroringY>Z</MirroringY>
+      <MirroringZ>Y</MirroringZ>
+      <EdgeType>Light</EdgeType>
+      <BuildTimeSeconds>4</BuildTimeSeconds>
+      <PCU>1</PCU>
+    </Definition>
+
+  </CubeBlocks>
+</Definitions>

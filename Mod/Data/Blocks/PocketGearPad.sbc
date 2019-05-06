@@ -7,11 +7,13 @@
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
-        <SubtypeId>MA_PocketGear_Pad_M</SubtypeId>
+        <SubtypeId>MA_PocketGear_Pad</SubtypeId>
       </Id>
       <DisplayName>DisplayName_Block_PocketGear_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
+      <Public>false</Public>
+      <GuiVisible>false</GuiVisible>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="1" y="1" z="1" />
@@ -38,15 +40,15 @@
       <BlockVariants>
         <BlockVariant>
           <TypeId>LandingGear</TypeId>
-          <SubtypeId>MA_PocketGear_L_Pad_M</SubtypeId>
+          <SubtypeId>MA_PocketGear_L_Pad</SubtypeId>
         </BlockVariant>
       </BlockVariants>
-      <BlockPairName>MA_PocketGear_Pad_M</BlockPairName>
+      <BlockPairName>MA_PocketGear_Pad</BlockPairName>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <BuildTimeSeconds>5</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
@@ -59,11 +61,12 @@
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
-        <SubtypeId>MA_PocketGear_L_Pad_M</SubtypeId>
+        <SubtypeId>MA_PocketGear_L_Pad</SubtypeId>
       </Id>
       <DisplayName>DisplayName_Block_PocketGear_Large_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <CubeSize>Large</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
@@ -88,12 +91,12 @@
       <BuildProgressModels>
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_L_Pad_Constr1.mwm" />
       </BuildProgressModels>
-      <BlockPairName>MA_PocketGear_L_Pad_M</BlockPairName>
+      <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>40</BuildTimeSeconds>
+      <BuildTimeSeconds>10</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
@@ -107,11 +110,13 @@
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
-        <SubtypeId>MA_PocketGear_Pad_sm_M</SubtypeId>
+        <SubtypeId>MA_PocketGear_Pad_sm</SubtypeId>
       </Id>
       <DisplayName>DisplayName_Block_PocketGear_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
+      <Public>false</Public>
+      <GuiVisible>false</GuiVisible>
       <CubeSize>Small</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
       <Size x="1" y="1" z="1" />
@@ -137,15 +142,15 @@
       <BlockVariants>
         <BlockVariant>
           <TypeId>LandingGear</TypeId>
-          <SubtypeId>MA_PocketGear_L_Pad_sm_M</SubtypeId>
+          <SubtypeId>MA_PocketGear_L_Pad_sm</SubtypeId>
         </BlockVariant>
       </BlockVariants>
-      <BlockPairName>MA_PocketGear_Pad_M</BlockPairName>
+      <BlockPairName>MA_PocketGear_Pad</BlockPairName>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>15</BuildTimeSeconds>
+      <BuildTimeSeconds>2</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>
@@ -158,11 +163,12 @@
     <Definition xsi:type="MyObjectBuilder_LandingGearDefinition">
       <Id>
         <TypeId>LandingGear</TypeId>
-        <SubtypeId>MA_PocketGear_L_Pad_sm_M</SubtypeId>
+        <SubtypeId>MA_PocketGear_L_Pad_sm</SubtypeId>
       </Id>
       <DisplayName>DisplayName_Block_PocketGear_Large_Pad</DisplayName>
       <Icon>Textures\MA_PocketGear_Pad.dds</Icon>
       <Description>Description_PocketGear_Pad</Description>
+      <Public>false</Public>
       <GuiVisible>false</GuiVisible>
       <CubeSize>Small</CubeSize>
       <BlockTopology>TriangleMesh</BlockTopology>
@@ -186,12 +192,12 @@
       <BuildProgressModels>
         <Model BuildPercentUpperBound="1.00" File="Models\MA_PocketGear\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
       </BuildProgressModels>
-      <BlockPairName>MA_PocketGear_L_Pad_M</BlockPairName>
+      <BlockPairName>MA_PocketGear_L_Pad</BlockPairName>
       <MirroringX>Z</MirroringX>
       <MirroringY>None</MirroringY>
       <MirroringZ>X</MirroringZ>
       <EdgeType>Light</EdgeType>
-      <BuildTimeSeconds>30</BuildTimeSeconds>
+      <BuildTimeSeconds>4</BuildTimeSeconds>
       <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
       <DamagedSound>ParticleHeavyMech</DamagedSound>
       <EmissiveColorPreset>ConnectBlock</EmissiveColorPreset>

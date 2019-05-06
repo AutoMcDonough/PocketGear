@@ -1,18 +1,20 @@
 ﻿using ProtoBuf;
 using Sandbox.ModAPI;
-using Sisk.PocketGear.Settings.V1;
 using Sisk.Utils.Net.Messages;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
 namespace Sisk.PocketGear.Net.Messages {
     [ProtoContract]
-    public class SettingsResponseMessage : IMessage {
-        [ProtoMember(2)]
-        public ModSettings Settings { get; set; }
+    public class PlacePadRequestMessage : IEntityMessage {
+        public PlacePadRequestMessage() { }
 
-        [ProtoMember(1)]
-        public ulong SteamId { get; set; }
+        public PlacePadRequestMessage(long entityId) {
+            EntityId = entityId;
+        }
+
+        [ProtoMember(11)]
+        public long EntityId { get; set; }
 
         public byte[] Serialize() {
             return MyAPIGateway.Utilities.SerializeToBinary(this);
