@@ -21,6 +21,15 @@ namespace Sisk.PocketGear.TerminalControls {
         public IMyTerminalControlCombobox LockRetractBehavior => LockRetractBehaviorCombobox.Control;
         public IMyTerminalControlButton PlacePocketGearPad => PlacePocketGearPadButton.Control;
 
+        /// <summary>
+        ///     Check if the given block is one of the pocket gear base blocks.
+        /// </summary>
+        /// <param name="block">The block that will be check if it's one of the pocket gear base blocks.</param>
+        /// <returns>Return true if given block is one of the pocket gear bases.</returns>
+        public static bool IsPocketGearBase(IMyTerminalBlock block) {
+            return block != null && Defs.Base.Ids.Contains(block.BlockDefinition.SubtypeId);
+        }
+
         private static void CreateActions() {
             var actions = new List<IMyTerminalAction>();
             actions.AddRange(DeployRetractSwitch.Actions);
@@ -37,15 +46,6 @@ namespace Sisk.PocketGear.TerminalControls {
             MyAPIGateway.TerminalControls.AddControl<IMyMotorAdvancedStator>(DeployVelocitySlider.Control);
             MyAPIGateway.TerminalControls.AddControl<IMyMotorAdvancedStator>(LockRetractBehaviorCombobox.Control);
             MyAPIGateway.TerminalControls.AddControl<IMyMotorAdvancedStator>(PlacePocketGearPadButton.Control);
-        }
-
-        /// <summary>
-        ///     Check if the given block is one of the pocket gear base blocks.
-        /// </summary>
-        /// <param name="block">The block that will be check if it's one of the pocket gear base blocks.</param>
-        /// <returns>Return true if given block is one of the pocket gear bases.</returns>
-        private static bool IsPocketGearBase(IMyTerminalBlock block) {
-            return block != null && Defs.Base.Ids.Contains(block.BlockDefinition.SubtypeId);
         }
 
         private static void RegisterProperties() {

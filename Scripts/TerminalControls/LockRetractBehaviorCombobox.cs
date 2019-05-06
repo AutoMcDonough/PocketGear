@@ -27,6 +27,8 @@ namespace Sisk.PocketGear.TerminalControls {
             control.ComboBoxContent = Content;
             control.Getter = Getter;
             control.Setter = Setter;
+            control.Enabled = Controls.IsPocketGearBase;
+            control.Visible = Controls.IsPocketGearBase;
             control.SupportsMultipleBlocks = true;
             return control;
         }

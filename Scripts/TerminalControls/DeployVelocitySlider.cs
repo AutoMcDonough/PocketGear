@@ -39,6 +39,8 @@ namespace Sisk.PocketGear.TerminalControls {
             control.Setter = Setter;
             control.SetLimits(MinGetter, MaxGetter);
             control.SupportsMultipleBlocks = true;
+            control.Enabled = Controls.IsPocketGearBase;
+            control.Visible = Controls.IsPocketGearBase;
             return control;
         }
 

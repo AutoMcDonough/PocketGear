@@ -36,8 +36,11 @@ namespace Sisk.PocketGear.Logic {
         private const int TOGGLE_PAD_THRESHOLD_PERCENT = 30;
 
         private HashSet<IMySlimBlock> _neighbors = new HashSet<IMySlimBlock>();
+
+        private IMyLandingGear _pad;
         private PocketGearBaseSettings _settings;
         private bool _togglePadWhenThresholdReached;
+        private IMyCubeGrid _topGrid;
         private long _topGridId;
 
         /// <summary>
@@ -53,6 +56,11 @@ namespace Sisk.PocketGear.Logic {
         public bool CanBuiltPad => Stator?.Top != null && Pad == null;
 
         /// <summary>
+        ///     Indicates if pocket gear can be retracted.
+        /// </summary>
+        public bool CanRetract => Stator.IsWorking && Pad != null && (!Pad.IsLocked || CurrentBehavior != LockRetractBehaviors.PreventRetract);
+
+        /// <summary>
         ///     Current lock/retract behavior.
         /// </summary>
         public LockRetractBehaviors CurrentBehavior {
@@ -60,6 +68,7 @@ namespace Sisk.PocketGear.Logic {
             set {
                 if (value != _settings.LockRetractBehavior) {
                     _settings.LockRetractBehavior = value;
+                    Mod.Static.Controls.LockRetractBehavior.UpdateVisual();
                     Mod.Static.Controls.DeployRetract.UpdateVisual();
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(CurrentBehavior), value));
                 }
@@ -76,6 +85,7 @@ namespace Sisk.PocketGear.Logic {
                 if (value != _settings.DeployVelocity) {
                     _settings.DeployVelocity = value;
                     Stator.TargetVelocityRPM = ShouldDeploy ? value : value * -1;
+                    Mod.Static.Controls.DeployVelocity.UpdateVisual();
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(DeployVelocity), value));
                 }
             }
@@ -111,7 +121,17 @@ namespace Sisk.PocketGear.Logic {
         /// <summary>
         ///     The attached PocketGear Pad.
         /// </summary>
-        private IMyLandingGear Pad { get; set; }
+        private IMyLandingGear Pad {
+            get { return _pad; }
+            set {
+                if (value != _pad) {
+                    _pad = value;
+                    Mod.Static.Controls.PlacePocketGearPad.UpdateVisual();
+                    Mod.Static.Controls.DeployRetract.UpdateVisual();
+                    // todo: I should probably handle the damage handler activation here when pads are placed/removed.
+                }
+            }
+        }
 
         /// <summary>
         ///     Indicates if pocket gear should deploy.
@@ -156,16 +176,25 @@ namespace Sisk.PocketGear.Logic {
                 Mod.Static.Network.Register<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
             }
 
-            if (Stator != null && (Mod.Static.Network == null || Mod.Static.Network.IsServer)) {
+            if (Stator != null) {
                 Stator.AttachedEntityChanged -= OnAttachedEntityChanged;
 
-                // todo: check if it is enough to run this on server.
-                if (Mod.Static.DamageHandler != null) {
-                    Stator.CubeGrid.OnBlockAdded -= OnBlockAdded;
-                    Stator.CubeGrid.OnBlockRemoved -= OnBlockRemoved;
+                if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
+                    // todo: check if it is enough to run this on server.
+                    if (Mod.Static.DamageHandler != null) {
+                        Stator.CubeGrid.OnBlockAdded -= OnBlockAdded;
+                        Stator.CubeGrid.OnBlockRemoved -= OnBlockRemoved;
 
-                    DisableProtection();
+                        DisableProtection();
+                    }
                 }
+            }
+
+            if (_topGrid != null) {
+                _topGrid.OnBlockAdded -= OnBlockAddedOnHead;
+                _topGrid.OnBlockRemoved -= OnBlockRemovedOnHead;
+                _topGrid.OnClose -= OnCloseHead;
+                _topGrid = null;
             }
         }
 
@@ -249,10 +278,15 @@ namespace Sisk.PocketGear.Logic {
                         GetNeighbors(Stator.SlimBlock, Mod.Static.Settings.ProtectionRadius, ref _neighbors);
                     }
 
-                    Stator.AttachedEntityChanged += OnAttachedEntityChanged;
+                    if (Mod.Static.Network != null) {
+                        Mod.Static.Network.Register<PlacePadRequestMessage>(Entity.EntityId, OnPlacePadRequestMessageReceived);
+                        Mod.Static.Network.Register<DeployRetractRequestMessage>(Entity.EntityId, OnDeployRetractRequestMessageReceived);
+                    }
                 } else {
                     _settings = new PocketGearBaseSettings();
                 }
+
+                Stator.AttachedEntityChanged += OnAttachedEntityChanged;
 
                 if (Mod.Static.Network != null) {
                     Mod.Static.Network.Register<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
@@ -270,14 +304,14 @@ namespace Sisk.PocketGear.Logic {
                 var angle = Stator.Angle;
                 if (ShouldDeploy && angle > TOGGLE_PAD_THRESHOLD) {
                     if (Pad != null) {
-                        Pad.Enabled = true;
                         _togglePadWhenThresholdReached = false;
+                        Pad.Enabled = true;
                         EnableProtection();
                     }
                 } else if (!ShouldDeploy && angle < TOGGLE_PAD_THRESHOLD) {
                     if (Pad != null) {
-                        Pad.Enabled = false;
                         _togglePadWhenThresholdReached = false;
+                        Pad.Enabled = false;
                         DisableProtection();
                     }
                 }
@@ -292,19 +326,27 @@ namespace Sisk.PocketGear.Logic {
         ///     Deploy pocket gear.
         /// </summary>
         public void Deploy() {
-            ShouldDeploy = true;
-            Stator.TargetVelocityRPM = DeployVelocity;
+            if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
+                ShouldDeploy = true;
+                Stator.TargetVelocityRPM = DeployVelocity;
 
-            _togglePadWhenThresholdReached = true;
-            NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
+                _togglePadWhenThresholdReached = true;
+                NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
+            } else {
+                Mod.Static.Network.SendToServer(new DeployRetractRequestMessage(Entity.EntityId, DeployRetractRequestMessage.DeployOrRetractData.Deploy));
+            }
         }
 
         /// <summary>
         ///     Place a pocket gear pad. This is will start in an separate thread.
         /// </summary>
         public void PlacePad() {
-            if (!IsPadAttached) {
-                MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(Stator.Top));
+            if (Pad == null) {
+                if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
+                    MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(Stator.Top));
+                } else {
+                    Mod.Static.Network.SendToServer(new PlacePadRequestMessage(Entity.EntityId));
+                }
             }
         }
 
@@ -312,19 +354,23 @@ namespace Sisk.PocketGear.Logic {
         ///     Retract pocket gear.
         /// </summary>
         public void Retract() {
-            if (CurrentBehavior == LockRetractBehaviors.PreventRetract && Pad != null && Pad.IsLocked) {
-                return;
+            if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
+                if (CurrentBehavior == LockRetractBehaviors.PreventRetract && Pad != null && Pad.IsLocked) {
+                    return;
+                }
+
+                if (CurrentBehavior == LockRetractBehaviors.UnlockOnRetract && Pad != null && Pad.IsLocked) {
+                    Pad.Unlock();
+                }
+
+                ShouldDeploy = false;
+                Stator.TargetVelocityRPM = DeployVelocity * -1;
+
+                _togglePadWhenThresholdReached = true;
+                NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
+            } else {
+                Mod.Static.Network.SendToServer(new DeployRetractRequestMessage(Entity.EntityId, DeployRetractRequestMessage.DeployOrRetractData.Retract));
             }
-
-            if (CurrentBehavior == LockRetractBehaviors.UnlockOnRetract && Pad != null && Pad.IsLocked) {
-                Pad.Unlock();
-            }
-
-            ShouldDeploy = false;
-            Stator.TargetVelocityRPM = DeployVelocity * -1;
-
-            _togglePadWhenThresholdReached = true;
-            NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
         }
 
         /// <summary>
@@ -364,27 +410,50 @@ namespace Sisk.PocketGear.Logic {
         /// <param name="base">The base on which the top is changed.</param>
         private void OnAttachedEntityChanged(IMyMechanicalConnectionBlock @base) {
             if (@base.Top != null) {
+                _topGrid = Stator.TopGrid;
                 _topGridId = Stator.TopGrid.EntityId;
 
-                if (!IsPadAttached) {
-                    PlacePad();
-                } else if (Pad == null) {
-                    var blocks = new List<IMySlimBlock>();
-                    Stator.TopGrid.GetBlocks(blocks);
+                _topGrid.OnBlockAdded += OnBlockAddedOnHead;
+                _topGrid.OnBlockRemoved += OnBlockRemovedOnHead;
+                _topGrid.OnClose += OnCloseHead;
 
-                    var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
-                    if (pad != null) {
-                        Pad = (IMyLandingGear) pad;
-                        Mod.Static.Controls.PlacePocketGearPad.UpdateVisual();
+                if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
+                    if (!IsPadAttached) {
+                        PlacePad();
+                    } else {
+                        var blocks = new List<IMySlimBlock>();
+                        Stator.TopGrid.GetBlocks(blocks);
+
+                        var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
+                        if (pad != null) {
+                            Pad = (IMyLandingGear) pad;
+                        }
                     }
-                }
 
-                // todo: check if it is enough to run this on server.
-                if (Mod.Static.DamageHandler != null) {
-                    EnableProtection();
+                    // todo: check if it is enough to run this on server.
+                    if (Mod.Static.DamageHandler != null) {
+                        EnableProtection();
+                    }
+                } else {
+                    if (Pad == null) {
+                        var blocks = new List<IMySlimBlock>();
+                        Stator.TopGrid.GetBlocks(blocks);
+
+                        var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
+                        if (pad != null) {
+                            Pad = (IMyLandingGear) pad;
+                        }
+                    }
                 }
             } else {
                 IsPadAttached = false;
+
+                if (_topGrid != null) {
+                    _topGrid.OnBlockAdded -= OnBlockAddedOnHead;
+                    _topGrid.OnBlockRemoved -= OnBlockRemovedOnHead;
+                    _topGrid.OnClose -= OnCloseHead;
+                    _topGrid = null;
+                }
             }
         }
 
@@ -403,6 +472,23 @@ namespace Sisk.PocketGear.Logic {
                 _neighbors.Add(slimBlock);
                 if (IsProtected) {
                     Mod.Static.DamageHandler.EnableProtection(slimBlock);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Called when a new block is added to top grid. Used to detect when a pad is added.
+        /// </summary>
+        /// <param name="slimBlock"></param>
+        private void OnBlockAddedOnHead(IMySlimBlock slimBlock) {
+            var pad = slimBlock?.FatBlock as IMyLandingGear;
+            if (pad != null) {
+                var baseSubtype = Stator.BlockDefinition.SubtypeId;
+                string padSubtype;
+                if (Mod.Static.Defs.BaseToPad.TryGetValue(baseSubtype, out padSubtype)) {
+                    if (pad.BlockDefinition.SubtypeId == padSubtype) {
+                        Pad = pad;
+                    }
                 }
             }
         }
@@ -429,29 +515,66 @@ namespace Sisk.PocketGear.Logic {
         }
 
         /// <summary>
+        ///     Called when a block is removed from top grid. Used to detect when a pad is removed.
+        /// </summary>
+        /// <param name="slimBlock"></param>
+        private void OnBlockRemovedOnHead(IMySlimBlock slimBlock) {
+            if (Pad != null && slimBlock.FatBlock?.EntityId == Pad.EntityId) {
+                Pad = null;
+            }
+        }
+
+        private void OnCloseHead(IMyEntity entity) {
+            if (entity == _topGrid) {
+                _topGrid.OnBlockAdded -= OnBlockAddedOnHead;
+                _topGrid.OnBlockRemoved -= OnBlockRemovedOnHead;
+                _topGrid.OnClose -= OnCloseHead;
+                _topGrid = null;
+            }
+        }
+
+        private void OnDeployRetractRequestMessageReceived(ulong sender, DeployRetractRequestMessage message) {
+            switch (message.DeployOrRetract) {
+                case DeployRetractRequestMessage.DeployOrRetractData.Deploy:
+                default:
+                    Deploy();
+                    break;
+                case DeployRetractRequestMessage.DeployOrRetractData.Retract:
+                    Retract();
+                    break;
+            }
+        }
+
+        private void OnPlacePadRequestMessageReceived(ulong sender, PlacePadRequestMessage message) {
+            PlacePad();
+        }
+
+        /// <summary>
         ///     Called when a <see cref="PropertySyncMessage" /> received.
         /// </summary>
         /// <param name="sender">The sender of the message.</param>
         /// <param name="message">The <see cref="PropertySyncMessage" /> message received.</param>
         private void OnPropertySyncMessage(ulong sender, PropertySyncMessage message) {
-            switch (message.Name) {
-                case nameof(DeployVelocity):
-                    _settings.DeployVelocity = message.GetValueAs<float>();
-                    Mod.Static.Controls.DeployVelocity.UpdateVisual();
-                    break;
-                case nameof(CurrentBehavior):
-                    _settings.LockRetractBehavior = message.GetValueAs<LockRetractBehaviors>();
+            using (Log.BeginMethod(nameof(OnPropertySyncMessage))) {
+                switch (message.Name) {
+                    case nameof(DeployVelocity):
+                        _settings.DeployVelocity = message.GetValueAs<float>();
+                        Mod.Static.Controls.DeployVelocity.UpdateVisual();
+                        break;
+                    case nameof(CurrentBehavior):
+                        _settings.LockRetractBehavior = message.GetValueAs<LockRetractBehaviors>();
 
-                    Mod.Static.Controls.LockRetractBehavior.UpdateVisual();
-                    Mod.Static.Controls.DeployRetract.UpdateVisual();
-                    break;
-                case nameof(ShouldDeploy):
-                    _settings.ShouldDeploy = message.GetValueAs<bool>();
-                    Mod.Static.Controls.DeployRetract.UpdateVisual();
-                    break;
-                default:
-                    Log.Error($"Unexpected property name. '{message.Name}'");
-                    break;
+                        Mod.Static.Controls.LockRetractBehavior.UpdateVisual();
+                        Mod.Static.Controls.DeployRetract.UpdateVisual();
+                        break;
+                    case nameof(ShouldDeploy):
+                        _settings.ShouldDeploy = message.GetValueAs<bool>();
+                        Mod.Static.Controls.DeployRetract.UpdateVisual();
+                        break;
+                    default:
+                        Log.Error($"Unexpected property name. '{message.Name}'");
+                        break;
+                }
             }
         }
 
@@ -464,6 +587,7 @@ namespace Sisk.PocketGear.Logic {
                 var data = workData as PlacePadData;
 
                 if (data?.Head == null) {
+                    data?.FlagAsFailed();
                     return;
                 }
 
@@ -514,6 +638,7 @@ namespace Sisk.PocketGear.Logic {
                     if (pad != null) {
                         if (pad.BlockDefinition.SubtypeId == padSubtype) {
                             Pad = pad;
+                            Log.Debug("Pad is already there.");
                             data.FlagAsSucceeded();
                             return;
                         }
@@ -530,6 +655,7 @@ namespace Sisk.PocketGear.Logic {
                     Log.Error(ERROR_UNABLE_TO_PLACE);
                     MyAPIGateway.Utilities.ShowNotification(ERROR_UNABLE_TO_PLACE);
                     data.FlagAsFailed();
+                    return;
                 }
 
                 try {
@@ -554,6 +680,7 @@ namespace Sisk.PocketGear.Logic {
                     var slimBlock = cubeGrid.GetCubeBlock(padPosition);
 
                     Pad = slimBlock?.FatBlock as IMyLandingGear;
+                    Log.Debug("Pad should now be placed.");
                     data.FlagAsSucceeded();
                 } catch (Exception exception) {
                     Log.Error(exception);
@@ -571,7 +698,7 @@ namespace Sisk.PocketGear.Logic {
             using (Log.BeginMethod(nameof(PlacePadCompleted))) {
                 var data = workData as PlacePadData;
 
-                if (data?.Head == null) {
+                if (data == null) {
                     return;
                 }
 

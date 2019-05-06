@@ -36,11 +36,16 @@ namespace Sisk.PocketGear.TerminalControls {
             control.Tooltip = ModText.BlockActionTooltip_PlaceLandingPad;
             control.Action = Action;
             control.Enabled = Enabled;
+            control.Visible = Controls.IsPocketGearBase;
             control.SupportsMultipleBlocks = true;
             return control;
         }
 
         private static bool Enabled(IMyTerminalBlock block) {
+            if (!Controls.IsPocketGearBase(block)) {
+                return false;
+            }
+
             var logic = block.GameLogic?.GetAs<PocketGearBase>();
             var enabled = false;
             if (logic != null) {
