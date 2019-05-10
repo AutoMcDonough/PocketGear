@@ -676,12 +676,14 @@ namespace Sisk.PocketGear.Logic {
                         ColorMaskHSV = colorMask
                     };
 
-                    cubeGrid.AddBlock(padBuilder, false);
-                    var slimBlock = cubeGrid.GetCubeBlock(padPosition);
+                    MyAPIGateway.Utilities.InvokeOnGameThread(() => {
+                        cubeGrid.AddBlock(padBuilder, false);
+                        var slimBlock = cubeGrid.GetCubeBlock(padPosition);
 
-                    Pad = slimBlock?.FatBlock as IMyLandingGear;
-                    Log.Debug("Pad should now be placed.");
-                    data.FlagAsSucceeded();
+                        Pad = slimBlock?.FatBlock as IMyLandingGear;
+                        Log.Debug("Pad should now be placed.");
+                        data.FlagAsSucceeded();
+                    });
                 } catch (Exception exception) {
                     Log.Error(exception);
                     Log.Error(exception.StackTrace);
