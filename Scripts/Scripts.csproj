@@ -7,10 +7,11 @@
     <ProjectGuid>{389FBE1A-9211-4F58-9D5C-5B8E1ABA2C1D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoMcD.PocketGear</RootNamespace>
+    <RootNamespace>Sisk.PocketGear</RootNamespace>
     <AssemblyName>PocketGear</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ProtoBuf.Net">
+      <HintPath>C:\Spiele\Steam\steamapps\common\SpaceEngineers\Bin64\ProtoBuf.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoBuf.Net.Core">
+      <HintPath>C:\Spiele\Steam\steamapps\common\SpaceEngineers\Bin64\ProtoBuf.Net.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Sandbox.Common">
       <HintPath>C:\Spiele\Steam\steamapps\common\SpaceEngineers\Bin64\Sandbox.Common.dll</HintPath>
     </Reference>
@@ -96,46 +104,49 @@
   <ItemGroup>
     <Compile Include="DamageSystem\AttackerInfo.cs" />
     <Compile Include="DamageSystem\DamageHandler.cs" />
-    <Compile Include="Localization\PocketGearText.cs" />
-    <Compile Include="Logic\PocketGearBaseLogic.cs" />
-    <Compile Include="Logic\PocketGearPadLogic.cs" />
-    <Compile Include="Logic\PocketGearPartLogic.cs" />
-    <Compile Include="Logic\LockRetractBehaviors.cs" />
-    <Compile Include="Net\IEntitySyncMessage.cs" />
-    <Compile Include="Net\IMessage.cs" />
-    <Compile Include="Net\ISyncRequestMessage.cs" />
-    <Compile Include="Net\ISyncResponseMessage.cs" />
-    <Compile Include="Net\MessageWrapper.cs" />
-    <Compile Include="Net\Network.cs" />
-    <Compile Include="Net\PropertySyncMessage.cs" />
+    <Compile Include="Data\PlacePadData.cs" />
+    <Compile Include="Defs.cs" />
+    <Compile Include="Extensions\BlockExtensions.cs" />
+    <Compile Include="Extensions\EntityExtensions.cs" />
+    <Compile Include="Extensions\GridExtensions.cs" />
+    <Compile Include="Localization\ModText.cs" />
+    <Compile Include="Logic\PocketGearBase.cs" />
+    <Compile Include="Data\LockRetractBehaviors.cs" />
+    <Compile Include="Net\ClientHandler.cs" />
+    <Compile Include="Net\Messages\DeployRetractRequestMessage.cs" />
+    <Compile Include="Net\Messages\PlacePadRequestMessage.cs" />
+    <Compile Include="Net\Messages\PropertySyncMessage.cs" />
+    <Compile Include="Net\Messages\SettingsRequestMessage.cs" />
+    <Compile Include="Net\Messages\SettingsResponseMessage.cs" />
     <Compile Include="DamageSystem\ProtectInfo.cs" />
-    <Compile Include="Net\SettingsSyncRequestMessage.cs" />
-    <Compile Include="Net\SettingsSyncResponseMessage.cs" />
-    <Compile Include="Settings\ModSettings.cs" />
-    <Compile Include="Settings\PocketGearBaseSettings.cs" />
+    <Compile Include="Net\NetworkHandlerBase.cs" />
+    <Compile Include="Net\ServerHandler.cs" />
+    <Compile Include="Settings\V1\ModSettings.cs" />
+    <Compile Include="Settings\V1\PocketGearBaseSettings.cs" />
+    <Compile Include="Settings\V0\PocketGearBaseSettings.cs" />
+    <Compile Include="TerminalControls\Controls.cs" />
     <Compile Include="TerminalControls\DeployRetractSwitch.cs" />
     <Compile Include="TerminalControls\DeployVelocitySlider.cs" />
+    <Compile Include="TerminalControls\IControls.cs" />
     <Compile Include="TerminalControls\LockRetractBehaviorCombobox.cs" />
     <Compile Include="TerminalControls\PlacePocketGearPadButton.cs" />
-    <Compile Include="TerminalControls\PocketGearBaseControls.cs" />
-    <Compile Include="TerminalControls\PocketGearPadControls.cs" />
-    <Compile Include="TerminalControls\TerminalControlUtils.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Utils\Localization\Localization.csproj">
-      <Project>{afc6b29d-80d1-48ab-9b45-7230216c285f}</Project>
-      <Name>Localization</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utils\Logging\Logging.csproj">
       <Project>{d8581c43-f65d-49eb-bfe3-75f185371512}</Project>
       <Name>Logging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Utils\Profiler\Profiler.csproj">
-      <Project>{30c726df-f15b-4df0-b579-dfc84c74d6e2}</Project>
-      <Name>Profiler</Name>
+    <ProjectReference Include="..\Utils\Net\Net.csproj">
+      <Project>{2285e3a1-63a2-4632-aa74-caa8dac96c71}</Project>
+      <Name>Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\TerminalControls\TerminalControls.csproj">
+      <Project>{beae5f29-1b17-4f13-8262-6ee88b8cc41b}</Project>
+      <Name>TerminalControls</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
