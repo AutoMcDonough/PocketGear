@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Mod</RootNamespace>
     <AssemblyName>Mod</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,90 +41,109 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Localization\MyTexts.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyTexts.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\Blocks\MagLock.sbc" />
+    <None Include="Data\Blocks\PocketGearPad.sbc" />
+    <None Include="Data\Blocks\PocketGearPart.sbc" />
+    <None Include="Data\Blocks\PocketGearBase.sbc" />
+    <None Include="Data\Blocks\Pad.sbc" />
     <None Include="Data\EntityComponents.sbc" />
     <None Include="Data\MA_PocketGear_BlockCategories.sbc" />
-    <None Include="Data\MA_PocketGear_Cubeblocks.sbc" />
-    <None Include="Models\MA_PocketGear_Base.mwm" />
-    <None Include="Models\MA_PocketGear_Base_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_Base_Constr2.mwm" />
-    <None Include="Models\MA_PocketGear_Base_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_Base_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_Base_sm.mwm" />
-    <None Include="Models\MA_PocketGear_Base_sm_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_Base_sm_Constr2.mwm" />
-    <None Include="Models\MA_PocketGear_Base_sm_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_Base_sm_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base_Constr2.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base_sm.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base_sm_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base_sm_Constr2.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base_sm_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Base_sm_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_L_Pad.mwm" />
-    <None Include="Models\MA_PocketGear_L_Pad_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Pad_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Pad_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_L_Pad_sm.mwm" />
-    <None Include="Models\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Pad_sm_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Pad_sm_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor_LOD3.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor_sm.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor_sm_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor_sm_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor_sm_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_L_Rotor_sm_LOD3.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_Constr2.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_Constr3.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_LOD3.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_sm.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_sm_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_sm_Constr2.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_sm_Constr3.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_sm_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_sm_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_Magnet_sm_LOD3.mwm" />
-    <None Include="Models\MA_PocketGear_Pad.mwm" />
-    <None Include="Models\MA_PocketGear_Pad_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_Pad_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_Pad_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_Pad_sm.mwm" />
-    <None Include="Models\MA_PocketGear_Pad_sm_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_Pad_sm_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_Pad_sm_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor_LOD3.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor_sm.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor_sm_Constr1.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor_sm_LOD1.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor_sm_LOD2.mwm" />
-    <None Include="Models\MA_PocketGear_Rotor_sm_LOD3.mwm" />
+    <None Include="dev\modinfo.sbmi" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base_Constr2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base_sm.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base_sm_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base_sm_Constr2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base_sm_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Base_sm_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base_Constr2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base_sm.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base_sm_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base_sm_Constr2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base_sm_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Base_sm_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Pad.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Pad_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Pad_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Pad_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Pad_sm.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Pad_sm_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Pad_sm_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Pad_sm_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor_LOD3.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor_sm.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor_sm_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor_sm_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor_sm_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_L_Rotor_sm_LOD3.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_Constr2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_Constr3.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_LOD3.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_sm.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_sm_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_sm_Constr2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_sm_Constr3.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_sm_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_sm_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Magnet_sm_LOD3.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Pad.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Pad_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Pad_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Pad_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Pad_sm.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Pad_sm_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Pad_sm_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Pad_sm_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor_LOD3.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor_sm.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor_sm_Constr1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor_sm_LOD1.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor_sm_LOD2.mwm" />
+    <None Include="Models\MA_PocketGear\MA_PocketGear_Rotor_sm_LOD3.mwm" />
     <None Include="modinfo.sbmi" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="beta\thumb.png" />
+    <Content Include="dev\thumb.png" />
     <Content Include="Textures\MA_PocketGear_Base.dds" />
     <Content Include="Textures\MA_PocketGear_Magnet.dds" />
     <Content Include="Textures\MA_PocketGear_Pad.dds" />
     <Content Include="Textures\MA_PocketGear_Rotor.dds" />
     <Content Include="thumb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Localization\MyTexts.de.resx" />
+    <EmbeddedResource Include="Data\Localization\MyTexts.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MyTexts.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,3 +1,35 @@
+# [1.5.0](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.5...v1.5.0) (2019-08-22)
+
+
+### Bug Fixes
+
+* fix a potential crash when placing a pocket gear ([7f61e4b](https://github.com/AutoMcDonough/PocketGear/commit/7f61e4b))
+* fix an issue that applies a deploy velocity change only after a deploy or retract ([06729e8](https://github.com/AutoMcDonough/PocketGear/commit/06729e8))
+* fix an issue where pocket gear pads and landing gears have different lock states on 'p' press ([74b3142](https://github.com/AutoMcDonough/PocketGear/commit/74b3142))
+* fix an issue where terminal controls would be initialized again ([078be5d](https://github.com/AutoMcDonough/PocketGear/commit/078be5d))
+* fix an issue which prevent pocketgear pad's to disable when retracted ([60b7195](https://github.com/AutoMcDonough/PocketGear/commit/60b7195))
+* fix an NRE on clients when trying to place a pocketgear ([bc03e76](https://github.com/AutoMcDonough/PocketGear/commit/bc03e76))
+* fix terminal controls and visual states in multiplayer  ([602d018](https://github.com/AutoMcDonough/PocketGear/commit/602d018))
+* fix the protobuf assembly reference again after SE update ([d395899](https://github.com/AutoMcDonough/PocketGear/commit/d395899))
+
+
+### Code Refactoring
+
+* refactor terminal control related code for more consistency across projects ([61643a2](https://github.com/AutoMcDonough/PocketGear/commit/61643a2))
+
+
+### Features
+
+* add English and German block descriptions ([49359e2](https://github.com/AutoMcDonough/PocketGear/commit/49359e2))
+* enable auto lock for pocket gears ([7aa5cec](https://github.com/AutoMcDonough/PocketGear/commit/7aa5cec))
+
+
+### BREAKING CHANGES
+
+* terminal action id's changed. You need to rebind action on your toolbar
+
+
+
 <a name="1.1.5"></a>
 # [1.1.5](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.4...v1.1.5) (2018-08-03)
 

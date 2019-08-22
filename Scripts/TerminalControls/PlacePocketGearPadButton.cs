@@ -1,53 +1,55 @@
-﻿using AutoMcD.PocketGear.Localization;
-using AutoMcD.PocketGear.Logic;
+﻿using System.Collections.Generic;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
+using Sisk.PocketGear.Localization;
+using Sisk.PocketGear.Logic;
+using Sisk.Utils.TerminalControls;
 
-// ReSharper disable UseNegatedPatternMatching
-// ReSharper disable ArgumentsStyleOther
-// ReSharper disable ArgumentsStyleNamedExpression
-// ReSharper disable ArgumentsStyleLiteral
-
-namespace AutoMcD.PocketGear.TerminalControls {
+namespace Sisk.PocketGear.TerminalControls {
     public static class PlacePocketGearPadButton {
-        public static IMyTerminalControlButton Create() {
-            var button = TerminalControlUtils.CreateButton<IMyMotorAdvancedStator>(
-                id: nameof(PocketGearText.PlaceLandingPad),
-                title: PocketGearText.PlaceLandingPad.String,
-                tooltip: PocketGearText.Tooltip_PlaceLandingPad.String,
-                action: Action,
-                enabled: Enabled,
-                visible: PocketGearBaseControls.IsPocketGearBase,
-                supportsMultipleBlocks: true);
-            return button;
-        }
+        private const string ID = nameof(ModText.BlockActionTitle_PlaceLandingPad);
+
+        private static IEnumerable<IMyTerminalAction> _actions;
+        private static IMyTerminalControlButton _control;
+
+        public static IEnumerable<IMyTerminalAction> Actions => _actions ?? (_actions = CreateActions());
+
+        public static IMyTerminalControlButton Control => _control ?? (_control = CreateControl());
 
         private static void Action(IMyTerminalBlock block) {
             var stator = block as IMyMotorStator;
-            if (stator == null) {
-                return;
-            }
+            var logic = stator?.GameLogic?.GetAs<PocketGearBase>();
+            logic?.PlacePad();
+        }
 
-            var top = stator.Top;
-            if (top == null) {
-                return;
-            }
+        private static IEnumerable<IMyTerminalAction> CreateActions() {
+            var actions = new List<IMyTerminalAction> {
+                Control.CreateButtonAction<IMyMotorAdvancedStator>()
+            };
 
-            var logic = top.GameLogic?.GetAs<PocketGearPartLogic>();
-            if (logic != null) {
-                logic.PlacePocketGearPad();
-            }
+            return actions;
+        }
+
+        private static IMyTerminalControlButton CreateControl() {
+            var control = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlButton, IMyMotorAdvancedStator>(ID);
+            control.Title = ModText.BlockActionTitle_PlaceLandingPad;
+            control.Tooltip = ModText.BlockActionTooltip_PlaceLandingPad;
+            control.Action = Action;
+            control.Enabled = Enabled;
+            control.Visible = Controls.IsPocketGearBase;
+            control.SupportsMultipleBlocks = true;
+            return control;
         }
 
         private static bool Enabled(IMyTerminalBlock block) {
-            if (!PocketGearBaseControls.IsPocketGearBase(block)) {
+            if (!Controls.IsPocketGearBase(block)) {
                 return false;
             }
 
-            var logic = block.GameLogic?.GetAs<PocketGearBaseLogic>();
+            var logic = block.GameLogic?.GetAs<PocketGearBase>();
             var enabled = false;
             if (logic != null) {
-                enabled = logic.CanPocketGearBeBuilt;
+                enabled = logic.CanBuiltPad;
             }
 
             return enabled;
