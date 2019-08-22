@@ -62,6 +62,7 @@ namespace Sisk.PocketGear.TerminalControls {
             CreateActions();
             CreateControls();
             RegisterProperties();
+            AreTerminalControlsInitialized = true;
         }
 
         /// <summary>
