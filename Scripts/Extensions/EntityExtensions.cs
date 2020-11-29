@@ -14,18 +14,13 @@ namespace Sisk.PocketGear.Extensions {
         /// <returns>Return the loaded settings if available. Else it return default settings.</returns>
         public static TSettings Load<TSettings>(this IMyEntity entity, Guid guid) where TSettings : class, new() {
             var storage = entity.Storage;
-            TSettings settings;
+            TSettings settings = null;
             if (storage != null && storage.ContainsKey(guid)) {
                 var str = storage[guid];
                 var data = Convert.FromBase64String(str);
 
                 settings = MyAPIGateway.Utilities.SerializeFromBinary<TSettings>(data);
-                if (settings != null) {
-                    return settings;
-                }
             }
-
-            settings = new TSettings();
 
             return settings;
         }
