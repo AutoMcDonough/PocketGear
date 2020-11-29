@@ -24,7 +24,7 @@ namespace Sisk.PocketGear.Logic {
     /// </summary>
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_MotorAdvancedStator), false, Defs.Base.NORMAL, Defs.Base.LARGE_NORMAL, Defs.Base.LARGE_SMALL, Defs.Base.SMALL)]
     public class PocketGearBase : MyGameLogicComponent {
-        public const float FORCED_LOWER_LIMIT_DEG = 334.0f;
+        public const float FORCED_LOWER_LIMIT_DEG = 333.0f;
         public const float FORCED_UPPER_LIMIT_DEG = 360.0f;
 
         private const string ERROR_BUILD_SPOT_OCCUPIED = ERROR_UNABLE_TO_PLACE + " Build spot occupied.";
@@ -71,6 +71,7 @@ namespace Sisk.PocketGear.Logic {
                     Mod.Static.Controls.LockRetractBehavior.UpdateVisual();
                     Mod.Static.Controls.DeployRetract.UpdateVisual();
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(CurrentBehavior), value));
+                    Save();
                 }
             }
         }
@@ -87,6 +88,7 @@ namespace Sisk.PocketGear.Logic {
                     Stator.TargetVelocityRPM = ShouldDeploy ? value : value * -1;
                     Mod.Static.Controls.DeployVelocity.UpdateVisual();
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(DeployVelocity), value));
+                    Save();
                 }
             }
         }
@@ -104,6 +106,7 @@ namespace Sisk.PocketGear.Logic {
             set {
                 if (value != _settings.IsPadAttached) {
                     _settings.IsPadAttached = value;
+                    Save();
                 }
             }
         }
@@ -142,6 +145,7 @@ namespace Sisk.PocketGear.Logic {
                 if (value != _settings.ShouldDeploy) {
                     _settings.ShouldDeploy = value;
                     Mod.Static.Network?.Sync(new PropertySyncMessage(Entity.EntityId, nameof(ShouldDeploy), value));
+                    Save();
                 }
             }
         }
@@ -204,97 +208,77 @@ namespace Sisk.PocketGear.Logic {
 
             Stator = Entity as IMyMotorStator;
 
+            if (Stator == null) {
+                return;
+            }
+
+            if (Stator.IsProjected()) {
+                return;
+            }
+
             if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
                 if (Entity.Storage == null) {
                     Entity.Storage = new MyModStorageComponent();
                 }
-            }
-        }
 
-        /// <summary>
-        ///     Tells the component container serializer whether this component should be saved.
-        ///     I use it to call the <see cref="IMyEntity.Save" /> extension method.
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsSerialized() {
-            using (Log.BeginMethod(nameof(IsSerialized))) {
-                if (Stator != null && (Mod.Static.Network == null || Mod.Static.Network.IsServer)) {
-                    try {
-                        Stator.Save(new Guid(PocketGearBaseSettings.GUID), _settings);
-                    } catch (Exception exception) {
-                        Log.Error(exception);
-                    }
-                }
-
-                return base.IsSerialized();
-            }
-        }
-
-        /// <inheritdoc />
-        public override void OnAddedToScene() {
-            using (Log.BeginMethod(nameof(OnAddedToScene))) {
-                if (Stator.IsProjected()) {
-                    return;
-                }
-
-                if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
-                    try {
-                        _settings = Stator.Load<PocketGearBaseSettings>(new Guid(PocketGearBaseSettings.GUID));
-                        if (_settings != null) {
-                            if (_settings.Version < PocketGearBaseSettings.VERSION) {
-                                // todo: merge old and new settings in future versions.
-                            }
-                        } else {
-                            _settings = new PocketGearBaseSettings();
+                try {
+                    _settings = Stator.Load<PocketGearBaseSettings>(new Guid(PocketGearBaseSettings.GUID));
+                    if (_settings != null) {
+                        if (_settings.Version < PocketGearBaseSettings.VERSION) {
+                            // todo: merge old and new settings in future versions.
                         }
-                    } catch (Exception exception) {
-                        if (exception.GetType().ToString() == "ProtoBuf.ProtoException") {
-                            var old = Stator.Load<Settings.V0.PocketGearBaseSettings>(new Guid(Settings.V0.PocketGearBaseSettings.GUID));
-                            if (old != null) {
-                                Log.Warning("Old settings version found. Converting to current version.");
-                                _settings = new PocketGearBaseSettings {
-                                    DeployVelocity = old.DeployVelocity,
-                                    ShouldDeploy = old.ShouldDeploy,
-                                    LockRetractBehavior = old.LockRetractBehavior
-                                };
-                            } else {
-                                Log.Error(exception);
-                                _settings = new PocketGearBaseSettings();
-                            }
+                    } else {
+                        _settings = new PocketGearBaseSettings();
+                    }
+                } catch (Exception exception) {
+                    if (exception.GetType().ToString() == "ProtoBuf.ProtoException") {
+                        var old = Stator.Load<Settings.V0.PocketGearBaseSettings>(new Guid(Settings.V0.PocketGearBaseSettings.GUID));
+                        if (old != null) {
+                            Log.Warning("Old settings version found. Converting to current version.");
+                            _settings = new PocketGearBaseSettings {
+                                DeployVelocity = old.DeployVelocity,
+                                ShouldDeploy = old.ShouldDeploy,
+                                LockRetractBehavior = old.LockRetractBehavior
+                            };
                         } else {
                             Log.Error(exception);
                             _settings = new PocketGearBaseSettings();
                         }
+                    } else {
+                        Log.Error(exception);
+                        _settings = new PocketGearBaseSettings();
                     }
-
-                    Stator.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
-                    Stator.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
-
-                    // todo: check if it is enough to run this on server.
-                    if (Mod.Static.DamageHandler != null) {
-                        Stator.CubeGrid.OnBlockAdded += OnBlockAdded;
-                        Stator.CubeGrid.OnBlockRemoved += OnBlockRemoved;
-
-                        GetNeighbors(Stator.SlimBlock, Mod.Static.Settings.ProtectionRadius, ref _neighbors);
-                    }
-
-                    if (Mod.Static.Network != null) {
-                        Mod.Static.Network.Register<PlacePadRequestMessage>(Entity.EntityId, OnPlacePadRequestMessageReceived);
-                        Mod.Static.Network.Register<DeployRetractRequestMessage>(Entity.EntityId, OnDeployRetractRequestMessageReceived);
-                    }
-                } else {
-                    _settings = new PocketGearBaseSettings();
                 }
 
-                Stator.AttachedEntityChanged += OnAttachedEntityChanged;
+                Stator.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
+                Stator.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
+
+                NeedsUpdate |= ~MyEntityUpdateEnum.EACH_FRAME;
+
+                // todo: check if it is enough to run this on server.
+                if (Mod.Static.DamageHandler != null) {
+                    Stator.CubeGrid.OnBlockAdded += OnBlockAdded;
+                    Stator.CubeGrid.OnBlockRemoved += OnBlockRemoved;
+
+                    GetNeighbors(Stator.SlimBlock, Mod.Static.Settings.ProtectionRadius, ref _neighbors);
+                }
 
                 if (Mod.Static.Network != null) {
-                    Mod.Static.Network.Register<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
+                    Mod.Static.Network.Register<PlacePadRequestMessage>(Entity.EntityId, OnPlacePadRequestMessageReceived);
+                    Mod.Static.Network.Register<DeployRetractRequestMessage>(Entity.EntityId, OnDeployRetractRequestMessageReceived);
                 }
+            } else {
+                _settings = new PocketGearBaseSettings();
+            }
 
-                if (!Mod.Static.Controls.AreTerminalControlsInitialized) {
-                    Mod.Static.Controls.InitializeControls();
-                }
+            Stator.AttachedEntityChanged += OnAttachedEntityChanged;
+
+            if (Mod.Static.Network != null) {
+                Mod.Static.Network.Register<PropertySyncMessage>(Entity.EntityId, OnPropertySyncMessage);
+            }
+
+            if (!Mod.Static.Controls.AreTerminalControlsInitialized) {
+                Mod.Static.Controls.InitializeControls();
             }
         }
 
@@ -319,6 +303,23 @@ namespace Sisk.PocketGear.Logic {
 
             if (!_togglePadWhenThresholdReached) {
                 NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
+            }
+        }
+
+        /// <summary>
+        ///     Set lower and upper limit here because in init it's too early and they get overriden.
+        /// </summary>
+        public override void UpdateOnceBeforeFrame() {
+            using (Log.BeginMethod(nameof(UpdateOnceBeforeFrame))) {
+                Log.Debug($"START {nameof(UpdateOnceBeforeFrame)}");
+                base.UpdateOnceBeforeFrame();
+
+                NeedsUpdate &= ~MyEntityUpdateEnum.EACH_FRAME;
+
+                Stator.LowerLimitRad = FORCED_LOWER_LIMIT_RAD;
+                Stator.UpperLimitRad = FORCED_UPPER_LIMIT_RAD;
+
+                Log.Debug($"END {nameof(UpdateOnceBeforeFrame)}");
             }
         }
 
@@ -409,51 +410,56 @@ namespace Sisk.PocketGear.Logic {
         /// </summary>
         /// <param name="base">The base on which the top is changed.</param>
         private void OnAttachedEntityChanged(IMyMechanicalConnectionBlock @base) {
-            if (@base.Top != null) {
-                _topGrid = Stator.TopGrid;
-                _topGridId = Stator.TopGrid.EntityId;
+            using (Log.BeginMethod(nameof(OnAttachedEntityChanged))) {
+                Log.Debug($"START {nameof(OnAttachedEntityChanged)}");
+                if (@base.Top != null) {
+                    _topGrid = Stator.TopGrid;
+                    _topGridId = Stator.TopGrid.EntityId;
 
-                _topGrid.OnBlockAdded += OnBlockAddedOnHead;
-                _topGrid.OnBlockRemoved += OnBlockRemovedOnHead;
-                _topGrid.OnClose += OnCloseHead;
+                    _topGrid.OnBlockAdded += OnBlockAddedOnHead;
+                    _topGrid.OnBlockRemoved += OnBlockRemovedOnHead;
+                    _topGrid.OnClose += OnCloseHead;
 
-                if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
-                    if (!IsPadAttached) {
-                        PlacePad();
-                    } else {
-                        var blocks = new List<IMySlimBlock>();
-                        Stator.TopGrid.GetBlocks(blocks);
+                    if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
+                        if (!IsPadAttached) {
+                            PlacePad();
+                        } else {
+                            var blocks = new List<IMySlimBlock>();
+                            Stator.TopGrid.GetBlocks(blocks);
 
-                        var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
-                        if (pad != null) {
-                            Pad = (IMyLandingGear) pad;
+                            var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
+                            if (pad != null) {
+                                Pad = (IMyLandingGear) pad;
+                            }
                         }
-                    }
 
-                    // todo: check if it is enough to run this on server.
-                    if (Mod.Static.DamageHandler != null) {
-                        EnableProtection();
+                        // todo: check if it is enough to run this on server.
+                        if (Mod.Static.DamageHandler != null) {
+                            EnableProtection();
+                        }
+                    } else {
+                        if (Pad == null) {
+                            var blocks = new List<IMySlimBlock>();
+                            Stator.TopGrid.GetBlocks(blocks);
+
+                            var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
+                            if (pad != null) {
+                                Pad = (IMyLandingGear) pad;
+                            }
+                        }
                     }
                 } else {
-                    if (Pad == null) {
-                        var blocks = new List<IMySlimBlock>();
-                        Stator.TopGrid.GetBlocks(blocks);
+                    IsPadAttached = false;
 
-                        var pad = blocks.Where(x => x.BlockDefinition.Id.TypeId == typeof(MyObjectBuilder_LandingGear)).Select(x => x.FatBlock).FirstOrDefault();
-                        if (pad != null) {
-                            Pad = (IMyLandingGear) pad;
-                        }
+                    if (_topGrid != null) {
+                        _topGrid.OnBlockAdded -= OnBlockAddedOnHead;
+                        _topGrid.OnBlockRemoved -= OnBlockRemovedOnHead;
+                        _topGrid.OnClose -= OnCloseHead;
+                        _topGrid = null;
                     }
                 }
-            } else {
-                IsPadAttached = false;
 
-                if (_topGrid != null) {
-                    _topGrid.OnBlockAdded -= OnBlockAddedOnHead;
-                    _topGrid.OnBlockRemoved -= OnBlockRemovedOnHead;
-                    _topGrid.OnClose -= OnCloseHead;
-                    _topGrid = null;
-                }
+                Log.Debug($"END {nameof(OnAttachedEntityChanged)}");
             }
         }
 
@@ -716,6 +722,24 @@ namespace Sisk.PocketGear.Logic {
                         Log.Error("Something went wrong when trying to place pad.");
                         break;
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Save setting to blocks mod storage.
+        /// </summary>
+        private void Save() {
+            using (Log.BeginMethod(nameof(Save))) {
+                Log.Debug($"START {nameof(Save)}");
+                if (Stator != null && (Mod.Static.Network == null || Mod.Static.Network.IsServer)) {
+                    try {
+                        Stator.Save(new Guid(PocketGearBaseSettings.GUID), _settings);
+                    } catch (Exception exception) {
+                        Log.Error(exception);
+                    }
+                }
+
+                Log.Debug($"END {nameof(Save)}");
             }
         }
     }
