@@ -25,7 +25,10 @@ namespace Sisk.PocketGear.DamageSystem {
 
         private static float CalculateMass(IMyCubeGrid cubeGrid) {
             var mass = cubeGrid.Physics.Mass;
-            mass += MyAPIGateway.GridGroups.GetGroup(cubeGrid, GridLinkTypeEnum.Mechanical).Sum(x => x.Physics.Mass);
+            var cubeGrids = new List<IMyCubeGrid>();
+            MyAPIGateway.GridGroups.GetGroup(cubeGrid, GridLinkTypeEnum.Mechanical, cubeGrids);
+            
+            mass += cubeGrids.Sum(x => x.Physics.Mass);
             return mass;
         }
 
