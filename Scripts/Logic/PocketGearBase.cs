@@ -162,7 +162,9 @@ namespace Sisk.PocketGear.Logic {
         /// <param name="radius">The radius used to search for neighbors.</param>
         /// <param name="slimBlocks">Found neighbors are stored here.</param>
         private static void GetNeighbors(IMySlimBlock slimBlock, int radius, ref HashSet<IMySlimBlock> slimBlocks) {
-            foreach (var neighbor in slimBlock.Neighbours) {
+            var neighbors = new List<IMySlimBlock>();
+            slimBlock.GetNeighbours(neighbors);
+            foreach (var neighbor in neighbors) {
                 if (slimBlocks.Contains(neighbor)) {
                     continue;
                 }
@@ -346,6 +348,7 @@ namespace Sisk.PocketGear.Logic {
                 if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
                     MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(Stator.Top));
                 } else {
+                    MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(Stator.Top));
                     Mod.Static.Network.SendToServer(new PlacePadRequestMessage(Entity.EntityId));
                 }
             }
@@ -685,6 +688,7 @@ namespace Sisk.PocketGear.Logic {
                     MyAPIGateway.Utilities.InvokeOnGameThread(() => {
                         cubeGrid.AddBlock(padBuilder, false);
                         var slimBlock = cubeGrid.GetCubeBlock(padPosition);
+                        slimBlock.UpdateVisual();
 
                         Pad = slimBlock?.FatBlock as IMyLandingGear;
                         Log.Debug("Pad should now be placed.");

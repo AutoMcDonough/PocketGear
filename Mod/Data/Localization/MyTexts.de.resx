@@ -175,10 +175,10 @@ Sie werden gelb angezeigt, wenn sie sich in der Nähe einer Oberfläche befinden
     <value>Entsperren beim Einfahren</value>
   </data>
   <data name="BlockActionTitle_PlaceLandingPad" xml:space="preserve">
-    <value>Plaziere Pad</value>
+    <value>Platziere Pad</value>
   </data>
   <data name="BlockActionTooltip_PlaceLandingPad" xml:space="preserve">
-    <value>Plaziere ein neues PocketGear Pad</value>
+    <value>Platziere ein neues PocketGear Pad.</value>
   </data>
   <data name="BlockPropertyTitle_SwitchDeployState" xml:space="preserve">
     <value>Wechsel des Ausfahrstatus</value>

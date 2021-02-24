@@ -1,3 +1,23 @@
+# [1.5.2](https://github.com/AutoMcDonough/PocketGear/compare/v1.5.1...v1.5.2) (2021-02-24)
+
+
+### Bug Fixes
+
+* fix a potential crash when no mechanical connected subgrids found ([c3f7947](https://github.com/AutoMcDonough/PocketGear/commit/c3f794778863e25a0083e70043a368caf1adcdfa))
+* fix deprecation warning ([896edf6](https://github.com/AutoMcDonough/PocketGear/commit/896edf67517bc1d6d3701fcd34bd40bdd3c7ec9e))
+* workaround for multiplayer which would not show a new placed pad ([e585c3e](https://github.com/AutoMcDonough/PocketGear/commit/e585c3e0ba13ce16e9e94c52a55c0ba4c4e18c05))
+
+
+
+# [1.5.1](https://github.com/AutoMcDonough/PocketGear/compare/v1.5.0...v1.5.1) (2021-02-24)
+
+
+### Bug Fixes
+
+* fix compatibility issues with `Mechanical Keybinds` ([b3c717f](https://github.com/AutoMcDonough/PocketGear/commit/b3c717f7ba638453ffc49016dcde4d18cad918f7))
+
+
+
 # [1.5.0](https://github.com/AutoMcDonough/PocketGear/compare/v1.1.5...v1.5.0) (2019-08-22)
 
 
