@@ -348,6 +348,7 @@ namespace Sisk.PocketGear.Logic {
                 if (Mod.Static.Network == null || Mod.Static.Network.IsServer) {
                     MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(Stator.Top));
                 } else {
+                    MyAPIGateway.Parallel.Start(PlacePad, PlacePadCompleted, new PlacePadData(Stator.Top));
                     Mod.Static.Network.SendToServer(new PlacePadRequestMessage(Entity.EntityId));
                 }
             }
@@ -687,6 +688,7 @@ namespace Sisk.PocketGear.Logic {
                     MyAPIGateway.Utilities.InvokeOnGameThread(() => {
                         cubeGrid.AddBlock(padBuilder, false);
                         var slimBlock = cubeGrid.GetCubeBlock(padPosition);
+                        slimBlock.UpdateVisual();
 
                         Pad = slimBlock?.FatBlock as IMyLandingGear;
                         Log.Debug("Pad should now be placed.");
