@@ -162,7 +162,9 @@ namespace Sisk.PocketGear.Logic {
         /// <param name="radius">The radius used to search for neighbors.</param>
         /// <param name="slimBlocks">Found neighbors are stored here.</param>
         private static void GetNeighbors(IMySlimBlock slimBlock, int radius, ref HashSet<IMySlimBlock> slimBlocks) {
-            foreach (var neighbor in slimBlock.Neighbours) {
+            var neighbors = new List<IMySlimBlock>();
+            slimBlock.GetNeighbours(neighbors);
+            foreach (var neighbor in neighbors) {
                 if (slimBlocks.Contains(neighbor)) {
                     continue;
                 }
